@@ -5,7 +5,6 @@ import '../../core/providers.dart';
 import '../../data/models/client_conversation.dart';
 import '../../data/models/client_message.dart';
 import '../../design_system/colors.dart';
-import 'conversations_list_screen.dart';
 
 /// Pantalla de detalle de conversación (chat) para clientes
 class ConversationDetailScreen extends ConsumerStatefulWidget {

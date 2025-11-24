@@ -7,10 +7,6 @@ import '../../design_system/colors.dart';
 import '../../design_system/components/yuva_card.dart';
 import '../messaging/conversations_list_screen.dart';
 import '../jobs/job_detail_screen.dart';
-import '../jobs/proposal_detail_screen.dart';
-import '../jobs/job_providers.dart';
-import '../../core/providers.dart';
-import '../../data/models/job_models.dart';
 
 /// Pantalla de centro de notificaciones para clientes
 class NotificationsScreen extends ConsumerStatefulWidget {

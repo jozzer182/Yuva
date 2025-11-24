@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'job_models.dart';
 import 'booking_request.dart';
 
 /// Estados de un trabajo activo desde la perspectiva del cliente

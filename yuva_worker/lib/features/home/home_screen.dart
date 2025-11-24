@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yuva_worker/l10n/app_localizations.dart';
-import 'package:intl/intl.dart';
 import '../../utils/money_formatter.dart';
 import '../../core/providers.dart';
 import '../../core/responsive.dart';

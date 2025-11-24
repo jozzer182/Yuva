@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
-import '../../core/providers.dart';
 
 /// Pantalla para configurar autenticación de dos factores con TOTP (Google Authenticator)
 class TOTPEnrollmentScreen extends ConsumerStatefulWidget {
