@@ -1,13 +1,31 @@
 # YUVA - Flutter Multi-App Project
 
+[![Flutter](https://img.shields.io/badge/Flutter-3.0+-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
+[![Dart](https://img.shields.io/badge/Dart-3.0+-0175C2?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev)
+[![Firebase](https://img.shields.io/badge/Firebase-Authentication-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)](https://firebase.google.com)
+[![License](https://img.shields.io/badge/License-Portfolio-green?style=for-the-badge)](LICENSE)
+[![GitHub](https://img.shields.io/badge/GitHub-jozzer182-181717?style=for-the-badge&logo=github)](https://github.com/jozzer182)
+
 > **Note**: This is a portfolio/demonstration project showcasing Flutter development skills with Firebase integration and multi-app architecture.
 
 ## 📱 Project Overview
 
 YUVA is a Flutter-based project consisting of two complementary applications:
 
-- **yuva_client** - Client-facing application
-- **yuva_worker** - Worker/service provider application
+<table>
+<tr>
+<td align="center" width="50%">
+<img src="yuva_client/icons/iOS/Icon-1024.png" width="120" alt="YUVA Client Icon"/><br/>
+<b>YUVA Client</b><br/>
+<em>Client-facing application</em>
+</td>
+<td align="center" width="50%">
+<img src="yuva_worker/icons/iOS/Icon-1024.png" width="120" alt="YUVA Worker Icon"/><br/>
+<b>YUVA Worker</b><br/>
+<em>Service provider application</em>
+</td>
+</tr>
+</table>
 
 Both applications share a common architecture and are built with modern Flutter best practices, featuring Firebase Authentication with advanced security features.
 
@@ -141,21 +159,29 @@ Detailed documentation is available in the `/docs` folder:
 
 ## 🛠️ Technologies Used
 
+![Flutter](https://img.shields.io/badge/Flutter-02569B?style=flat-square&logo=flutter&logoColor=white)
+![Dart](https://img.shields.io/badge/Dart-0175C2?style=flat-square&logo=dart&logoColor=white)
+![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=flat-square&logo=firebase&logoColor=black)
+![Material Design](https://img.shields.io/badge/Material%20Design%203-757575?style=flat-square&logo=material-design&logoColor=white)
+
 - **Framework**: Flutter & Dart
 - **Authentication**: Firebase Authentication
-- **State Management**: [Your state management solution]
+- **State Management**: Provider / Riverpod
 - **Backend Services**: Firebase
 - **Architecture**: Clean Architecture
 - **Design**: Material Design 3
+- **Internationalization**: ARB files (English & Spanish)
 
 ## 📱 Supported Platforms
 
-- ✅ Android
-- ✅ iOS
-- ✅ Web
-- ✅ Windows
-- ✅ macOS
-- ✅ Linux
+<p align="center">
+<img src="https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white" alt="Android"/>
+<img src="https://img.shields.io/badge/iOS-000000?style=for-the-badge&logo=ios&logoColor=white" alt="iOS"/>
+<img src="https://img.shields.io/badge/Web-4285F4?style=for-the-badge&logo=google-chrome&logoColor=white" alt="Web"/>
+<img src="https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white" alt="Windows"/>
+<img src="https://img.shields.io/badge/macOS-000000?style=for-the-badge&logo=apple&logoColor=white" alt="macOS"/>
+<img src="https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black" alt="Linux"/>
+</p>
 
 ## 🤝 Contributing
 
