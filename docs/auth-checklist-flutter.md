@@ -120,8 +120,8 @@ This document provides a comprehensive testing checklist for Firebase Authentica
 - [ ] Both apps use the same Firebase project (yuve-es)
 - [ ] Each app has its own Firebase Android app registration
 - [ ] Package names are correct:
-  - [ ] yuva_client: com.example.yuva
-  - [ ] yuva_worker: com.example.yuva_worker
+  - [ ] yuva_client: dev.zarabanda.yuva
+  - [ ] yuva_worker: dev.zarabanda.yuva_worker
 - [ ] firebase_options.dart files are present in both apps
 - [ ] Firebase is initialized correctly in main.dart for both apps
 

@@ -52,8 +52,8 @@ firebase init
 1. Go to [Firebase Console](https://console.firebase.google.com/)
 2. Create a new project or select existing
 3. Add Android/iOS apps with appropriate package names:
-   - Client: `com.example.yuva` (or your package name)
-   - Worker: `com.example.yuva_worker` (or your package name)
+   - Client: `dev.zarabanda.yuva`
+   - Worker: `dev.zarabanda.yuva_worker`
 4. Enable Authentication methods:
    - Email/Password
    - Google Sign-In
