@@ -1,0 +1,142 @@
+{
+  "@@locale": "en",
+  "appName": "yuva",
+  "hello": "Hello, {name}",
+  "getStarted": "Get started",
+  "next": "Next",
+  "onboardingWorkerTitle1": "Find cleaning jobs near you",
+  "onboardingWorkerTitle2": "Choose jobs that match your rate",
+  "onboardingWorkerTitle3": "Build your reputation with great results",
+  "onboardingWorkerDesc1": "Connect with clients near your work area",
+  "onboardingWorkerDesc2": "Propose your rates and conditions, you decide",
+  "onboardingWorkerDesc3": "Each completed job improves your professional profile",
+  "continueWithEmail": "Continue with email",
+  "login": "Log in",
+  "signup": "Sign up",
+  "email": "Email",
+  "password": "Password",
+  "name": "Name",
+  "lastName": "Last name",
+  "@lastName": {
+    "description": "Last name label"
+  },
+  "alreadyHaveAccount": "Already have an account?",
+  "dontHaveAccount": "Don't have an account?",
+  "home": "Home",
+  "jobs": "Jobs",
+  "profile": "Profile",
+  "language": "Language",
+  "spanish": "Español",
+  "english": "English",
+  "skip": "Skip",
+  "@skip": {
+    "description": "Skip onboarding"
+  },
+  "logout": "Log out",
+  "recommendedJobs": "Recommended jobs for you",
+  "invitations": "Invitations",
+  "invitation": "Invitation",
+  "newJobs": "New",
+  "myProposals": "My proposals",
+  "contracts": "Contracts",
+  "noJobsAvailable": "No jobs available",
+  "noJobsDescription": "When there are jobs matching your profile, you'll see them here.",
+  "jobDetailTitle": "Job detail",
+  "propertyDetails": "Property details",
+  "budgetDetails": "Budget details",
+  "prepareProposal": "Prepare proposal",
+  "proposalFeatureComingSoon": "Proposal functionality will be implemented in a future phase",
+  "editProfile": "Edit profile",
+  "baseHourlyRate": "Base hourly rate",
+  "baseArea": "Base area",
+  "offeredServices": "Offered services",
+  "rating": "{rating} ★ ({count} reviews)",
+  "saveChanges": "Save changes",
+  "cancel": "Cancel",
+  "profileUpdated": "Profile updated successfully",
+  "back": "Back",
+  "perHour": "{price}/hour",
+  "fixedBudget": "Fixed budget: {price}",
+  "hourlyRange": "{from} - {to} / hour",
+  "serviceStandard": "Standard clean",
+  "serviceDeepClean": "Deep clean",
+  "serviceMoveOut": "Move-out clean",
+  "serviceOffice": "Office/Shop",
+  "frequencyOnce": "One time",
+  "frequencyWeekly": "Weekly",
+  "frequencyBiweekly": "Biweekly",
+  "frequencyMonthly": "Monthly",
+  "propertyApartment": "Apartment",
+  "propertyHouse": "House",
+  "propertySmallOffice": "Small office",
+  "sizeSmall": "Small",
+  "sizeMedium": "Medium",
+  "sizeLarge": "Large",
+  "bedrooms": "Bedrooms",
+  "bathrooms": "Bathrooms",
+  "roomsCount": "{bedrooms} bed / {bathrooms} bath",
+  "preferredDate": "Preferred date",
+  "notSpecified": "Not specified",
+  "createMyProfile": "Create my profile",
+  "jobTitleDeepCleanApt": "Deep clean for 2BR apartment",
+  "jobDescDeepCleanApt": "Want the kitchen and bathrooms spotless before family visits.",
+  "jobTitleWeeklyHouse": "Weekly upkeep for house in Suba",
+  "jobDescWeeklyHouse": "General clean every week, priority bedrooms and patio.",
+  "jobTitleOfficeReset": "Monthly reset for small office",
+  "jobDescOfficeReset": "Organize desks, clean glass and prep meeting room.",
+  "jobTitlePostMoveCondo": "Post-move clean for furnished condo",
+  "jobDescPostMoveCondo": "Need deep clean after moving, including windows.",
+  "jobTitleBiweeklyStudio": "Biweekly clean for studio",
+  "jobDescBiweeklyStudio": "Basic upkeep every two weeks for 1BR studio.",
+  "area": "Area",
+  "frequency": "Frequency",
+  "description": "Description",
+  "messages": "Messages",
+  "@messages": {
+    "description": "Messages label"
+  },
+  "noMessagesYet": "You don't have any messages yet",
+  "@noMessagesYet": {
+    "description": "No messages yet message"
+  },
+  "noMessagesDescription": "When you receive messages from clients, they will appear here.",
+  "@noMessagesDescription": {
+    "description": "No messages description"
+  },
+  "activeJob": "Active job",
+  "@activeJob": {
+    "description": "Active job label"
+  },
+  "noMessagesInConversation": "No messages in this conversation",
+  "@noMessagesInConversation": {
+    "description": "No messages in conversation"
+  },
+  "typeMessage": "Type a message...",
+  "@typeMessage": {
+    "description": "Type message placeholder"
+  },
+  "notifications": "Notifications",
+  "@notifications": {
+    "description": "Notifications label"
+  },
+  "markAllAsRead": "Mark all as read",
+  "@markAllAsRead": {
+    "description": "Mark all as read button"
+  },
+  "noNotificationsYet": "You don't have any notifications",
+  "@noNotificationsYet": {
+    "description": "No notifications yet message"
+  },
+  "noNotificationsDescription": "Notifications about your proposals and jobs will appear here.",
+  "@noNotificationsDescription": {
+    "description": "No notifications description"
+  },
+  "unreadMessages": "Unread messages",
+  "@unreadMessages": {
+    "description": "Unread messages label"
+  },
+  "newNotifications": "New notifications",
+  "@newNotifications": {
+    "description": "New notifications label"
+  }
+}

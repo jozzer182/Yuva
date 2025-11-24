@@ -1,0 +1,439 @@
+{
+  "@@locale": "es",
+  "appName": "yuva",
+  "@appName": {
+    "description": "The application name"
+  },
+  "hello": "Hola, {name}",
+  "@hello": {
+    "description": "Greeting message",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Carlos"
+      }
+    }
+  },
+  "getStarted": "Comenzar",
+  "@getStarted": {
+    "description": "Get started button"
+  },
+  "next": "Siguiente",
+  "@next": {
+    "description": "Next button"
+  },
+  "onboardingWorkerTitle1": "Encuentra trabajos de aseo cerca de ti",
+  "@onboardingWorkerTitle1": {
+    "description": "First onboarding screen title for workers"
+  },
+  "onboardingWorkerTitle2": "Elige los trabajos que se ajustan a tu tarifa",
+  "@onboardingWorkerTitle2": {
+    "description": "Second onboarding screen title for workers"
+  },
+  "onboardingWorkerTitle3": "Construye tu reputación con buenos resultados",
+  "@onboardingWorkerTitle3": {
+    "description": "Third onboarding screen title for workers"
+  },
+  "onboardingWorkerDesc1": "Conecta con clientes cerca de tu zona de trabajo",
+  "@onboardingWorkerDesc1": {
+    "description": "First onboarding screen description for workers"
+  },
+  "onboardingWorkerDesc2": "Propón tus tarifas y condiciones, tú decides",
+  "@onboardingWorkerDesc2": {
+    "description": "Second onboarding screen description for workers"
+  },
+  "onboardingWorkerDesc3": "Cada trabajo completado mejora tu perfil profesional",
+  "@onboardingWorkerDesc3": {
+    "description": "Third onboarding screen description for workers"
+  },
+  "continueWithEmail": "Continuar con correo",
+  "@continueWithEmail": {
+    "description": "Continue with email button"
+  },
+  "login": "Iniciar sesión",
+  "@login": {
+    "description": "Login button"
+  },
+  "signup": "Crear cuenta",
+  "@signup": {
+    "description": "Sign up button"
+  },
+  "email": "Correo electrónico",
+  "@email": {
+    "description": "Email field label"
+  },
+  "password": "Contraseña",
+  "@password": {
+    "description": "Password field label"
+  },
+  "name": "Nombre",
+  "lastName": "Apellido",
+  "@lastName": {
+    "description": "Last name label"
+  },
+  "@name": {
+    "description": "Name field label"
+  },
+  "alreadyHaveAccount": "¿Ya tienes cuenta?",
+  "@alreadyHaveAccount": {
+    "description": "Already have account text"
+  },
+  "dontHaveAccount": "¿No tienes cuenta?",
+  "@dontHaveAccount": {
+    "description": "Don't have account text"
+  },
+  "home": "Inicio",
+  "@home": {
+    "description": "Home navigation label"
+  },
+  "jobs": "Trabajos",
+  "@jobs": {
+    "description": "Jobs navigation label"
+  },
+  "profile": "Perfil",
+  "@profile": {
+    "description": "Profile navigation label"
+  },
+  "language": "Idioma",
+  "@language": {
+    "description": "Language label"
+  },
+  "spanish": "Español",
+  "@spanish": {
+    "description": "Spanish language name"
+  },
+  "english": "English",
+  "skip": "Saltar",
+  "@skip": {
+    "description": "Skip onboarding"
+  },
+  "@english": {
+    "description": "English language name"
+  },
+  "logout": "Cerrar sesión",
+  "@logout": {
+    "description": "Logout button"
+  },
+  "recommendedJobs": "Trabajos recomendados para ti",
+  "@recommendedJobs": {
+    "description": "Recommended jobs section title"
+  },
+  "invitations": "Invitaciones",
+  "@invitations": {
+    "description": "Invitations section title"
+  },
+  "invitation": "Invitación",
+  "@invitation": {
+    "description": "Invitation chip label"
+  },
+  "newJobs": "Nuevos",
+  "@newJobs": {
+    "description": "New jobs tab"
+  },
+  "myProposals": "Mis propuestas",
+  "@myProposals": {
+    "description": "My proposals tab"
+  },
+  "contracts": "Contratos",
+  "@contracts": {
+    "description": "Contracts tab"
+  },
+  "noJobsAvailable": "No hay trabajos disponibles",
+  "@noJobsAvailable": {
+    "description": "Empty jobs message"
+  },
+  "noJobsDescription": "Cuando haya trabajos que coincidan con tu perfil, los verás aquí.",
+  "@noJobsDescription": {
+    "description": "Empty jobs description"
+  },
+  "jobDetailTitle": "Detalle del trabajo",
+  "@jobDetailTitle": {
+    "description": "Job detail screen title"
+  },
+  "propertyDetails": "Detalles de la propiedad",
+  "@propertyDetails": {
+    "description": "Property details section"
+  },
+  "budgetDetails": "Detalles del presupuesto",
+  "@budgetDetails": {
+    "description": "Budget details section"
+  },
+  "prepareProposal": "Preparar propuesta",
+  "@prepareProposal": {
+    "description": "Prepare proposal button"
+  },
+  "proposalFeatureComingSoon": "La funcionalidad de propuestas se implementará en una fase posterior",
+  "@proposalFeatureComingSoon": {
+    "description": "Proposal feature coming soon message"
+  },
+  "editProfile": "Editar perfil",
+  "@editProfile": {
+    "description": "Edit profile button"
+  },
+  "baseHourlyRate": "Tarifa base por hora",
+  "@baseHourlyRate": {
+    "description": "Base hourly rate label"
+  },
+  "baseArea": "Zona base",
+  "@baseArea": {
+    "description": "Base area label"
+  },
+  "offeredServices": "Servicios ofrecidos",
+  "@offeredServices": {
+    "description": "Offered services label"
+  },
+  "rating": "{rating} ★ ({count} reseñas)",
+  "@rating": {
+    "description": "Rating display",
+    "placeholders": {
+      "rating": {
+        "type": "String",
+        "example": "4.8"
+      },
+      "count": {
+        "type": "int",
+        "example": "32"
+      }
+    }
+  },
+  "saveChanges": "Guardar cambios",
+  "@saveChanges": {
+    "description": "Save changes button"
+  },
+  "cancel": "Cancelar",
+  "@cancel": {
+    "description": "Cancel button"
+  },
+  "profileUpdated": "Perfil actualizado exitosamente",
+  "@profileUpdated": {
+    "description": "Profile updated success message"
+  },
+  "back": "Atrás",
+  "@back": {
+    "description": "Back button"
+  },
+  "perHour": "{price}/hora",
+  "@perHour": {
+    "description": "Price per hour",
+    "placeholders": {
+      "price": {
+        "type": "String",
+        "example": "$50.000"
+      }
+    }
+  },
+  "fixedBudget": "Presupuesto fijo: {price}",
+  "@fixedBudget": {
+    "description": "Fixed budget label",
+    "placeholders": {
+      "price": {
+        "type": "String",
+        "example": "$120.000"
+      }
+    }
+  },
+  "hourlyRange": "{from} - {to} / hora",
+  "@hourlyRange": {
+    "description": "Hourly range",
+    "placeholders": {
+      "from": {
+        "type": "String",
+        "example": "$40.000"
+      },
+      "to": {
+        "type": "String",
+        "example": "$60.000"
+      }
+    }
+  },
+  "serviceStandard": "Limpieza completa",
+  "@serviceStandard": {
+    "description": "Standard cleaning service"
+  },
+  "serviceDeepClean": "Limpieza profunda",
+  "@serviceDeepClean": {
+    "description": "Deep cleaning service"
+  },
+  "serviceMoveOut": "Limpieza de mudanza",
+  "@serviceMoveOut": {
+    "description": "Move-out cleaning service"
+  },
+  "serviceOffice": "Oficina/Local",
+  "@serviceOffice": {
+    "description": "Office cleaning service"
+  },
+  "frequencyOnce": "Una sola vez",
+  "@frequencyOnce": {
+    "description": "One-time frequency"
+  },
+  "frequencyWeekly": "Semanal",
+  "@frequencyWeekly": {
+    "description": "Weekly frequency"
+  },
+  "frequencyBiweekly": "Quincenal",
+  "@frequencyBiweekly": {
+    "description": "Biweekly frequency"
+  },
+  "frequencyMonthly": "Mensual",
+  "@frequencyMonthly": {
+    "description": "Monthly frequency"
+  },
+  "propertyApartment": "Apartamento",
+  "@propertyApartment": {
+    "description": "Apartment property type"
+  },
+  "propertyHouse": "Casa",
+  "@propertyHouse": {
+    "description": "House property type"
+  },
+  "propertySmallOffice": "Oficina pequeña",
+  "@propertySmallOffice": {
+    "description": "Small office property type"
+  },
+  "sizeSmall": "Pequeño",
+  "@sizeSmall": {
+    "description": "Small size"
+  },
+  "sizeMedium": "Mediano",
+  "@sizeMedium": {
+    "description": "Medium size"
+  },
+  "sizeLarge": "Grande",
+  "@sizeLarge": {
+    "description": "Large size"
+  },
+  "bedrooms": "Habitaciones",
+  "@bedrooms": {
+    "description": "Bedrooms label"
+  },
+  "bathrooms": "Baños",
+  "@bathrooms": {
+    "description": "Bathrooms label"
+  },
+  "roomsCount": "{bedrooms} hab / {bathrooms} baños",
+  "@roomsCount": {
+    "description": "Rooms count display",
+    "placeholders": {
+      "bedrooms": {
+        "type": "int",
+        "example": "2"
+      },
+      "bathrooms": {
+        "type": "int",
+        "example": "1"
+      }
+    }
+  },
+  "preferredDate": "Fecha preferida",
+  "@preferredDate": {
+    "description": "Preferred date label"
+  },
+  "notSpecified": "No especificado",
+  "@notSpecified": {
+    "description": "Not specified placeholder"
+  },
+  "createMyProfile": "Crear mi perfil",
+  "@createMyProfile": {
+    "description": "Create my profile button"
+  },
+  "jobTitleDeepCleanApt": "Limpieza profunda de apartamento 2 habitaciones",
+  "@jobTitleDeepCleanApt": {
+    "description": "Deep clean apartment job title"
+  },
+  "jobDescDeepCleanApt": "Busco dejar cocina y baños impecables antes de visita familiar.",
+  "@jobDescDeepCleanApt": {
+    "description": "Deep clean apartment job description"
+  },
+  "jobTitleWeeklyHouse": "Mantenimiento semanal casa en Suba",
+  "@jobTitleWeeklyHouse": {
+    "description": "Weekly house job title"
+  },
+  "jobDescWeeklyHouse": "Limpieza general cada semana, prioridad habitaciones y patio.",
+  "@jobDescWeeklyHouse": {
+    "description": "Weekly house job description"
+  },
+  "jobTitleOfficeReset": "Reset mensual de oficina pequeña",
+  "@jobTitleOfficeReset": {
+    "description": "Office reset job title"
+  },
+  "jobDescOfficeReset": "Organizar puestos, limpiar vidrios y dejar sala de juntas lista.",
+  "@jobDescOfficeReset": {
+    "description": "Office reset job description"
+  },
+  "jobTitlePostMoveCondo": "Limpieza post mudanza apartamento amoblado",
+  "@jobTitlePostMoveCondo": {
+    "description": "Post-move condo job title"
+  },
+  "jobDescPostMoveCondo": "Necesito una limpieza profunda después de mudanza, incluye ventanas.",
+  "@jobDescPostMoveCondo": {
+    "description": "Post-move condo job description"
+  },
+  "jobTitleBiweeklyStudio": "Limpieza quincenal de estudio",
+  "@jobTitleBiweeklyStudio": {
+    "description": "Biweekly studio job title"
+  },
+  "jobDescBiweeklyStudio": "Mantenimiento básico cada dos semanas para estudio de 1 habitación.",
+  "@jobDescBiweeklyStudio": {
+    "description": "Biweekly studio job description"
+  },
+  "area": "Zona",
+  "@area": {
+    "description": "Area label"
+  },
+  "frequency": "Frecuencia",
+  "@frequency": {
+    "description": "Frequency label"
+  },
+  "description": "Descripción",
+  "@description": {
+    "description": "Description label"
+  },
+  "messages": "Mensajes",
+  "@messages": {
+    "description": "Messages label"
+  },
+  "noMessagesYet": "Aún no tienes mensajes",
+  "@noMessagesYet": {
+    "description": "No messages yet message"
+  },
+  "noMessagesDescription": "Cuando recibas mensajes de clientes, aparecerán aquí.",
+  "@noMessagesDescription": {
+    "description": "No messages description"
+  },
+  "activeJob": "Trabajo activo",
+  "@activeJob": {
+    "description": "Active job label"
+  },
+  "noMessagesInConversation": "No hay mensajes en esta conversación",
+  "@noMessagesInConversation": {
+    "description": "No messages in conversation"
+  },
+  "typeMessage": "Escribe un mensaje...",
+  "@typeMessage": {
+    "description": "Type message placeholder"
+  },
+  "notifications": "Notificaciones",
+  "@notifications": {
+    "description": "Notifications label"
+  },
+  "markAllAsRead": "Marcar todo como leído",
+  "@markAllAsRead": {
+    "description": "Mark all as read button"
+  },
+  "noNotificationsYet": "No tienes notificaciones",
+  "@noNotificationsYet": {
+    "description": "No notifications yet message"
+  },
+  "noNotificationsDescription": "Las notificaciones sobre tus propuestas y trabajos aparecerán aquí.",
+  "@noNotificationsDescription": {
+    "description": "No notifications description"
+  },
+  "unreadMessages": "Mensajes sin leer",
+  "@unreadMessages": {
+    "description": "Unread messages label"
+  },
+  "newNotifications": "Notificaciones nuevas",
+  "@newNotifications": {
+    "description": "New notifications label"
+  }
+}

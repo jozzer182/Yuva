@@ -1,0 +1,53 @@
+name: yuva_worker
+description: "yuva - Worker app for cleaning professionals marketplace"
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: ^3.10.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  
+  # State Management
+  flutter_riverpod: ^2.6.1
+  
+  # Firebase
+  firebase_core: ^3.9.0
+  firebase_auth: ^5.7.0
+  google_sign_in: ^6.2.1
+  
+  # Internationalization
+  intl: ^0.20.2
+  
+  # Local Storage
+  shared_preferences: ^2.3.4
+  
+  # Utils
+  equatable: ^2.0.7
+  google_fonts: ^6.2.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.1
+
+flutter:
+  uses-material-design: true
+  generate: true
+  
+  assets:
+    - assets/images/
+    - icons/Android/
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path_android: "icons/Android/Icon-512.png"
+  image_path_ios: "icons/iOS/Icon-1024.png"
+  remove_alpha_ios: true
+  adaptive_icon_background: "#FFFFFF"

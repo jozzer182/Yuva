@@ -1,0 +1,351 @@
+{
+  "@@locale": "en",
+  "appName": "yuva",
+  "hello": "Hello, {name}",
+  "getStarted": "Get started",
+  "next": "Next",
+  "onboardingTitle1": "Relax, your home will shine",
+  "onboardingTitle2": "Book in minutes",
+  "onboardingTitle3": "Find trusted people for home cleaning",
+  "onboardingDesc1": "Enjoy a clean home without worries",
+  "onboardingDesc2": "Simple and fast process to schedule your service",
+  "onboardingDesc3": "We connect with verified professionals near you",
+  "continueWithEmail": "Continue with email",
+  "continueAsGuest": "Continue as guest",
+  "login": "Log in",
+  "signup": "Sign up",
+  "email": "Email",
+  "password": "Password",
+  "name": "Name",
+  "alreadyHaveAccount": "Already have an account?",
+  "dontHaveAccount": "Don't have an account?",
+  "home": "Home",
+  "search": "Search",
+  "myBookings": "My bookings",
+  "profile": "Profile",
+  "searchPlaceholder": "Search cleaning services...",
+  "searchFilters": "Search filters",
+  "priceRange": "Price range",
+  "rating": "{rating} ({count} reviews)",
+  "availability": "Availability",
+  "searchResults": "Search results will appear here",
+  "categories": "Categories",
+  "featuredCleaners": "Featured",
+  "noBookingsYet": "No bookings yet",
+  "noBookingsDescription": "When you book a service, you will see it here with the status and details.",
+  "exploreOptions": "Explore options",
+  "language": "Language",
+  "spanish": "Español",
+  "english": "English",
+  "logout": "Log out",
+  "categoryOnetime": "One-time cleaning",
+  "categoryWeekly": "Weekly cleaning",
+  "categoryDeep": "Deep cleaning",
+  "categoryMoving": "Moving cleaning",
+  "perHour": "{price}/hour",
+  "yearsExperience": "{years} years of experience",
+  "newBooking": "New booking",
+  "bookingSubtitle": "View and track the status of your scheduled services.",
+  "stepChooseService": "Choose service",
+  "stepPropertyDetails": "Property details",
+  "stepFrequencyDate": "Frequency and date",
+  "stepAddressNotes": "Address and notes",
+  "stepPriceEstimate": "Price estimate",
+  "stepSummary": "Summary",
+  "progressLabel": "Step {step}",
+  "chooseServiceHint": "Pick the cleaning service you need.",
+  "propertyTypeTitle": "Property type",
+  "sizeCategoryTitle": "Size",
+  "bedrooms": "Bedrooms",
+  "bathrooms": "Bathrooms",
+  "frequencyTitle": "Frequency",
+  "dateAndTime": "Date & time",
+  "durationHours": "Duration (hours)",
+  "addressLabel": "Address",
+  "addressPlaceholder": "e.g., 123 Main St, Apt 4B",
+  "notesLabel": "Notes",
+  "notesPlaceholder": "Gate codes, elevator, pets, instructions...",
+  "estimatedPriceLabel": "Estimated price",
+  "pricePending": "Calculating...",
+  "priceDisclaimer": "Final price may change when a professional accepts your request.",
+  "whatAffectsPrice": "What affects the price?",
+  "priceFactors": "We consider service type, space size, frequency, and estimated duration.",
+  "summaryTitle": "Booking summary",
+  "back": "Back",
+  "confirmBooking": "Confirm booking",
+  "selectServiceFirst": "Select a service type to continue.",
+  "serviceStandard": "Standard clean",
+  "serviceStandardDesc": "General routine to refresh every space.",
+  "serviceDeepClean": "Deep clean",
+  "serviceDeepCleanDesc": "Detailed focus on kitchen, bathrooms, and heavy-use areas.",
+  "serviceMoveOut": "Move-out clean",
+  "serviceMoveOutDesc": "Leave everything ready when moving out or in.",
+  "serviceOffice": "Office/Shop",
+  "serviceOfficeDesc": "Light clean for small offices or shops.",
+  "propertyApartment": "Apartment",
+  "propertyHouse": "House",
+  "propertySmallOffice": "Small office",
+  "sizeSmall": "Small",
+  "sizeMedium": "Medium",
+  "sizeLarge": "Large",
+  "frequencyOnce": "One time",
+  "frequencyWeekly": "Weekly",
+  "frequencyBiweekly": "Biweekly",
+  "frequencyMonthly": "Monthly",
+  "dateLabel": "Date",
+  "frequencyLabel": "Frequency",
+  "durationLabel": "Duration",
+  "roomsLabel": "Spaces",
+  "roomsCount": "{bedrooms} bed / {bathrooms} bath",
+  "bookingSuccessTitle": "Request sent!",
+  "bookingSuccessSubtitle": "We'll notify you when {service} is accepted.",
+  "viewMyBookings": "View my bookings",
+  "bookingDetailTitle": "Booking detail",
+  "noNotesPlaceholder": "No extra notes",
+  "assignedCleanerPlaceholder": "Assigned professional",
+  "assignedCleanerHint": "You'll see the assigned cleaner and profile here once available.",
+  "upcomingBookings": "Upcoming",
+  "pastBookings": "Past",
+  "serviceTypeLabel": "Service type",
+  "statusPending": "Pending",
+  "statusInProgress": "In progress",
+  "statusCompleted": "Completed",
+  "statusCancelled": "Cancelled",
+  "editProfile": "Edit profile",
+  "editProfileTitle": "Edit information",
+  "settings": "Settings",
+  "notifications": "Notifications",
+  "notificationsSubtitle": "Receive alerts about your services",
+  "marketingOptIn": "Offers and promotions",
+  "marketingSubtitle": "Get news and discounts",
+  "myReviews": "My reviews",
+  "myReviewsSubtitle": "Review your past ratings",
+  "viewAllReviews": "View all reviews",
+  "noReviewsYet": "No reviews yet",
+  "noReviewsDescription": "When you complete a service, you can rate it here.",
+  "rateServiceTitle": "Rate service",
+  "ratingPromptTitle": "How was your experience?",
+  "ratingPromptSubtitle": "Your feedback helps us improve service quality.",
+  "ratingOptionalComment": "Comment (optional)",
+  "ratingCommentHint": "Tell us about your service experience...",
+  "submitRating": "Submit rating",
+  "updateRating": "Update rating",
+  "ratingSuccess": "Thank you for your rating!",
+  "genericError": "An error occurred. Please try again.",
+  "bookingRatedLabel": "Rated: {stars} stars",
+  "bookingAwaitingRating": "Tap to rate this service",
+  "rateNow": "Rate",
+  "viewRating": "View",
+  "saveChanges": "Save changes",
+  "cancel": "Cancel",
+  "profileUpdated": "Profile updated successfully",
+  "@progressLabel": {
+    "placeholders": {
+      "step": {
+        "type": "String"
+      }
+    }
+  },
+  "@roomsCount": {
+    "placeholders": {
+      "bedrooms": {
+        "type": "int"
+      },
+      "bathrooms": {
+        "type": "int"
+      }
+    }
+  },
+  "@bookingSuccessSubtitle": {
+    "placeholders": {
+      "service": {
+        "type": "String"
+      }
+    }
+  },
+  "@bookingRatedLabel": {
+    "placeholders": {
+      "stars": {
+        "type": "String"
+      }
+    }
+  },
+  "myJobs": "My jobs",
+  "postJobTitle": "Post a job",
+  "postJobCta": "Post job",
+  "postJobHeroTitle": "Post what you need",
+  "postJobHeroSubtitle": "Invite pros or receive proposals with better rates.",
+  "marketplaceHint": "Pros will apply with their own proposals.",
+  "openJobsShort": "Open jobs",
+  "myJobsSubtitle": "Post jobs, review proposals, and hire your pro.",
+  "openJobsTitle": "Open jobs",
+  "activeJobsTitle": "Active jobs",
+  "completedJobsTitle": "Completed jobs",
+  "noJobsYet": "You don't have posted jobs yet",
+  "noJobsDescription": "When you post a job you'll see its proposals and status here.",
+  "jobStepBasics": "Job basics",
+  "jobStepProperty": "Property",
+  "jobStepBudget": "Budget & frequency",
+  "jobStepLocation": "Location & timing",
+  "jobStepSummary": "Summary",
+  "jobTitleLabel": "Job title",
+  "jobTitleHint": "e.g. Deep clean for 2BR apartment",
+  "jobDescriptionLabel": "Description",
+  "jobDescriptionHint": "Share context, priorities or cleaning products.",
+  "jobServiceRequired": "Choose a service type to continue.",
+  "jobPropertyTitle": "Property type",
+  "jobSizeTitle": "Size",
+  "jobBudgetTitle": "Budget",
+  "jobHourlyRangeLabel": "Hourly range",
+  "budgetFrom": "From",
+  "budgetTo": "To",
+  "budgetFixedLabel": "Fixed budget",
+  "jobFrequencyTitle": "Frequency",
+  "jobAreaLabel": "Neighborhood",
+  "jobAreaHint": "e.g. Soho, Brooklyn, Downtown",
+  "jobPreferredDate": "Preferred date",
+  "jobPreferredDateHint": "Optional: when you'd like to start",
+  "jobSummaryTitle": "Review and publish",
+  "jobTitlePlaceholder": "Title pending",
+  "jobAreaPlaceholder": "Area to define",
+  "publishJob": "Publish job",
+  "jobPublishedSuccess": "Job published. You'll get proposals soon.",
+  "jobDetailTitle": "Job detail",
+  "jobNotFound": "Job not found",
+  "invitedPros": "Invited professionals",
+  "proposalDetailTitle": "Proposal detail",
+  "noInvitedYet": "You haven't invited anyone yet.",
+  "receivedProposals": "Proposals received",
+  "noProposalsYet": "No proposals yet.",
+  "viewDetails": "View details",
+  "shortlistAction": "Shortlist",
+  "rejectAction": "Reject",
+  "hireAction": "Hire",
+  "hireSuccessMessage": "Pro hired.",
+  "rateJobCta": "Rate job",
+  "ratingAlreadySent": "You already rated this job.",
+  "proDeleted": "Professional unavailable",
+  "jobToBeScheduled": "To be scheduled",
+  "proposalsCount": "{count} proposals",
+  "@proposalsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "jobStatusDraft": "Draft",
+  "jobStatusOpen": "Open",
+  "jobStatusUnderReview": "Under review",
+  "jobStatusHired": "Pro selected",
+  "jobStatusInProgress": "In progress",
+  "jobStatusCompleted": "Completed",
+  "jobStatusCancelled": "Cancelled",
+  "proposalSubmitted": "Submitted",
+  "proposalShortlisted": "Shortlisted",
+  "proposalRejected": "Rejected",
+  "proposalHired": "Hired",
+  "budgetHourly": "Hourly",
+  "budgetFixed": "Fixed price",
+  "budgetRangeLabel": "Between ${from} and ${to} per hour",
+  "@budgetRangeLabel": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "fixedPriceLabel": "Fixed price: ${price}",
+  "@fixedPriceLabel": {
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "jobCustomTitle": "Custom job",
+  "jobCustomDescription": "Client entered details",
+  "jobCustomFilled": "Custom job",
+  "jobCustomDescriptionFilled": "Custom description",
+  "coverDetailSparkling": "I bring my own supplies and focus on leaving every corner spotless.",
+  "coverExperienceDeep": "Deep clean specialist, focus on kitchen and bathrooms.",
+  "coverWeeklyCare": "I can keep your home ready every week and coordinate schedules.",
+  "coverFlexible": "Flexible hours and adapt to your needs.",
+  "coverOfficeReset": "Experience with small offices, organize desks and sanitize.",
+  "searchProsTitle": "Find professionals",
+  "searchInviteHint": "Invite pros directly to one of your open jobs.",
+  "noProsFound": "No pros match that name or area.",
+  "inviteToJob": "Invite to a job",
+  "viewOpenJobs": "View open jobs",
+  "selectJobToInvite": "Select a job to invite",
+  "inviteSent": "Invitation sent to {name}",
+  "@inviteSent": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "noOpenJobsToInvite": "You have no open jobs to invite.",
+  "budgetCopyFallback": "Proposal",
+  "jobTitleDeepCleanApt": "Deep clean for 2BR apartment",
+  "jobDescDeepCleanApt": "Want the kitchen and bathrooms spotless before family visits.",
+  "jobTitleWeeklyHouse": "Weekly upkeep for house in Suba",
+  "jobDescWeeklyHouse": "General clean every week, priority bedrooms and patio.",
+  "jobTitleOfficeReset": "Monthly reset for small office",
+  "jobDescOfficeReset": "Organize desks, clean glass and prep meeting room.",
+  "rateJobTitle": "Rate job",
+  "rateJobShortcut": "Rate",
+  "searchProsInviteCta": "Invite",
+  "messages": "Messages",
+  "@messages": {
+    "description": "Messages label"
+  },
+  "noMessagesYet": "You don't have any messages yet",
+  "@noMessagesYet": {
+    "description": "No messages yet message"
+  },
+  "noMessagesDescription": "When you receive messages from professionals, they will appear here.",
+  "@noMessagesDescription": {
+    "description": "No messages description"
+  },
+  "activeJob": "Active job",
+  "@activeJob": {
+    "description": "Active job label"
+  },
+  "noMessagesInConversation": "No messages in this conversation",
+  "@noMessagesInConversation": {
+    "description": "No messages in conversation"
+  },
+  "typeMessage": "Type a message...",
+  "@typeMessage": {
+    "description": "Type message placeholder"
+  },
+  "notifications": "Notifications",
+  "@notifications": {
+    "description": "Notifications label"
+  },
+  "markAllAsRead": "Mark all as read",
+  "@markAllAsRead": {
+    "description": "Mark all as read button"
+  },
+  "noNotificationsYet": "You don't have any notifications",
+  "@noNotificationsYet": {
+    "description": "No notifications yet message"
+  },
+  "noNotificationsDescription": "Notifications about your jobs and proposals will appear here.",
+  "@noNotificationsDescription": {
+    "description": "No notifications description"
+  },
+  "unreadMessages": "Unread messages",
+  "@unreadMessages": {
+    "description": "Unread messages label"
+  },
+  "newNotifications": "New notifications",
+  "@newNotifications": {
+    "description": "New notifications label"
+  }
+}
