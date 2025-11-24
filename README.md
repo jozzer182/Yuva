@@ -70,7 +70,7 @@ yuva/
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/YOUR_USERNAME/yuva.git
+   git clone https://github.com/jozzer182/yuva.git
    cd yuva
    ```
 
@@ -160,9 +160,9 @@ This project is for educational and portfolio purposes.
 
 ## 👨‍💻 Author
 
-[Your Name]
-- GitHub: [@YOUR_USERNAME](https://github.com/YOUR_USERNAME)
-- LinkedIn: [Your LinkedIn](https://linkedin.com/in/YOUR_PROFILE)
+Jose Zarabanda
+- GitHub: [@jozzer182](https://github.com/jozzer182)
+- Email: jlzarabandad@gmail.com
 
 ---
 
