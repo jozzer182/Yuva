@@ -7,33 +7,42 @@
 You need to create these files locally after setting up your own Firebase project:
 
 ### 1. firebase_options.dart
-Location: 
+
+Location:
+
 - `yuva_client/lib/firebase_options.dart`
 - `yuva_worker/lib/firebase_options.dart`
 
 Generate with:
+
 ```bash
 flutterfire configure
 ```
 
 ### 2. google-services.json (Android)
+
 Location:
+
 - `yuva_client/android/app/google-services.json`
 - `yuva_worker/android/app/google-services.json`
 
 Download from Firebase Console → Project Settings → Your Android Apps
 
 ### 3. GoogleService-Info.plist (iOS)
+
 Location:
+
 - `yuva_client/ios/Runner/GoogleService-Info.plist`
 - `yuva_worker/ios/Runner/GoogleService-Info.plist`
 
 Download from Firebase Console → Project Settings → Your iOS Apps
 
 ### 4. firebase.json (Project Root)
+
 Location: `yuva/firebase.json`
 
 Can be generated with:
+
 ```bash
 firebase init
 ```
@@ -55,6 +64,7 @@ firebase init
 ## Security Reminder
 
 These files contain:
+
 - API Keys
 - OAuth Client IDs
 - Project IDs

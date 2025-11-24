@@ -14,6 +14,7 @@ Both applications share a common architecture and are built with modern Flutter 
 ## ✨ Key Features
 
 ### Authentication & Security
+
 - ✅ Firebase Authentication integration
 - ✅ Email/Password authentication
 - ✅ Google Sign-In (OAuth 2.0)
@@ -22,6 +23,7 @@ Both applications share a common architecture and are built with modern Flutter 
 - ✅ Secure session management
 
 ### Architecture
+
 - Clean Architecture principles
 - Feature-based folder structure
 - Shared design system
@@ -69,40 +71,44 @@ yuva/
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/jozzer182/yuva.git
    cd yuva
    ```
 
 2. **Install dependencies for both apps**
+
    ```bash
    # Client app
    cd yuva_client
    flutter pub get
-   
+
    # Worker app
    cd ../yuva_worker
    flutter pub get
    ```
 
 3. **Configure Firebase** (Required for authentication)
-   
+
    ⚠️ **Important**: Firebase configuration files are not included in this repository for security reasons.
-   
+
    You need to:
+
    - Create your own Firebase project at [Firebase Console](https://console.firebase.google.com/)
    - Enable Authentication (Email/Password and Google Sign-In)
    - Download your own `google-services.json` (Android) and `GoogleService-Info.plist` (iOS)
    - Run `flutterfire configure` to generate `firebase_options.dart`
-   
+
    See [Firebase Setup Guide](docs/google-signin-setup.md) for detailed instructions.
 
 4. **Run the applications**
+
    ```bash
    # Client app
    cd yuva_client
    flutter run
-   
+
    # Worker app
    cd yuva_worker
    flutter run
@@ -118,6 +124,7 @@ This repository follows security best practices:
 - ✅ Each developer must configure their own Firebase project
 
 **Files you need to create locally** (not in repo):
+
 - `firebase_options.dart` (both apps)
 - `google-services.json` (Android)
 - `GoogleService-Info.plist` (iOS)
@@ -161,12 +168,14 @@ This project is for educational and portfolio purposes.
 ## 👨‍💻 Author
 
 Jose Zarabanda
+
 - GitHub: [@jozzer182](https://github.com/jozzer182)
 - Email: jlzarabandad@gmail.com
 
 ---
 
 **Note for Recruiters**: This project demonstrates:
+
 - Modern Flutter development practices
 - Firebase integration and security
 - Multi-app architecture
