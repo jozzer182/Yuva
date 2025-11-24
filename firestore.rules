@@ -1,0 +1,115 @@
+rules_version='2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // =======================
+    // User Profiles
+    // =======================
+    match /users/{userId} {
+      // Users can read and write their own profile
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // =======================
+    // Worker Profiles
+    // =======================
+    match /workers/{workerId} {
+      // Workers can read and write their own profile
+      allow read, write: if request.auth != null && request.auth.uid == workerId;
+      // Anyone authenticated can read worker profiles (for discovery)
+      allow read: if request.auth != null;
+    }
+    
+    // =======================
+    // Jobs/Service Requests
+    // =======================
+    match /jobs/{jobId} {
+      // Job owner can read/write
+      allow read, write: if request.auth != null && 
+                           request.auth.uid == resource.data.clientId;
+      // Workers can read jobs to browse opportunities
+      allow read: if request.auth != null;
+      // Workers can update job status when assigned
+      allow update: if request.auth != null && 
+                      request.auth.uid == resource.data.assignedWorkerId;
+    }
+    
+    // =======================
+    // Proposals/Offers
+    // =======================
+    match /proposals/{proposalId} {
+      // Worker who created the proposal can read/write
+      allow read, write: if request.auth != null && 
+                           request.auth.uid == resource.data.workerId;
+      // Client who owns the job can read proposals
+      allow read: if request.auth != null && 
+                    request.auth.uid == resource.data.clientId;
+    }
+    
+    // =======================
+    // Bookings
+    // =======================
+    match /bookings/{bookingId} {
+      // Both client and worker can read their bookings
+      allow read: if request.auth != null && 
+                    (request.auth.uid == resource.data.clientId || 
+                     request.auth.uid == resource.data.workerId);
+      // Client can create and update their bookings
+      allow create, update: if request.auth != null && 
+                              request.auth.uid == request.resource.data.clientId;
+      // Worker can update booking status
+      allow update: if request.auth != null && 
+                      request.auth.uid == resource.data.workerId;
+    }
+    
+    // =======================
+    // Reviews/Ratings
+    // =======================
+    match /reviews/{reviewId} {
+      // Anyone authenticated can read reviews
+      allow read: if request.auth != null;
+      // Only the reviewer can create a review
+      allow create: if request.auth != null && 
+                      request.auth.uid == request.resource.data.reviewerId;
+      // Reviews cannot be updated or deleted (immutable)
+      allow update, delete: if false;
+    }
+    
+    // =======================
+    // Messages/Conversations
+    // =======================
+    match /conversations/{conversationId} {
+      // Participants can read and write messages
+      allow read, write: if request.auth != null && 
+                           request.auth.uid in resource.data.participants;
+    }
+    
+    match /conversations/{conversationId}/messages/{messageId} {
+      // Participants can read and create messages
+      allow read, create: if request.auth != null && 
+                            request.auth.uid in get(/databases/$(database)/documents/conversations/$(conversationId)).data.participants;
+    }
+    
+    // =======================
+    // Notifications
+    // =======================
+    match /notifications/{notificationId} {
+      // Users can only read their own notifications
+      allow read: if request.auth != null && 
+                    request.auth.uid == resource.data.userId;
+      // System can create notifications (admin SDK)
+      allow create: if request.auth != null;
+    }
+    
+    // =======================
+    // Service Categories
+    // =======================
+    match /categories/{categoryId} {
+      // Anyone authenticated can read categories
+      allow read: if request.auth != null;
+      // Only admins can write (protect in production with custom claims)
+      allow write: if false;
+    }
+  }
+}
