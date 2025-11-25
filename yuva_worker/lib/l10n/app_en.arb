@@ -138,5 +138,31 @@
   "newNotifications": "New notifications",
   "@newNotifications": {
     "description": "New notifications label"
-  }
+  },
+  "cityOrZone": "City or zone",
+  "@cityOrZone": {
+    "description": "City or zone label"
+  },
+  "cityOrZoneHint": "E.g: Bogotá, Chapinero",
+  "@cityOrZoneHint": {
+    "description": "City or zone hint"
+  },
+  "demoMode": "Demo mode (sample data)",
+  "@demoMode": {
+    "description": "Demo mode label"
+  },
+  "demoModeDescription": "Enable to see sample data, disable for empty mode",
+  "@demoModeDescription": {
+    "description": "Demo mode description"
+  },
+  "completeProfileTitle": "Complete your profile",
+  "completeProfileSubtitle": "We need some additional information so you can receive jobs.",
+  "completeProfileNameRequired": "Name is required",
+  "completeProfileZoneRequired": "Work zone is required",
+  "completeProfileRateHint": "E.g: 45000",
+  "completeProfileRateRequired": "Hourly rate is required",
+  "completeProfileRateInvalid": "Enter a valid rate greater than 0",
+  "completeProfileSave": "Save and continue",
+  "completeProfileExitTitle": "Exit without completing?",
+  "completeProfileExitMessage": "If you exit now, you'll need to complete your profile next time you sign in."
 }

@@ -57,6 +57,13 @@ class _JobsScreenState extends ConsumerState<JobsScreen> with SingleTickerProvid
     final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
+    // Listen for dummy mode changes and reload jobs
+    ref.listen(appSettingsProvider.select((s) => s.isDummyMode), (previous, next) {
+      if (previous != next) {
+        _loadJobs();
+      }
+    });
+
     return Scaffold(
       backgroundColor: isDark ? YuvaColors.darkBackground : YuvaColors.backgroundLight,
       appBar: AppBar(

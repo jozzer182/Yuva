@@ -679,6 +679,90 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Notificaciones nuevas'**
   String get newNotifications;
+
+  /// City or zone label
+  ///
+  /// In es, this message translates to:
+  /// **'Ciudad o zona'**
+  String get cityOrZone;
+
+  /// City or zone hint
+  ///
+  /// In es, this message translates to:
+  /// **'Ej: Bogotá, Chapinero'**
+  String get cityOrZoneHint;
+
+  /// Demo mode label
+  ///
+  /// In es, this message translates to:
+  /// **'Modo demo (datos de prueba)'**
+  String get demoMode;
+
+  /// Demo mode description
+  ///
+  /// In es, this message translates to:
+  /// **'Activa para ver datos de ejemplo, desactiva para modo vacío'**
+  String get demoModeDescription;
+
+  /// Complete profile screen title
+  ///
+  /// In es, this message translates to:
+  /// **'Completa tu perfil'**
+  String get completeProfileTitle;
+
+  /// Complete profile screen subtitle for workers
+  ///
+  /// In es, this message translates to:
+  /// **'Necesitamos algunos datos adicionales para que puedas recibir trabajos.'**
+  String get completeProfileSubtitle;
+
+  /// Name required validation message
+  ///
+  /// In es, this message translates to:
+  /// **'El nombre es requerido'**
+  String get completeProfileNameRequired;
+
+  /// Zone required validation message
+  ///
+  /// In es, this message translates to:
+  /// **'La zona de trabajo es requerida'**
+  String get completeProfileZoneRequired;
+
+  /// Rate hint text
+  ///
+  /// In es, this message translates to:
+  /// **'Ej: 45000'**
+  String get completeProfileRateHint;
+
+  /// Rate required validation message
+  ///
+  /// In es, this message translates to:
+  /// **'La tarifa por hora es requerida'**
+  String get completeProfileRateRequired;
+
+  /// Rate invalid validation message
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresa una tarifa válida mayor a 0'**
+  String get completeProfileRateInvalid;
+
+  /// Save and continue button
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar y continuar'**
+  String get completeProfileSave;
+
+  /// Exit confirmation dialog title
+  ///
+  /// In es, this message translates to:
+  /// **'¿Salir sin completar?'**
+  String get completeProfileExitTitle;
+
+  /// Exit confirmation dialog message
+  ///
+  /// In es, this message translates to:
+  /// **'Si sales ahora, tendrás que completar tu perfil la próxima vez que inicies sesión.'**
+  String get completeProfileExitMessage;
 }
 
 class _AppLocalizationsDelegate

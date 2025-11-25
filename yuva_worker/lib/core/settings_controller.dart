@@ -5,19 +5,23 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AppSettings {
   final String localeCode;
   final bool notificationsEnabled;
+  final bool isDummyMode; // Dummy mode for sample data
 
   const AppSettings({
     this.localeCode = 'es', // Spanish as default
     this.notificationsEnabled = true,
+    this.isDummyMode = true, // Default ON for first run
   });
 
   AppSettings copyWith({
     String? localeCode,
     bool? notificationsEnabled,
+    bool? isDummyMode,
   }) {
     return AppSettings(
       localeCode: localeCode ?? this.localeCode,
       notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
+      isDummyMode: isDummyMode ?? this.isDummyMode,
     );
   }
 }
@@ -30,12 +34,16 @@ class AppSettingsController extends StateNotifier<AppSettings> {
 
   static const _localeKey = 'locale_code';
   static const _notificationsKey = 'notifications_enabled';
+  static const _dummyModeKey = 'dummy_mode';
 
   Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
+    // Check if dummy mode has been set before (if not, default to true for first run)
+    final dummyModeSet = prefs.containsKey(_dummyModeKey);
     state = AppSettings(
       localeCode: prefs.getString(_localeKey) ?? 'es',
       notificationsEnabled: prefs.getBool(_notificationsKey) ?? true,
+      isDummyMode: dummyModeSet ? (prefs.getBool(_dummyModeKey) ?? true) : true,
     );
   }
 
@@ -49,5 +57,11 @@ class AppSettingsController extends StateNotifier<AppSettings> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_notificationsKey, enabled);
     state = state.copyWith(notificationsEnabled: enabled);
+  }
+
+  Future<void> setDummyMode(bool enabled) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_dummyModeKey, enabled);
+    state = state.copyWith(isDummyMode: enabled);
   }
 }

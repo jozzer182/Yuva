@@ -507,5 +507,49 @@
   "newNotifications": "Notificaciones nuevas",
   "@newNotifications": {
     "description": "New notifications label"
+  },
+  "demoMode": "Modo demo (datos de prueba)",
+  "@demoMode": {
+    "description": "Demo mode label"
+  },
+  "demoModeDescription": "Activa para ver datos de ejemplo, desactiva para modo vacío",
+  "@demoModeDescription": {
+    "description": "Demo mode description"
+  },
+  "completeProfileTitle": "Completa tu perfil",
+  "@completeProfileTitle": {
+    "description": "Complete profile screen title"
+  },
+  "completeProfileSubtitleClient": "Necesitamos tu teléfono para coordinar los servicios.",
+  "@completeProfileSubtitleClient": {
+    "description": "Complete profile screen subtitle for clients"
+  },
+  "completeProfileNameRequired": "El nombre es requerido",
+  "@completeProfileNameRequired": {
+    "description": "Name required validation message"
+  },
+  "completeProfilePhone": "Teléfono",
+  "@completeProfilePhone": {
+    "description": "Phone field label"
+  },
+  "completeProfilePhoneHint": "Ej: +57 300 123 4567",
+  "@completeProfilePhoneHint": {
+    "description": "Phone hint text"
+  },
+  "completeProfilePhoneRequired": "El teléfono es requerido para coordinar servicios",
+  "@completeProfilePhoneRequired": {
+    "description": "Phone required validation message"
+  },
+  "completeProfileSave": "Guardar y continuar",
+  "@completeProfileSave": {
+    "description": "Save and continue button"
+  },
+  "completeProfileExitTitle": "¿Salir sin completar?",
+  "@completeProfileExitTitle": {
+    "description": "Exit confirmation dialog title"
+  },
+  "completeProfileExitMessage": "Si sales ahora, tendrás que completar tu perfil la próxima vez que inicies sesión.",
+  "@completeProfileExitMessage": {
+    "description": "Exit confirmation dialog message"
   }
 }

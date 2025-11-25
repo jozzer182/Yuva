@@ -804,4 +804,41 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get newNotifications => 'New notifications';
+
+  @override
+  String get demoMode => 'Demo mode (sample data)';
+
+  @override
+  String get demoModeDescription =>
+      'Enable to see sample data, disable for empty mode';
+
+  @override
+  String get completeProfileTitle => 'Complete your profile';
+
+  @override
+  String get completeProfileSubtitleClient =>
+      'We need your phone number to coordinate services.';
+
+  @override
+  String get completeProfileNameRequired => 'Name is required';
+
+  @override
+  String get completeProfilePhone => 'Phone';
+
+  @override
+  String get completeProfilePhoneHint => 'E.g: +1 555 123 4567';
+
+  @override
+  String get completeProfilePhoneRequired =>
+      'Phone is required to coordinate services';
+
+  @override
+  String get completeProfileSave => 'Save and continue';
+
+  @override
+  String get completeProfileExitTitle => 'Exit without completing?';
+
+  @override
+  String get completeProfileExitMessage =>
+      'If you exit now, you\'ll need to complete your profile next time you sign in.';
 }

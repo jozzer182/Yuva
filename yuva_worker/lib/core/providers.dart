@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 
 import '../data/models/user.dart';
 import '../data/models/worker_profile.dart';
+import '../data/models/worker_user.dart';
 import '../data/repositories/auth_repository.dart';
 import '../data/repositories/worker_job_feed_repository.dart';
 import '../data/repositories/worker_profile_repository.dart';
@@ -22,7 +23,16 @@ import '../data/repositories_dummy/dummy_worker_conversations_repository.dart';
 import '../data/repositories_dummy/dummy_worker_notifications_repository.dart';
 import '../data/repositories_dummy/dummy_worker_active_jobs_repository.dart';
 import '../data/repositories_dummy/dummy_worker_proposals_repository.dart';
+import '../data/repositories_empty/empty_worker_job_feed_repository.dart';
+import '../data/repositories_empty/empty_worker_profile_repository.dart';
+import '../data/repositories_empty/empty_worker_earnings_repository.dart';
+import '../data/repositories_empty/empty_worker_reviews_repository.dart';
+import '../data/repositories_empty/empty_worker_conversations_repository.dart';
+import '../data/repositories_empty/empty_worker_notifications_repository.dart';
+import '../data/repositories_empty/empty_worker_active_jobs_repository.dart';
+import '../data/repositories_empty/empty_worker_proposals_repository.dart';
 import 'settings_controller.dart';
+import 'worker_user_controller.dart';
 
 final firebaseAuthProvider = Provider<firebase_auth.FirebaseAuth>((ref) {
   return firebase_auth.FirebaseAuth.instance;
@@ -41,38 +51,68 @@ final currentUserProvider = StateProvider<User?>((ref) {
 });
 
 final workerJobFeedRepositoryProvider = Provider<WorkerJobFeedRepository>((ref) {
-  return DummyWorkerJobFeedRepository();
+  final isDummyMode = ref.watch(appSettingsProvider.select((s) => s.isDummyMode));
+  return isDummyMode
+      ? DummyWorkerJobFeedRepository()
+      : EmptyWorkerJobFeedRepository();
 });
 
 final workerProfileRepositoryProvider = Provider<WorkerProfileRepository>((ref) {
-  return DummyWorkerProfileRepository();
+  final isDummyMode = ref.watch(appSettingsProvider.select((s) => s.isDummyMode));
+  return isDummyMode
+      ? DummyWorkerProfileRepository(
+          getCurrentUser: () => ref.watch(currentUserProvider),
+        )
+      : EmptyWorkerProfileRepository();
 });
 
 final workerEarningsRepositoryProvider = Provider<WorkerEarningsRepository>((ref) {
-  return DummyWorkerEarningsRepository();
+  final isDummyMode = ref.watch(appSettingsProvider.select((s) => s.isDummyMode));
+  return isDummyMode
+      ? DummyWorkerEarningsRepository()
+      : EmptyWorkerEarningsRepository();
 });
 
 final workerReviewsRepositoryProvider = Provider<WorkerReviewsRepository>((ref) {
-  return DummyWorkerReviewsRepository();
+  final isDummyMode = ref.watch(appSettingsProvider.select((s) => s.isDummyMode));
+  return isDummyMode
+      ? DummyWorkerReviewsRepository()
+      : EmptyWorkerReviewsRepository();
 });
 
 final workerConversationsRepositoryProvider = Provider<WorkerConversationsRepository>((ref) {
-  return DummyWorkerConversationsRepository();
+  final isDummyMode = ref.watch(appSettingsProvider.select((s) => s.isDummyMode));
+  return isDummyMode
+      ? DummyWorkerConversationsRepository()
+      : EmptyWorkerConversationsRepository();
 });
 
 final workerNotificationsRepositoryProvider = Provider<WorkerNotificationsRepository>((ref) {
-  return DummyWorkerNotificationsRepository();
+  final isDummyMode = ref.watch(appSettingsProvider.select((s) => s.isDummyMode));
+  return isDummyMode
+      ? DummyWorkerNotificationsRepository()
+      : EmptyWorkerNotificationsRepository();
 });
 
 final workerActiveJobsRepositoryProvider = Provider<WorkerActiveJobsRepository>((ref) {
-  return DummyWorkerActiveJobsRepository();
+  final isDummyMode = ref.watch(appSettingsProvider.select((s) => s.isDummyMode));
+  return isDummyMode
+      ? DummyWorkerActiveJobsRepository()
+      : EmptyWorkerActiveJobsRepository();
 });
 
 final workerProposalsRepositoryProvider = Provider<WorkerProposalsRepository>((ref) {
-  return DummyWorkerProposalsRepository();
+  final isDummyMode = ref.watch(appSettingsProvider.select((s) => s.isDummyMode));
+  return isDummyMode
+      ? DummyWorkerProposalsRepository()
+      : EmptyWorkerProposalsRepository();
 });
 
 final currentWorkerProvider = StateProvider<WorkerProfile?>((ref) => null);
 
 final appSettingsProvider =
     StateNotifierProvider<AppSettingsController, AppSettings>((ref) => AppSettingsController());
+
+final workerUserProvider = StateNotifierProvider<WorkerUserController, WorkerUser?>((ref) {
+  return WorkerUserController();
+});

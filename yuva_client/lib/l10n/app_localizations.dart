@@ -1591,6 +1591,72 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Notificaciones nuevas'**
   String get newNotifications;
+
+  /// Demo mode label
+  ///
+  /// In es, this message translates to:
+  /// **'Modo demo (datos de prueba)'**
+  String get demoMode;
+
+  /// Demo mode description
+  ///
+  /// In es, this message translates to:
+  /// **'Activa para ver datos de ejemplo, desactiva para modo vacío'**
+  String get demoModeDescription;
+
+  /// Complete profile screen title
+  ///
+  /// In es, this message translates to:
+  /// **'Completa tu perfil'**
+  String get completeProfileTitle;
+
+  /// Complete profile screen subtitle for clients
+  ///
+  /// In es, this message translates to:
+  /// **'Necesitamos tu teléfono para coordinar los servicios.'**
+  String get completeProfileSubtitleClient;
+
+  /// Name required validation message
+  ///
+  /// In es, this message translates to:
+  /// **'El nombre es requerido'**
+  String get completeProfileNameRequired;
+
+  /// Phone field label
+  ///
+  /// In es, this message translates to:
+  /// **'Teléfono'**
+  String get completeProfilePhone;
+
+  /// Phone hint text
+  ///
+  /// In es, this message translates to:
+  /// **'Ej: +57 300 123 4567'**
+  String get completeProfilePhoneHint;
+
+  /// Phone required validation message
+  ///
+  /// In es, this message translates to:
+  /// **'El teléfono es requerido para coordinar servicios'**
+  String get completeProfilePhoneRequired;
+
+  /// Save and continue button
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar y continuar'**
+  String get completeProfileSave;
+
+  /// Exit confirmation dialog title
+  ///
+  /// In es, this message translates to:
+  /// **'¿Salir sin completar?'**
+  String get completeProfileExitTitle;
+
+  /// Exit confirmation dialog message
+  ///
+  /// In es, this message translates to:
+  /// **'Si sales ahora, tendrás que completar tu perfil la próxima vez que inicies sesión.'**
+  String get completeProfileExitMessage;
 }
 
 class _AppLocalizationsDelegate

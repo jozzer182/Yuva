@@ -817,4 +817,41 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get newNotifications => 'Notificaciones nuevas';
+
+  @override
+  String get demoMode => 'Modo demo (datos de prueba)';
+
+  @override
+  String get demoModeDescription =>
+      'Activa para ver datos de ejemplo, desactiva para modo vacío';
+
+  @override
+  String get completeProfileTitle => 'Completa tu perfil';
+
+  @override
+  String get completeProfileSubtitleClient =>
+      'Necesitamos tu teléfono para coordinar los servicios.';
+
+  @override
+  String get completeProfileNameRequired => 'El nombre es requerido';
+
+  @override
+  String get completeProfilePhone => 'Teléfono';
+
+  @override
+  String get completeProfilePhoneHint => 'Ej: +57 300 123 4567';
+
+  @override
+  String get completeProfilePhoneRequired =>
+      'El teléfono es requerido para coordinar servicios';
+
+  @override
+  String get completeProfileSave => 'Guardar y continuar';
+
+  @override
+  String get completeProfileExitTitle => '¿Salir sin completar?';
+
+  @override
+  String get completeProfileExitMessage =>
+      'Si sales ahora, tendrás que completar tu perfil la próxima vez que inicies sesión.';
 }

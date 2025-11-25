@@ -6,7 +6,6 @@ import '../../core/providers.dart';
 import '../../core/responsive.dart';
 import '../../data/models/shared_types.dart';
 import '../../data/models/worker_job.dart';
-import '../../data/models/worker_profile.dart';
 import '../../design_system/colors.dart';
 import '../../design_system/components/yuva_card.dart';
 import '../../design_system/components/yuva_chip.dart';
@@ -28,7 +27,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   bool _isLoading = true;
   int _unreadMessagesCount = 0;
   int _unreadNotificationsCount = 0;
-  WorkerProfile? _worker;
 
   @override
   void initState() {
@@ -40,7 +38,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     await Future.wait([
       _loadJobs(),
       _loadUnreadCounts(),
-      _loadWorkerProfile(),
     ]);
   }
 
@@ -76,22 +73,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
   }
 
-  Future<void> _loadWorkerProfile() async {
-    final repo = ref.read(workerProfileRepositoryProvider);
-    final profile = await repo.getCurrentWorker();
-    if (mounted) {
-      setState(() {
-        _worker = profile;
-      });
-      ref.read(currentWorkerProvider.notifier).state = profile;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final workerProfile = ref.watch(currentWorkerProvider) ?? _worker;
+    final workerUser = ref.watch(workerUserProvider);
     final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    // Listen for dummy mode changes and reload data
+    ref.listen(appSettingsProvider.select((s) => s.isDummyMode), (previous, next) {
+      if (previous != next) {
+        _loadData();
+      }
+    });
 
     return Scaffold(
       backgroundColor: isDark ? YuvaColors.darkBackground : YuvaColors.backgroundLight,
@@ -100,7 +94,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         foregroundColor: Colors.white,
         elevation: 0,
         title: Text(
-          l10n.hello((workerProfile?.displayName.split(' ').first) ?? 'Profesional'),
+          l10n.hello(workerUser?.firstName ?? 'Profesional'),
           style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.white),
         ),
         actions: [
@@ -215,6 +209,50 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
+  Widget _buildEmptyState(
+    BuildContext context,
+    AppLocalizations l10n,
+    IconData icon,
+    String title,
+    String description,
+  ) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 24),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 64,
+              color: isDark ? Colors.grey[600] : Colors.grey[400],
+            ),
+            const SizedBox(height: 16),
+            Text(
+              title,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    color: isDark ? Colors.grey[400] : Colors.grey[600],
+                  ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32),
+              child: Text(
+                description,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: isDark ? Colors.grey[500] : Colors.grey[500],
+                    ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildPhoneLayout(BuildContext context, AppLocalizations l10n) {
     return RefreshIndicator(
       onRefresh: _loadJobs,
@@ -280,9 +318,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             if (_recommendedJobs != null && _recommendedJobs!.isNotEmpty)
               ..._recommendedJobs!.map((job) => _JobSummaryCard(job: job))
             else
-              Text(
+              _buildEmptyState(
+                context,
+                l10n,
+                Icons.work_outline,
                 l10n.noJobsAvailable,
-                style: Theme.of(context).textTheme.bodyMedium,
+                l10n.noJobsDescription,
               ),
           ],
         ),
@@ -383,9 +424,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                     child: _JobSummaryCard(job: job),
                                   ))
                             else
-                              Text(
+                              _buildEmptyState(
+                                context,
+                                l10n,
+                                Icons.work_outline,
                                 l10n.noJobsAvailable,
-                                style: Theme.of(context).textTheme.bodyMedium,
+                                l10n.noJobsDescription,
                               ),
                           ],
                         ),
@@ -457,9 +501,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               child: _JobSummaryCard(job: job),
                             ))
                       else
-                        Text(
+                        _buildEmptyState(
+                          context,
+                          l10n,
+                          Icons.work_outline,
                           l10n.noJobsAvailable,
-                          style: Theme.of(context).textTheme.bodyMedium,
+                          l10n.noJobsDescription,
                         ),
                     ],
                   ),

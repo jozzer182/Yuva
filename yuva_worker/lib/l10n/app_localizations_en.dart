@@ -323,4 +323,49 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get newNotifications => 'New notifications';
+
+  @override
+  String get cityOrZone => 'City or zone';
+
+  @override
+  String get cityOrZoneHint => 'E.g: Bogotá, Chapinero';
+
+  @override
+  String get demoMode => 'Demo mode (sample data)';
+
+  @override
+  String get demoModeDescription =>
+      'Enable to see sample data, disable for empty mode';
+
+  @override
+  String get completeProfileTitle => 'Complete your profile';
+
+  @override
+  String get completeProfileSubtitle =>
+      'We need some additional information so you can receive jobs.';
+
+  @override
+  String get completeProfileNameRequired => 'Name is required';
+
+  @override
+  String get completeProfileZoneRequired => 'Work zone is required';
+
+  @override
+  String get completeProfileRateHint => 'E.g: 45000';
+
+  @override
+  String get completeProfileRateRequired => 'Hourly rate is required';
+
+  @override
+  String get completeProfileRateInvalid => 'Enter a valid rate greater than 0';
+
+  @override
+  String get completeProfileSave => 'Save and continue';
+
+  @override
+  String get completeProfileExitTitle => 'Exit without completing?';
+
+  @override
+  String get completeProfileExitMessage =>
+      'If you exit now, you\'ll need to complete your profile next time you sign in.';
 }

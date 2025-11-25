@@ -22,13 +22,13 @@ import '../cleaners/cleaner_detail_screen.dart';
 import 'package:yuva/utils/money_formatter.dart';
 import 'dart:math';
 
-final categoriesProvider = FutureProvider<List<ServiceCategory>>((ref) async {
-  final categoryRepo = ref.read(categoryRepositoryProvider);
+final categoriesProvider = FutureProvider.autoDispose<List<ServiceCategory>>((ref) async {
+  final categoryRepo = ref.watch(categoryRepositoryProvider);
   return await categoryRepo.getCategories();
 });
 
-final featuredCleanersProvider = FutureProvider<List<Cleaner>>((ref) async {
-  final cleanerRepo = ref.read(cleanerRepositoryProvider);
+final featuredCleanersProvider = FutureProvider.autoDispose<List<Cleaner>>((ref) async {
+  final cleanerRepo = ref.watch(cleanerRepositoryProvider);
   return await cleanerRepo.getFeaturedCleaners();
 });
 
@@ -50,6 +50,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     _loadUnreadCounts();
   }
 
+
   Future<void> _loadUnreadCounts() async {
     final conversationsRepo = ref.read(clientConversationsRepositoryProvider);
     final notificationsRepo = ref.read(clientNotificationsRepositoryProvider);
@@ -68,6 +69,43 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
   }
 
+  Widget _buildEmptyState(
+    BuildContext context,
+    AppLocalizations l10n,
+    IconData icon,
+    String title,
+    String description,
+  ) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            icon,
+            size: 64,
+            color: isDark ? Colors.grey[600] : Colors.grey[400],
+          ),
+          const SizedBox(height: 16),
+          Text(
+            title,
+            style: YuvaTypography.subtitle(),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: Text(
+              description,
+              style: YuvaTypography.body(color: YuvaColors.textSecondary),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -75,6 +113,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final categoriesAsync = ref.watch(categoriesProvider);
     final cleanersAsync = ref.watch(featuredCleanersProvider);
     final jobsAsync = ref.watch(jobPostsProvider);
+    
+    // Listen for dummy mode changes and reload counts
+    ref.listen(appSettingsProvider.select((s) => s.isDummyMode), (previous, next) {
+      if (previous != next) {
+        _featuredStable = null; // Reset cached cleaners
+        _loadUnreadCounts();
+      }
+    });
 
     return YuvaScaffold(
       useGradientBackground: true,
@@ -544,10 +590,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             if (openJobs.isEmpty) {
               return SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: Text(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+                  child: _buildEmptyState(
+                    context,
+                    l10n,
+                    Icons.work_outline,
                     l10n.noJobsYet,
-                    style: YuvaTypography.body(color: YuvaColors.textSecondary),
+                    l10n.noJobsDescription,
                   ),
                 ),
               );
@@ -804,9 +853,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                     .toList()
                                   ..sort((a, b) => (a.createdAt).compareTo(b.createdAt));
                                 if (openJobs.isEmpty) {
-                                  return Text(
+                                  return _buildEmptyState(
+                                    context,
+                                    l10n,
+                                    Icons.work_outline,
                                     l10n.noJobsYet,
-                                    style: YuvaTypography.body(color: YuvaColors.textSecondary),
+                                    l10n.noJobsDescription,
                                   );
                                 }
                                 final displayJobs = openJobs.take(3).toList();

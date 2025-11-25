@@ -19,6 +19,21 @@ class User extends Equatable {
 
   String get firstName => name.split(' ').first;
 
+  /// Check if the client profile has all required fields completed.
+  /// Required fields for clients:
+  /// - name (not empty or default)
+  /// - email (not empty)
+  /// - phone (not empty) - required for service coordination
+  bool get isProfileComplete {
+    final hasValidName = name.isNotEmpty && 
+        name != 'Usuario' &&
+        !name.contains('@'); // Not just email prefix
+    final hasValidEmail = email.isNotEmpty;
+    final hasValidPhone = phone != null && phone!.isNotEmpty;
+    
+    return hasValidName && hasValidEmail && hasValidPhone;
+  }
+
   @override
   List<Object?> get props => [id, name, email, photoUrl, phone, createdAt];
 

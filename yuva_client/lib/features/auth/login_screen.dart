@@ -8,6 +8,7 @@ import '../../core/providers.dart';
 import '../../core/responsive.dart';
 import 'package:yuva/l10n/app_localizations.dart';
 import 'email_verification_screen.dart';
+import 'complete_profile_screen.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -81,7 +82,21 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       final user = await authRepo.signInWithGoogle();
       ref.read(currentUserProvider.notifier).state = user;
 
+      // Check if profile is complete (client needs phone)
+      if (!user.isProfileComplete) {
+        // Navigate to complete profile screen
+        if (mounted) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => CompleteProfileScreen(authUser: user),
+            ),
+          );
+        }
+        return;
+      }
+
       // Google Sign-In ya verifica el email automáticamente
+      // Profile is complete, go to main
       if (mounted) {
         Navigator.of(context).pushReplacementNamed('/main');
       }

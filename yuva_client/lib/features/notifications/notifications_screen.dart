@@ -27,6 +27,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
   }
 
   Future<void> _loadNotifications() async {
+    setState(() => _isLoading = true);
     final repo = ref.read(clientNotificationsRepositoryProvider);
     final notifications = await repo.getNotifications();
 
@@ -154,6 +155,13 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final unreadCount = _notifications?.where((n) => !n.isRead).length ?? 0;
+
+    // Listen for dummy mode changes and reload notifications
+    ref.listen(appSettingsProvider.select((s) => s.isDummyMode), (previous, next) {
+      if (previous != next) {
+        _loadNotifications();
+      }
+    });
 
     return Scaffold(
       appBar: AppBar(

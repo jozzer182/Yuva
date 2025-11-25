@@ -435,5 +435,61 @@
   "newNotifications": "Notificaciones nuevas",
   "@newNotifications": {
     "description": "New notifications label"
+  },
+  "cityOrZone": "Ciudad o zona",
+  "@cityOrZone": {
+    "description": "City or zone label"
+  },
+  "cityOrZoneHint": "Ej: Bogotá, Chapinero",
+  "@cityOrZoneHint": {
+    "description": "City or zone hint"
+  },
+  "demoMode": "Modo demo (datos de prueba)",
+  "@demoMode": {
+    "description": "Demo mode label"
+  },
+  "demoModeDescription": "Activa para ver datos de ejemplo, desactiva para modo vacío",
+  "@demoModeDescription": {
+    "description": "Demo mode description"
+  },
+  "completeProfileTitle": "Completa tu perfil",
+  "@completeProfileTitle": {
+    "description": "Complete profile screen title"
+  },
+  "completeProfileSubtitle": "Necesitamos algunos datos adicionales para que puedas recibir trabajos.",
+  "@completeProfileSubtitle": {
+    "description": "Complete profile screen subtitle for workers"
+  },
+  "completeProfileNameRequired": "El nombre es requerido",
+  "@completeProfileNameRequired": {
+    "description": "Name required validation message"
+  },
+  "completeProfileZoneRequired": "La zona de trabajo es requerida",
+  "@completeProfileZoneRequired": {
+    "description": "Zone required validation message"
+  },
+  "completeProfileRateHint": "Ej: 45000",
+  "@completeProfileRateHint": {
+    "description": "Rate hint text"
+  },
+  "completeProfileRateRequired": "La tarifa por hora es requerida",
+  "@completeProfileRateRequired": {
+    "description": "Rate required validation message"
+  },
+  "completeProfileRateInvalid": "Ingresa una tarifa válida mayor a 0",
+  "@completeProfileRateInvalid": {
+    "description": "Rate invalid validation message"
+  },
+  "completeProfileSave": "Guardar y continuar",
+  "@completeProfileSave": {
+    "description": "Save and continue button"
+  },
+  "completeProfileExitTitle": "¿Salir sin completar?",
+  "@completeProfileExitTitle": {
+    "description": "Exit confirmation dialog title"
+  },
+  "completeProfileExitMessage": "Si sales ahora, tendrás que completar tu perfil la próxima vez que inicies sesión.",
+  "@completeProfileExitMessage": {
+    "description": "Exit confirmation dialog message"
   }
 }

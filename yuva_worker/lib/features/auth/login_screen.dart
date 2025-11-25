@@ -6,8 +6,10 @@ import '../../design_system/typography.dart';
 import '../../design_system/components/yuva_button.dart';
 import '../../core/providers.dart';
 import '../../core/responsive.dart';
+import '../../data/models/worker_user.dart';
 import 'package:yuva_worker/l10n/app_localizations.dart';
 import 'email_verification_screen.dart';
+import 'complete_profile_screen.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -41,6 +43,21 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         _passwordController.text,
       );
       ref.read(currentUserProvider.notifier).state = user;
+
+      // Load or create WorkerUser
+      final existingWorkerUser = ref.read(workerUserProvider);
+      if (existingWorkerUser == null || existingWorkerUser.uid != user.id) {
+        // Create basic WorkerUser if doesn't exist
+        final workerUser = WorkerUser.fromAuthUser(
+          user,
+          cityOrZone: existingWorkerUser?.cityOrZone ?? 'No especificado',
+          baseHourlyRate: existingWorkerUser?.baseHourlyRate ?? 0.0,
+        );
+        await ref.read(workerUserProvider.notifier).setWorkerUser(workerUser);
+      } else {
+        // Update auth fields in existing WorkerUser
+        await ref.read(workerUserProvider.notifier).updateFromAuthUser(user);
+      }
 
       // Verificar si el email está verificado
       final firebaseUser = FirebaseAuth.instance.currentUser;
@@ -81,7 +98,49 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       final user = await authRepo.signInWithGoogle();
       ref.read(currentUserProvider.notifier).state = user;
 
+      // Load or create WorkerUser
+      final existingWorkerUser = ref.read(workerUserProvider);
+      if (existingWorkerUser == null || existingWorkerUser.uid != user.id) {
+        // Create WorkerUser with existing data or defaults
+        final workerUser = WorkerUser.fromAuthUser(
+          user,
+          cityOrZone: existingWorkerUser?.cityOrZone ?? 'No especificado',
+          baseHourlyRate: existingWorkerUser?.baseHourlyRate ?? 0.0,
+        );
+        await ref.read(workerUserProvider.notifier).setWorkerUser(workerUser);
+
+        // Check if profile is complete
+        if (!workerUser.isProfileComplete) {
+          // Navigate to complete profile screen
+          if (mounted) {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (context) => CompleteProfileScreen(authUser: user),
+              ),
+            );
+          }
+          return;
+        }
+      } else {
+        // Update auth fields in existing WorkerUser
+        await ref.read(workerUserProvider.notifier).updateFromAuthUser(user);
+
+        // Check if existing profile is complete
+        final updatedWorkerUser = ref.read(workerUserProvider);
+        if (updatedWorkerUser != null && !updatedWorkerUser.isProfileComplete) {
+          if (mounted) {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (context) => CompleteProfileScreen(authUser: user),
+              ),
+            );
+          }
+          return;
+        }
+      }
+
       // Google Sign-In ya verifica el email automáticamente
+      // Profile is complete, go to main
       if (mounted) {
         Navigator.of(context).pushReplacementNamed('/main');
       }

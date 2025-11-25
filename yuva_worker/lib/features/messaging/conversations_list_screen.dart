@@ -26,6 +26,7 @@ class _ConversationsListScreenState extends ConsumerState<ConversationsListScree
   }
 
   Future<void> _loadConversations() async {
+    setState(() => _isLoading = true);
     final repo = ref.read(workerConversationsRepositoryProvider);
     final conversations = await repo.getConversations();
 
@@ -56,6 +57,13 @@ class _ConversationsListScreenState extends ConsumerState<ConversationsListScree
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    // Listen for dummy mode changes and reload conversations
+    ref.listen(appSettingsProvider.select((s) => s.isDummyMode), (previous, next) {
+      if (previous != next) {
+        _loadConversations();
+      }
+    });
 
     return Scaffold(
       appBar: AppBar(

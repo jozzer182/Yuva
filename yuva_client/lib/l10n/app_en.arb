@@ -347,5 +347,22 @@
   "newNotifications": "New notifications",
   "@newNotifications": {
     "description": "New notifications label"
-  }
+  },
+  "demoMode": "Demo mode (sample data)",
+  "@demoMode": {
+    "description": "Demo mode label"
+  },
+  "demoModeDescription": "Enable to see sample data, disable for empty mode",
+  "@demoModeDescription": {
+    "description": "Demo mode description"
+  },
+  "completeProfileTitle": "Complete your profile",
+  "completeProfileSubtitleClient": "We need your phone number to coordinate services.",
+  "completeProfileNameRequired": "Name is required",
+  "completeProfilePhone": "Phone",
+  "completeProfilePhoneHint": "E.g: +1 555 123 4567",
+  "completeProfilePhoneRequired": "Phone is required to coordinate services",
+  "completeProfileSave": "Save and continue",
+  "completeProfileExitTitle": "Exit without completing?",
+  "completeProfileExitMessage": "If you exit now, you'll need to complete your profile next time you sign in."
 }

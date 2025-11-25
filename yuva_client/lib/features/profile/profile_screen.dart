@@ -29,6 +29,18 @@ class ProfileScreen extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 8),
+              // Dummy Mode Switch - at the top
+              YuvaCard(
+                child: SwitchListTile(
+                  title: Text(l10n.demoMode),
+                  subtitle: Text(l10n.demoModeDescription),
+                  value: settings.isDummyMode,
+                  onChanged: (value) {
+                    ref.read(appSettingsProvider.notifier).setDummyMode(value);
+                  },
+                ),
+              ),
+              const SizedBox(height: 16),
               // User Profile Card
               YuvaCard(
                 child: Column(

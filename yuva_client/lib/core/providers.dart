@@ -24,6 +24,15 @@ import 'package:yuva/data/repositories_dummy/dummy_ratings_repository.dart';
 import 'package:yuva/data/repositories_dummy/dummy_client_conversations_repository.dart';
 import 'package:yuva/data/repositories_dummy/dummy_client_notifications_repository.dart';
 import 'package:yuva/data/repositories_dummy/dummy_client_active_job_repository.dart';
+import 'package:yuva/data/repositories_empty/empty_cleaner_repository.dart';
+import 'package:yuva/data/repositories_empty/empty_job_post_repository.dart';
+import 'package:yuva/data/repositories_empty/empty_booking_repository.dart';
+import 'package:yuva/data/repositories_empty/empty_proposal_repository.dart';
+import 'package:yuva/data/repositories_empty/empty_client_conversations_repository.dart';
+import 'package:yuva/data/repositories_empty/empty_client_notifications_repository.dart';
+import 'package:yuva/data/repositories_empty/empty_ratings_repository.dart';
+import 'package:yuva/data/repositories_empty/empty_pro_summary_repository.dart';
+import 'package:yuva/data/repositories_empty/empty_client_active_job_repository.dart';
 import 'package:yuva/data/services/booking_price_calculator.dart';
 
 import 'settings_controller.dart';
@@ -49,17 +58,19 @@ final currentUserProvider = StateProvider<User?>((ref) {
   return ref.watch(authStateProvider).user;
 });
 
-// Other repository providers (still using dummy implementations)
+// Other repository providers - switch between dummy and empty based on dummy mode
 final cleanerRepositoryProvider = Provider<CleanerRepository>((ref) {
-  return DummyCleanerRepository();
+  final isDummyMode = ref.watch(appSettingsProvider.select((s) => s.isDummyMode));
+  return isDummyMode ? DummyCleanerRepository() : EmptyCleanerRepository();
 });
 
 final categoryRepositoryProvider = Provider<CategoryRepository>((ref) {
-  return DummyCategoryRepository();
+  return DummyCategoryRepository(); // Categories can stay dummy
 });
 
 final bookingRepositoryProvider = Provider<BookingRepository>((ref) {
-  return DummyBookingRepository();
+  final isDummyMode = ref.watch(appSettingsProvider.select((s) => s.isDummyMode));
+  return isDummyMode ? DummyBookingRepository() : EmptyBookingRepository();
 });
 
 final bookingPriceCalculatorProvider = Provider<BookingPriceCalculator>((ref) {
@@ -67,31 +78,38 @@ final bookingPriceCalculatorProvider = Provider<BookingPriceCalculator>((ref) {
 });
 
 final ratingsRepositoryProvider = Provider<RatingsRepository>((ref) {
-  return DummyRatingsRepository();
+  final isDummyMode = ref.watch(appSettingsProvider.select((s) => s.isDummyMode));
+  return isDummyMode ? DummyRatingsRepository() : EmptyRatingsRepository();
 });
 
 final jobPostRepositoryProvider = Provider<JobPostRepository>((ref) {
-  return DummyJobPostRepository();
+  final isDummyMode = ref.watch(appSettingsProvider.select((s) => s.isDummyMode));
+  return isDummyMode ? DummyJobPostRepository() : EmptyJobPostRepository();
 });
 
 final proposalRepositoryProvider = Provider<ProposalRepository>((ref) {
-  return DummyProposalRepository();
+  final isDummyMode = ref.watch(appSettingsProvider.select((s) => s.isDummyMode));
+  return isDummyMode ? DummyProposalRepository() : EmptyProposalRepository();
 });
 
 final proSummaryRepositoryProvider = Provider<ProSummaryRepository>((ref) {
-  return DummyProSummaryRepository();
+  final isDummyMode = ref.watch(appSettingsProvider.select((s) => s.isDummyMode));
+  return isDummyMode ? DummyProSummaryRepository() : EmptyProSummaryRepository();
 });
 
 final clientConversationsRepositoryProvider = Provider<ClientConversationsRepository>((ref) {
-  return DummyClientConversationsRepository();
+  final isDummyMode = ref.watch(appSettingsProvider.select((s) => s.isDummyMode));
+  return isDummyMode ? DummyClientConversationsRepository() : EmptyClientConversationsRepository();
 });
 
 final clientNotificationsRepositoryProvider = Provider<ClientNotificationsRepository>((ref) {
-  return DummyClientNotificationsRepository();
+  final isDummyMode = ref.watch(appSettingsProvider.select((s) => s.isDummyMode));
+  return isDummyMode ? DummyClientNotificationsRepository() : EmptyClientNotificationsRepository();
 });
 
 final clientActiveJobRepositoryProvider = Provider<ClientActiveJobRepository>((ref) {
-  return DummyClientActiveJobRepository();
+  final isDummyMode = ref.watch(appSettingsProvider.select((s) => s.isDummyMode));
+  return isDummyMode ? DummyClientActiveJobRepository() : EmptyClientActiveJobRepository();
 });
 
 // App settings (locale + toggles)
