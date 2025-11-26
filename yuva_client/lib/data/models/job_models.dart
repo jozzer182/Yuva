@@ -217,6 +217,90 @@ class JobPost extends Equatable {
         createdAt,
         updatedAt,
       ];
+
+  /// Creates a JobPost from a Firestore document map.
+  factory JobPost.fromMap(Map<String, dynamic> map, String docId) {
+    return JobPost(
+      id: docId,
+      userId: map['clientId'] as String? ?? '',
+      titleKey: map['titleKey'] as String? ?? '',
+      descriptionKey: map['descriptionKey'] as String? ?? '',
+      customTitle: map['customTitle'] as String?,
+      customDescription: map['customDescription'] as String?,
+      serviceTypeId: map['serviceTypeId'] as String? ?? '',
+      propertyDetails: PropertyDetails(
+        type: PropertyType.values.firstWhere(
+          (e) => e.name == (map['propertyType'] as String? ?? 'apartment'),
+          orElse: () => PropertyType.apartment,
+        ),
+        sizeCategory: BookingSizeCategory.values.firstWhere(
+          (e) => e.name == (map['sizeCategory'] as String? ?? 'medium'),
+          orElse: () => BookingSizeCategory.medium,
+        ),
+        bedrooms: map['bedrooms'] as int? ?? 0,
+        bathrooms: map['bathrooms'] as int? ?? 0,
+      ),
+      budgetType: JobBudgetType.values.firstWhere(
+        (e) => e.name == (map['budgetType'] as String? ?? 'hourly'),
+        orElse: () => JobBudgetType.hourly,
+      ),
+      hourlyRateFrom: (map['hourlyRateFrom'] as num?)?.toDouble(),
+      hourlyRateTo: (map['hourlyRateTo'] as num?)?.toDouble(),
+      fixedBudget: (map['fixedBudget'] as num?)?.toDouble(),
+      areaLabel: map['areaLabel'] as String? ?? '',
+      frequency: BookingFrequency.values.firstWhere(
+        (e) => e.name == (map['frequency'] as String? ?? 'once'),
+        orElse: () => BookingFrequency.once,
+      ),
+      preferredStartDate: map['preferredStartDate'] != null
+          ? (map['preferredStartDate'] as dynamic).toDate()
+          : null,
+      status: JobPostStatus.values.firstWhere(
+        (e) => e.name == (map['status'] as String? ?? 'open'),
+        orElse: () => JobPostStatus.open,
+      ),
+      invitedProIds: List<String>.from(map['invitedProIds'] ?? []),
+      proposalIds: List<String>.from(map['proposalIds'] ?? []),
+      hiredProposalId: map['hiredProposalId'] as String?,
+      hiredProId: map['hiredProId'] as String?,
+      createdAt: map['createdAt'] != null
+          ? (map['createdAt'] as dynamic).toDate()
+          : DateTime.now(),
+      updatedAt: map['updatedAt'] != null
+          ? (map['updatedAt'] as dynamic).toDate()
+          : null,
+    );
+  }
+
+  /// Converts this JobPost to a Firestore document map.
+  Map<String, dynamic> toMap() {
+    return {
+      'clientId': userId,
+      'titleKey': titleKey,
+      'descriptionKey': descriptionKey,
+      'customTitle': customTitle,
+      'customDescription': customDescription,
+      'serviceTypeId': serviceTypeId,
+      'propertyType': propertyDetails.type.name,
+      'sizeCategory': propertyDetails.sizeCategory.name,
+      'bedrooms': propertyDetails.bedrooms,
+      'bathrooms': propertyDetails.bathrooms,
+      'budgetType': budgetType.name,
+      'hourlyRateFrom': hourlyRateFrom,
+      'hourlyRateTo': hourlyRateTo,
+      'fixedBudget': fixedBudget,
+      'areaLabel': areaLabel,
+      'frequency': frequency.name,
+      'preferredStartDate': preferredStartDate,
+      'status': status.name,
+      'invitedProIds': invitedProIds,
+      'proposalIds': proposalIds,
+      'hiredProposalId': hiredProposalId,
+      'hiredProId': hiredProId,
+      'createdAt': createdAt,
+      'updatedAt': updatedAt,
+    };
+  }
 }
 
 /// A proposal submitted by a professional to a job post.

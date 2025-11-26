@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../design_system/colors.dart';
 import '../../design_system/typography.dart';
+import '../../core/providers.dart';
+import '../auth/complete_profile_screen.dart';
+import '../../data/models/user.dart' as app_user;
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -34,12 +38,66 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
     _controller.forward();
 
-    // Navigate to onboarding after splash
-    Future.delayed(const Duration(seconds: 3), () {
+    // Check auth state and navigate accordingly
+    _checkAuthAndNavigate();
+  }
+
+  Future<void> _checkAuthAndNavigate() async {
+    // Wait for splash animation
+    await Future.delayed(const Duration(seconds: 2));
+    
+    if (!mounted) return;
+    
+    // Check if user is already logged in
+    final firebaseUser = FirebaseAuth.instance.currentUser;
+    
+    if (firebaseUser != null) {
+      // User is logged in - load profile and navigate to main or complete profile
+      await _handleLoggedInUser(firebaseUser);
+    } else {
+      // No user logged in - go to onboarding
+      Navigator.of(context).pushReplacementNamed('/onboarding');
+    }
+  }
+
+  Future<void> _handleLoggedInUser(User firebaseUser) async {
+    try {
+      // Load profile from Firestore
+      final userProfileService = ref.read(userProfileServiceProvider);
+      final firestoreProfile = await userProfileService.getUserProfile(firebaseUser.uid);
+      
+      // Create user model
+      final user = app_user.User(
+        id: firebaseUser.uid,
+        name: firestoreProfile?.displayName ?? firebaseUser.displayName ?? firebaseUser.email?.split('@').first ?? 'Usuario',
+        email: firebaseUser.email ?? '',
+        photoUrl: firebaseUser.photoURL,
+        phone: firestoreProfile?.phone ?? firebaseUser.phoneNumber,
+        avatarId: firestoreProfile?.avatarId,
+        createdAt: firebaseUser.metadata.creationTime ?? DateTime.now(),
+      );
+      
+      // Update state
+      ref.read(currentUserProvider.notifier).state = user;
+      
+      if (!mounted) return;
+      
+      // Check if profile is complete
+      if (!user.isProfileComplete) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => CompleteProfileScreen(authUser: user),
+          ),
+        );
+      } else {
+        Navigator.of(context).pushReplacementNamed('/main');
+      }
+    } catch (e) {
+      // On error, go to onboarding
       if (mounted) {
         Navigator.of(context).pushReplacementNamed('/onboarding');
       }
-    });
+    }
   }
 
   @override

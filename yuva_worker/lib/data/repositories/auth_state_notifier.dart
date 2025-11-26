@@ -79,6 +79,7 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
         final enrichedUser = basicUser.copyWith(
           name: profile.displayName.isNotEmpty ? profile.displayName : basicUser.name,
           phone: profile.phone ?? basicUser.phone,
+          avatarId: profile.avatarId,
         );
         
         // Create WorkerUser from Firestore profile

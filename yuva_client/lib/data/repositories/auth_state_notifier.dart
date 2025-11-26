@@ -75,6 +75,7 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
         final enrichedUser = basicUser.copyWith(
           name: profile.displayName.isNotEmpty ? profile.displayName : basicUser.name,
           phone: profile.phone ?? basicUser.phone,
+          avatarId: profile.avatarId,
         );
         state = AuthState(user: enrichedUser, profileLoaded: true);
       } else {

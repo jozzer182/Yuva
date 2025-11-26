@@ -33,6 +33,38 @@ class WorkerJobSummary extends Equatable {
     this.isInvited = false,
   });
 
+  /// Creates a WorkerJobSummary from a Firestore document map.
+  /// [workerId] is used to determine if the worker was invited.
+  factory WorkerJobSummary.fromMap(Map<String, dynamic> map, String docId, {String? workerId}) {
+    final invitedProIds = List<String>.from(map['invitedProIds'] ?? []);
+    return WorkerJobSummary(
+      id: docId,
+      titleKey: map['titleKey'] as String? ?? '',
+      customTitle: map['customTitle'] as String?,
+      serviceTypeNameKey: map['serviceTypeId'] as String? ?? '',
+      areaLabel: map['areaLabel'] as String? ?? '',
+      frequency: JobFrequency.values.firstWhere(
+        (e) => e.name == (map['frequency'] as String? ?? 'once'),
+        orElse: () => JobFrequency.once,
+      ),
+      budgetType: JobBudgetType.values.firstWhere(
+        (e) => e.name == (map['budgetType'] as String? ?? 'hourly'),
+        orElse: () => JobBudgetType.hourly,
+      ),
+      hourlyRateFrom: (map['hourlyRateFrom'] as num?)?.toDouble(),
+      hourlyRateTo: (map['hourlyRateTo'] as num?)?.toDouble(),
+      fixedBudget: (map['fixedBudget'] as num?)?.toDouble(),
+      preferredStartDate: map['preferredStartDate'] != null
+          ? (map['preferredStartDate'] as dynamic).toDate()
+          : null,
+      status: JobPostStatus.values.firstWhere(
+        (e) => e.name == (map['status'] as String? ?? 'open'),
+        orElse: () => JobPostStatus.open,
+      ),
+      isInvited: workerId != null && invitedProIds.contains(workerId),
+    );
+  }
+
   @override
   List<Object?> get props => [
         id,
@@ -90,6 +122,55 @@ class WorkerJobDetail extends Equatable {
     this.isInvited = false,
     required this.createdAt,
   });
+
+  /// Creates a WorkerJobDetail from a Firestore document map.
+  /// [workerId] is used to determine if the worker was invited.
+  factory WorkerJobDetail.fromMap(Map<String, dynamic> map, String docId, {String? workerId}) {
+    final invitedProIds = List<String>.from(map['invitedProIds'] ?? []);
+    return WorkerJobDetail(
+      id: docId,
+      titleKey: map['titleKey'] as String? ?? '',
+      descriptionKey: map['descriptionKey'] as String? ?? '',
+      customTitle: map['customTitle'] as String?,
+      customDescription: map['customDescription'] as String?,
+      serviceTypeNameKey: map['serviceTypeId'] as String? ?? '',
+      propertyDetails: PropertyDetails(
+        type: PropertyType.values.firstWhere(
+          (e) => e.name == (map['propertyType'] as String? ?? 'apartment'),
+          orElse: () => PropertyType.apartment,
+        ),
+        sizeCategory: BookingSizeCategory.values.firstWhere(
+          (e) => e.name == (map['sizeCategory'] as String? ?? 'medium'),
+          orElse: () => BookingSizeCategory.medium,
+        ),
+        bedrooms: map['bedrooms'] as int? ?? 0,
+        bathrooms: map['bathrooms'] as int? ?? 0,
+      ),
+      budgetType: JobBudgetType.values.firstWhere(
+        (e) => e.name == (map['budgetType'] as String? ?? 'hourly'),
+        orElse: () => JobBudgetType.hourly,
+      ),
+      hourlyRateFrom: (map['hourlyRateFrom'] as num?)?.toDouble(),
+      hourlyRateTo: (map['hourlyRateTo'] as num?)?.toDouble(),
+      fixedBudget: (map['fixedBudget'] as num?)?.toDouble(),
+      areaLabel: map['areaLabel'] as String? ?? '',
+      frequency: JobFrequency.values.firstWhere(
+        (e) => e.name == (map['frequency'] as String? ?? 'once'),
+        orElse: () => JobFrequency.once,
+      ),
+      preferredStartDate: map['preferredStartDate'] != null
+          ? (map['preferredStartDate'] as dynamic).toDate()
+          : null,
+      status: JobPostStatus.values.firstWhere(
+        (e) => e.name == (map['status'] as String? ?? 'open'),
+        orElse: () => JobPostStatus.open,
+      ),
+      isInvited: workerId != null && invitedProIds.contains(workerId),
+      createdAt: map['createdAt'] != null
+          ? (map['createdAt'] as dynamic).toDate()
+          : DateTime.now(),
+    );
+  }
 
   @override
   List<Object?> get props => [

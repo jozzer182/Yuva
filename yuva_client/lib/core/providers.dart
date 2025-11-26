@@ -25,7 +25,6 @@ import 'package:yuva/data/repositories_dummy/dummy_client_conversations_reposito
 import 'package:yuva/data/repositories_dummy/dummy_client_notifications_repository.dart';
 import 'package:yuva/data/repositories_dummy/dummy_client_active_job_repository.dart';
 import 'package:yuva/data/repositories_empty/empty_cleaner_repository.dart';
-import 'package:yuva/data/repositories_empty/empty_job_post_repository.dart';
 import 'package:yuva/data/repositories_empty/empty_booking_repository.dart';
 import 'package:yuva/data/repositories_empty/empty_proposal_repository.dart';
 import 'package:yuva/data/repositories_empty/empty_client_conversations_repository.dart';
@@ -33,6 +32,7 @@ import 'package:yuva/data/repositories_empty/empty_client_notifications_reposito
 import 'package:yuva/data/repositories_empty/empty_ratings_repository.dart';
 import 'package:yuva/data/repositories_empty/empty_pro_summary_repository.dart';
 import 'package:yuva/data/repositories_empty/empty_client_active_job_repository.dart';
+import 'package:yuva/data/repositories_firestore/firestore_job_post_repository.dart';
 import 'package:yuva/data/services/booking_price_calculator.dart';
 import 'package:yuva/data/services/user_profile_service.dart';
 
@@ -85,7 +85,13 @@ final ratingsRepositoryProvider = Provider<RatingsRepository>((ref) {
 
 final jobPostRepositoryProvider = Provider<JobPostRepository>((ref) {
   final isDummyMode = ref.watch(appSettingsProvider.select((s) => s.isDummyMode));
-  return isDummyMode ? DummyJobPostRepository() : EmptyJobPostRepository();
+  if (isDummyMode) {
+    return DummyJobPostRepository();
+  }
+  // Use Firestore repository when dummy mode is OFF
+  final currentUser = ref.watch(currentUserProvider);
+  final userId = currentUser?.id ?? '';
+  return FirestoreJobPostRepository(currentUserId: userId);
 });
 
 final proposalRepositoryProvider = Provider<ProposalRepository>((ref) {

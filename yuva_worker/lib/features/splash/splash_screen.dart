@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../design_system/colors.dart';
-import 'package:firebase_core/firebase_core.dart';
-import '../../firebase_options.dart';
+import '../../core/providers.dart';
+import '../../data/models/user.dart' as app_user;
+import '../auth/complete_profile_screen.dart';
 
 /// Splash screen with yuva logo animation
 class SplashScreen extends ConsumerStatefulWidget {
@@ -36,21 +38,70 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
     _controller.forward();
 
-    Future.wait([
-      _initializeFirebase(),
-      Future.delayed(const Duration(milliseconds: 1200)),
-    ]).then((_) {
+    // Check auth state and navigate accordingly
+    _checkAuthAndNavigate();
+  }
+
+  Future<void> _checkAuthAndNavigate() async {
+    // Wait for splash animation
+    await Future.delayed(const Duration(seconds: 2));
+    
+    if (!mounted) return;
+    
+    // Check if user is already logged in
+    final firebaseUser = FirebaseAuth.instance.currentUser;
+    
+    if (firebaseUser != null) {
+      // User is logged in - load profile and navigate to main or complete profile
+      await _handleLoggedInUser(firebaseUser);
+    } else {
+      // No user logged in - go to onboarding
+      Navigator.of(context).pushReplacementNamed('/onboarding');
+    }
+  }
+
+  Future<void> _handleLoggedInUser(User firebaseUser) async {
+    try {
+      // Load profile from Firestore
+      final userProfileService = ref.read(userProfileServiceProvider);
+      final firestoreProfile = await userProfileService.getWorkerProfile(firebaseUser.uid);
+      
+      // Create basic user model for auth state
+      final user = app_user.User(
+        id: firebaseUser.uid,
+        name: firestoreProfile?.displayName ?? firebaseUser.displayName ?? firebaseUser.email?.split('@').first ?? 'Usuario',
+        email: firebaseUser.email ?? '',
+        photoUrl: firebaseUser.photoURL,
+        phone: firestoreProfile?.phone ?? firebaseUser.phoneNumber,
+        avatarId: firestoreProfile?.avatarId,
+        createdAt: firebaseUser.metadata.creationTime ?? DateTime.now(),
+      );
+      
+      // Update auth state
+      ref.read(currentUserProvider.notifier).state = user;
+      
+      if (!mounted) return;
+      
+      // Check if worker profile exists and is complete
+      if (firestoreProfile != null && firestoreProfile.isComplete) {
+        // Load WorkerUser from Firestore profile
+        final workerUser = firestoreProfile.toWorkerUser();
+        await ref.read(workerUserProvider.notifier).setWorkerUser(workerUser);
+        
+        Navigator.of(context).pushReplacementNamed('/main');
+      } else {
+        // Profile incomplete - go to complete profile
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => CompleteProfileScreen(authUser: user),
+          ),
+        );
+      }
+    } catch (e) {
+      // On error, go to onboarding
       if (mounted) {
         Navigator.of(context).pushReplacementNamed('/onboarding');
       }
-    });
-  }
-
-  Future<void> _initializeFirebase() async {
-    if (Firebase.apps.isEmpty) {
-      await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,
-      );
     }
   }
 

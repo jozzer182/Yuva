@@ -23,7 +23,6 @@ import '../data/repositories_dummy/dummy_worker_conversations_repository.dart';
 import '../data/repositories_dummy/dummy_worker_notifications_repository.dart';
 import '../data/repositories_dummy/dummy_worker_active_jobs_repository.dart';
 import '../data/repositories_dummy/dummy_worker_proposals_repository.dart';
-import '../data/repositories_empty/empty_worker_job_feed_repository.dart';
 import '../data/repositories_empty/empty_worker_profile_repository.dart';
 import '../data/repositories_empty/empty_worker_earnings_repository.dart';
 import '../data/repositories_empty/empty_worker_reviews_repository.dart';
@@ -31,6 +30,7 @@ import '../data/repositories_empty/empty_worker_conversations_repository.dart';
 import '../data/repositories_empty/empty_worker_notifications_repository.dart';
 import '../data/repositories_empty/empty_worker_active_jobs_repository.dart';
 import '../data/repositories_empty/empty_worker_proposals_repository.dart';
+import '../data/repositories_firestore/firestore_worker_job_feed_repository.dart';
 import 'settings_controller.dart';
 import 'worker_user_controller.dart';
 import '../data/services/user_profile_service.dart';
@@ -53,9 +53,13 @@ final currentUserProvider = StateProvider<User?>((ref) {
 
 final workerJobFeedRepositoryProvider = Provider<WorkerJobFeedRepository>((ref) {
   final isDummyMode = ref.watch(appSettingsProvider.select((s) => s.isDummyMode));
-  return isDummyMode
-      ? DummyWorkerJobFeedRepository()
-      : EmptyWorkerJobFeedRepository();
+  if (isDummyMode) {
+    return DummyWorkerJobFeedRepository();
+  }
+  // Use Firestore repository when dummy mode is OFF
+  final currentUser = ref.watch(currentUserProvider);
+  final workerId = currentUser?.id ?? '';
+  return FirestoreWorkerJobFeedRepository(currentWorkerId: workerId);
 });
 
 final workerProfileRepositoryProvider = Provider<WorkerProfileRepository>((ref) {

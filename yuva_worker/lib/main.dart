@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:yuva_worker/l10n/app_localizations.dart';
 
+import 'firebase_options.dart';
 import 'design_system/theme.dart';
 import 'core/providers.dart';
 import 'core/web_wrapper.dart';
@@ -13,8 +15,15 @@ import 'features/auth/signup_screen.dart';
 import 'features/navigation/main_navigation_screen.dart';
 import 'features/settings/settings_screen.dart';
 
-void main() {
+void main() async {
+  // Ensure Flutter binding is initialized before Firebase
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize Firebase before runApp
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  
   runApp(
     const ProviderScope(
       child: YuvaWorkerApp(),
