@@ -372,4 +372,13 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get completeProfileExitMessage =>
       'Si sales ahora, tendrás que completar tu perfil la próxima vez que inicies sesión.';
+
+  @override
+  String get avatarSelectTitle => 'Selecciona tu avatar';
+
+  @override
+  String get avatarChange => 'Cambiar avatar';
+
+  @override
+  String get avatarSelected => 'Avatar seleccionado';
 }

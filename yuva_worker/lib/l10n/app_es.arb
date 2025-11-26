@@ -491,5 +491,17 @@
   "completeProfileExitMessage": "Si sales ahora, tendrás que completar tu perfil la próxima vez que inicies sesión.",
   "@completeProfileExitMessage": {
     "description": "Exit confirmation dialog message"
+  },
+  "avatarSelectTitle": "Selecciona tu avatar",
+  "@avatarSelectTitle": {
+    "description": "Title for avatar selection dialog"
+  },
+  "avatarChange": "Cambiar avatar",
+  "@avatarChange": {
+    "description": "Button text to change avatar"
+  },
+  "avatarSelected": "Avatar seleccionado",
+  "@avatarSelected": {
+    "description": "Confirmation when avatar is selected"
   }
 }

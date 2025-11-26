@@ -5,6 +5,7 @@ import '../../data/models/worker_user.dart';
 import '../../core/providers.dart';
 import '../../design_system/components/yuva_button.dart';
 import '../../design_system/components/yuva_card.dart';
+import '../../design_system/components/avatar_picker.dart';
 
 class EditProfileScreen extends ConsumerStatefulWidget {
   final WorkerUser initial;
@@ -20,6 +21,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   late TextEditingController _lastNameController;
   late TextEditingController _cityOrZoneController;
   late TextEditingController _baseHourlyRateController;
+  String? _selectedAvatarId;
   bool _saving = false;
 
   @override
@@ -36,6 +38,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           ? widget.initial.baseHourlyRate.toStringAsFixed(0)
           : '',
     );
+    _selectedAvatarId = widget.initial.avatarId;
   }
 
   @override
@@ -70,6 +73,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         displayName: newDisplayName,
         cityOrZone: newCityOrZone.isEmpty ? 'No especificado' : newCityOrZone,
         baseHourlyRate: newBaseHourlyRate,
+        avatarId: _selectedAvatarId,
       );
       
       // Save to Firestore
@@ -80,6 +84,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         email: updated.email,
         photoUrl: updated.photoUrl,
         phone: updated.phone,
+        avatarId: _selectedAvatarId,
         createdAt: updated.createdAt,
         cityOrZone: updated.cityOrZone,
         baseHourlyRate: newBaseHourlyRate,
@@ -117,10 +122,19 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(title: Text(l10n.editProfile)),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
+            // Avatar picker
+            AvatarPicker(
+              selectedAvatarId: _selectedAvatarId,
+              fallbackInitial: widget.initial.displayName,
+              onAvatarSelected: (avatarId) {
+                setState(() => _selectedAvatarId = avatarId);
+              },
+            ),
+            const SizedBox(height: 24),
             YuvaCard(
               child: Column(
                 children: [

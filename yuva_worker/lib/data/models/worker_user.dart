@@ -9,6 +9,7 @@ class WorkerUser extends Equatable {
   final String email;
   final String? photoUrl;
   final String? phone;
+  final String? avatarId;
   final DateTime createdAt;
   
   // Worker-specific fields
@@ -21,6 +22,7 @@ class WorkerUser extends Equatable {
     required this.email,
     this.photoUrl,
     this.phone,
+    this.avatarId,
     required this.createdAt,
     required this.cityOrZone,
     required this.baseHourlyRate,
@@ -31,6 +33,7 @@ class WorkerUser extends Equatable {
     User authUser, {
     required String cityOrZone,
     required double baseHourlyRate,
+    String? avatarId,
   }) {
     return WorkerUser(
       uid: authUser.id,
@@ -38,6 +41,7 @@ class WorkerUser extends Equatable {
       email: authUser.email,
       photoUrl: authUser.photoUrl,
       phone: authUser.phone,
+      avatarId: avatarId ?? authUser.avatarId,
       createdAt: authUser.createdAt,
       cityOrZone: cityOrZone,
       baseHourlyRate: baseHourlyRate,
@@ -72,6 +76,7 @@ class WorkerUser extends Equatable {
         email,
         photoUrl,
         phone,
+        avatarId,
         createdAt,
         cityOrZone,
         baseHourlyRate,
@@ -83,6 +88,7 @@ class WorkerUser extends Equatable {
     String? email,
     String? photoUrl,
     String? phone,
+    String? avatarId,
     DateTime? createdAt,
     String? cityOrZone,
     double? baseHourlyRate,
@@ -93,6 +99,7 @@ class WorkerUser extends Equatable {
       email: email ?? this.email,
       photoUrl: photoUrl ?? this.photoUrl,
       phone: phone ?? this.phone,
+      avatarId: avatarId ?? this.avatarId,
       createdAt: createdAt ?? this.createdAt,
       cityOrZone: cityOrZone ?? this.cityOrZone,
       baseHourlyRate: baseHourlyRate ?? this.baseHourlyRate,

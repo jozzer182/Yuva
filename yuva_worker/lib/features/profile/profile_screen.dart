@@ -6,6 +6,7 @@ import '../../data/models/worker_user.dart';
 import '../../design_system/colors.dart';
 import '../../design_system/components/yuva_button.dart';
 import '../../design_system/components/yuva_card.dart';
+import '../../design_system/components/avatar_picker.dart';
 import 'edit_profile_screen.dart';
 import '../../utils/money_formatter.dart';
 
@@ -55,22 +56,11 @@ class ProfileScreen extends ConsumerWidget {
             YuvaCard(
               child: Column(
                 children: [
-                  // Avatar placeholder
-                  Container(
-                    width: 80,
-                    height: 80,
-                    decoration: BoxDecoration(
-                      color: YuvaColors.primaryTeal,
-                      borderRadius: BorderRadius.circular(40),
-                    ),
-                    child: Center(
-                      child: Text(
-                        workerUser.displayName.substring(0, 1).toUpperCase(),
-                        style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                              color: Colors.white,
-                            ),
-                      ),
-                    ),
+                  // Avatar display
+                  AvatarDisplay(
+                    avatarId: workerUser.avatarId,
+                    fallbackInitial: workerUser.displayName,
+                    size: 80,
                   ),
                   const SizedBox(height: 16),
                   Text(

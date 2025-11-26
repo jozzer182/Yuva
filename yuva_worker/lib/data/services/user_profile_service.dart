@@ -37,6 +37,7 @@ class UserProfileService {
     required String email,
     String? photoUrl,
     String? phone,
+    String? avatarId,
     required DateTime createdAt,
     required String cityOrZone,
     required double baseHourlyRate,
@@ -50,6 +51,7 @@ class UserProfileService {
       'email': email,
       'photoUrl': photoUrl,
       'phone': phone,
+      'avatarId': avatarId,
       'createdAt': Timestamp.fromDate(createdAt),
       'updatedAt': Timestamp.fromDate(now),
       'cityOrZone': cityOrZone,
@@ -84,6 +86,7 @@ class WorkerUserProfile {
   final String email;
   final String? photoUrl;
   final String? phone;
+  final String? avatarId;
   final DateTime createdAt;
   final DateTime updatedAt;
   final String cityOrZone;
@@ -96,6 +99,7 @@ class WorkerUserProfile {
     required this.email,
     this.photoUrl,
     this.phone,
+    this.avatarId,
     required this.createdAt,
     required this.updatedAt,
     required this.cityOrZone,
@@ -110,6 +114,7 @@ class WorkerUserProfile {
       email: data['email'] as String? ?? '',
       photoUrl: data['photoUrl'] as String?,
       phone: data['phone'] as String?,
+      avatarId: data['avatarId'] as String?,
       createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
       updatedAt: (data['updatedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
       cityOrZone: data['cityOrZone'] as String? ?? 'No especificado',
@@ -125,6 +130,7 @@ class WorkerUserProfile {
       email: email,
       photoUrl: photoUrl,
       phone: phone,
+      avatarId: avatarId,
       createdAt: createdAt,
       cityOrZone: cityOrZone,
       baseHourlyRate: baseHourlyRate,

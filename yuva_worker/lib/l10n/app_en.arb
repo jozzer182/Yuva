@@ -164,5 +164,8 @@
   "completeProfileRateInvalid": "Enter a valid rate greater than 0",
   "completeProfileSave": "Save and continue",
   "completeProfileExitTitle": "Exit without completing?",
-  "completeProfileExitMessage": "If you exit now, you'll need to complete your profile next time you sign in."
+  "completeProfileExitMessage": "If you exit now, you'll need to complete your profile next time you sign in.",
+  "avatarSelectTitle": "Select your avatar",
+  "avatarChange": "Change avatar",
+  "avatarSelected": "Avatar selected"
 }

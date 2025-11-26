@@ -51,6 +51,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           ? user.copyWith(
               name: firestoreProfile.displayName.isNotEmpty ? firestoreProfile.displayName : user.name,
               phone: firestoreProfile.phone ?? user.phone,
+              avatarId: firestoreProfile.avatarId,
             )
           : user;
       
@@ -84,6 +85,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       if (mounted) {
         Navigator.of(context).pushReplacementNamed('/main');
       }
+    } on FirebaseAuthMultiFactorException {
+      // User has MFA enrolled but we don't support it yet
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.mfaNotSupported),
+            backgroundColor: Colors.orange,
+            duration: const Duration(seconds: 5),
+          ),
+        );
+      }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -115,6 +127,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           ? user.copyWith(
               name: firestoreProfile.displayName.isNotEmpty ? firestoreProfile.displayName : user.name,
               phone: firestoreProfile.phone ?? user.phone,
+              avatarId: firestoreProfile.avatarId,
             )
           : user;
       

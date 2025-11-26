@@ -763,6 +763,24 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Si sales ahora, tendrás que completar tu perfil la próxima vez que inicies sesión.'**
   String get completeProfileExitMessage;
+
+  /// Title for avatar selection dialog
+  ///
+  /// In es, this message translates to:
+  /// **'Selecciona tu avatar'**
+  String get avatarSelectTitle;
+
+  /// Button text to change avatar
+  ///
+  /// In es, this message translates to:
+  /// **'Cambiar avatar'**
+  String get avatarChange;
+
+  /// Confirmation when avatar is selected
+  ///
+  /// In es, this message translates to:
+  /// **'Avatar seleccionado'**
+  String get avatarSelected;
 }
 
 class _AppLocalizationsDelegate

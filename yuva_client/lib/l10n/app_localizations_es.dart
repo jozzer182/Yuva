@@ -854,4 +854,90 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String get completeProfileExitMessage =>
       'Si sales ahora, tendrás que completar tu perfil la próxima vez que inicies sesión.';
+
+  @override
+  String get phoneValidationInvalid =>
+      'Ingresa un número de 10 dígitos (solo números)';
+
+  @override
+  String get phoneValidationRequired => 'El número de teléfono es requerido';
+
+  @override
+  String get phonePrefix => '+57';
+
+  @override
+  String get mfaEnrollmentTitle => 'Verificación de seguridad';
+
+  @override
+  String get mfaEnrollmentSubtitle =>
+      'Para tu seguridad, verificaremos tu número de teléfono con un código SMS.';
+
+  @override
+  String get mfaSendCode => 'Enviar código';
+
+  @override
+  String get mfaResendCode => 'Reenviar código';
+
+  @override
+  String mfaCodeSent(String phone) {
+    return 'Código enviado a $phone';
+  }
+
+  @override
+  String get mfaEnterCode => 'Ingresa el código de 6 dígitos';
+
+  @override
+  String get mfaCodeHint => 'Código de verificación';
+
+  @override
+  String get mfaVerify => 'Verificar';
+
+  @override
+  String get mfaVerifying => 'Verificando...';
+
+  @override
+  String get mfaSuccess => 'Teléfono verificado exitosamente';
+
+  @override
+  String get mfaErrorInvalidCode => 'Código inválido. Intenta nuevamente.';
+
+  @override
+  String get mfaErrorExpiredCode =>
+      'El código ha expirado. Solicita uno nuevo.';
+
+  @override
+  String get mfaErrorTooManyRequests =>
+      'Demasiados intentos. Espera unos minutos.';
+
+  @override
+  String get mfaErrorGeneric => 'Error al verificar. Intenta nuevamente.';
+
+  @override
+  String get mfaSignInTitle => 'Verificación requerida';
+
+  @override
+  String get mfaSignInSubtitle =>
+      'Enviamos un código SMS a tu teléfono registrado.';
+
+  @override
+  String get mfaPhoneLabel => 'Número de teléfono colombiano';
+
+  @override
+  String get mfaPhoneHint => '3001234567';
+
+  @override
+  String get mfaRequiredMessage => 'Debes verificar tu teléfono para continuar';
+
+  @override
+  String get mfaNotSupported =>
+      'Esta cuenta tiene verificación en dos pasos activada. Por favor, contacta soporte para desactivarla.';
+
+  @override
+  String get avatarSelectTitle => 'Selecciona tu avatar';
+
+  @override
+  String get avatarChange => 'Cambiar avatar';
+
+  @override
+  String get avatarSelected => 'Avatar seleccionado';
 }

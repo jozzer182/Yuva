@@ -4,6 +4,7 @@ import '../../design_system/colors.dart';
 import '../../design_system/typography.dart';
 import '../../design_system/components/yuva_button.dart';
 import '../../design_system/components/yuva_card.dart';
+import '../../design_system/components/avatar_picker.dart';
 import '../../core/providers.dart';
 import '../../data/models/worker_user.dart';
 import '../../data/models/user.dart';
@@ -25,6 +26,7 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
   late TextEditingController _nameController;
   late TextEditingController _cityOrZoneController;
   late TextEditingController _baseHourlyRateController;
+  String? _selectedAvatarId;
   bool _isSaving = false;
 
   @override
@@ -33,6 +35,7 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
     _nameController = TextEditingController(text: widget.authUser.name);
     _cityOrZoneController = TextEditingController();
     _baseHourlyRateController = TextEditingController();
+    _selectedAvatarId = widget.authUser.avatarId;
   }
 
   @override
@@ -68,6 +71,7 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
         email: widget.authUser.email,
         photoUrl: widget.authUser.photoUrl,
         phone: widget.authUser.phone,
+        avatarId: _selectedAvatarId,
         createdAt: widget.authUser.createdAt,
         cityOrZone: cityOrZone,
         baseHourlyRate: baseHourlyRate,
@@ -81,6 +85,7 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
         email: workerUser.email,
         photoUrl: workerUser.photoUrl,
         phone: workerUser.phone,
+        avatarId: _selectedAvatarId,
         createdAt: workerUser.createdAt,
         cityOrZone: cityOrZone,
         baseHourlyRate: baseHourlyRate,
@@ -194,8 +199,20 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
                     ),
                     const SizedBox(height: 32),
 
-                    // Profile photo and email (pre-filled from Google)
-                    if (widget.authUser.photoUrl != null) ...[
+                    // Avatar picker
+                    Center(
+                      child: AvatarPicker(
+                        selectedAvatarId: _selectedAvatarId,
+                        fallbackInitial: widget.authUser.name,
+                        onAvatarSelected: (avatarId) {
+                          setState(() => _selectedAvatarId = avatarId);
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Profile photo from Google (if available)
+                    if (widget.authUser.photoUrl != null && _selectedAvatarId == null) ...[
                       Center(
                         child: CircleAvatar(
                           radius: 50,

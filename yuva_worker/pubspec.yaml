@@ -43,6 +43,7 @@ flutter:
   
   assets:
     - icons/Android/
+    - assets/avatars/
 
 flutter_icons:
   android: true

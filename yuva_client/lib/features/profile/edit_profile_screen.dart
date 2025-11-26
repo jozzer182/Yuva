@@ -4,6 +4,7 @@ import '../../core/providers.dart';
 import '../../design_system/components/yuva_button.dart';
 import '../../design_system/components/yuva_card.dart';
 import '../../design_system/components/yuva_scaffold.dart';
+import '../../design_system/components/avatar_picker.dart';
 import '../../design_system/typography.dart';
 import '../../l10n/app_localizations.dart';
 
@@ -18,6 +19,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   late TextEditingController _nameController;
   late TextEditingController _emailController;
   late TextEditingController _phoneController;
+  String? _selectedAvatarId;
   bool _isSaving = false;
 
   @override
@@ -27,6 +29,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     _nameController = TextEditingController(text: user?.name ?? '');
     _emailController = TextEditingController(text: user?.email ?? '');
     _phoneController = TextEditingController(text: user?.phone ?? '');
+    _selectedAvatarId = user?.avatarId;
   }
 
   @override
@@ -52,6 +55,17 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Avatar picker
+              Center(
+                child: AvatarPicker(
+                  selectedAvatarId: _selectedAvatarId,
+                  fallbackInitial: _nameController.text,
+                  onAvatarSelected: (avatarId) {
+                    setState(() => _selectedAvatarId = avatarId);
+                  },
+                ),
+              ),
+              const SizedBox(height: 24),
               YuvaCard(
                 child: Column(
                   children: [
@@ -126,6 +140,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           name: displayName,
           email: _emailController.text.trim(),
           phone: phone,
+          avatarId: _selectedAvatarId,
         );
 
         // Save to Firestore
@@ -136,6 +151,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           email: updatedUser.email,
           photoUrl: updatedUser.photoUrl,
           phone: phone,
+          avatarId: _selectedAvatarId,
           createdAt: updatedUser.createdAt,
         );
 

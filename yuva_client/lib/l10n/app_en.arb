@@ -364,5 +364,38 @@
   "completeProfilePhoneRequired": "Phone is required to coordinate services",
   "completeProfileSave": "Save and continue",
   "completeProfileExitTitle": "Exit without completing?",
-  "completeProfileExitMessage": "If you exit now, you'll need to complete your profile next time you sign in."
+  "completeProfileExitMessage": "If you exit now, you'll need to complete your profile next time you sign in.",
+  "phoneValidationInvalid": "Enter a 10-digit number (numbers only)",
+  "phoneValidationRequired": "Phone number is required",
+  "phonePrefix": "+57",
+  "mfaEnrollmentTitle": "Security verification",
+  "mfaEnrollmentSubtitle": "For your security, we'll verify your phone number with an SMS code.",
+  "mfaSendCode": "Send code",
+  "mfaResendCode": "Resend code",
+  "mfaCodeSent": "Code sent to {phone}",
+  "@mfaCodeSent": {
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
+  "mfaEnterCode": "Enter the 6-digit code",
+  "mfaCodeHint": "Verification code",
+  "mfaVerify": "Verify",
+  "mfaVerifying": "Verifying...",
+  "mfaSuccess": "Phone verified successfully",
+  "mfaErrorInvalidCode": "Invalid code. Please try again.",
+  "mfaErrorExpiredCode": "Code has expired. Request a new one.",
+  "mfaErrorTooManyRequests": "Too many attempts. Please wait a few minutes.",
+  "mfaErrorGeneric": "Verification error. Please try again.",
+  "mfaSignInTitle": "Verification required",
+  "mfaSignInSubtitle": "We sent an SMS code to your registered phone.",
+  "mfaPhoneLabel": "Colombian phone number",
+  "mfaPhoneHint": "3001234567",
+  "mfaRequiredMessage": "You must verify your phone to continue",
+  "mfaNotSupported": "This account has two-factor authentication enabled. Please contact support to disable it.",
+  "avatarSelectTitle": "Select your avatar",
+  "avatarChange": "Change avatar",
+  "avatarSelected": "Avatar selected"
 }

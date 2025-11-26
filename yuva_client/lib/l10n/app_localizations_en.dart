@@ -841,4 +841,88 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get completeProfileExitMessage =>
       'If you exit now, you\'ll need to complete your profile next time you sign in.';
+
+  @override
+  String get phoneValidationInvalid => 'Enter a 10-digit number (numbers only)';
+
+  @override
+  String get phoneValidationRequired => 'Phone number is required';
+
+  @override
+  String get phonePrefix => '+57';
+
+  @override
+  String get mfaEnrollmentTitle => 'Security verification';
+
+  @override
+  String get mfaEnrollmentSubtitle =>
+      'For your security, we\'ll verify your phone number with an SMS code.';
+
+  @override
+  String get mfaSendCode => 'Send code';
+
+  @override
+  String get mfaResendCode => 'Resend code';
+
+  @override
+  String mfaCodeSent(String phone) {
+    return 'Code sent to $phone';
+  }
+
+  @override
+  String get mfaEnterCode => 'Enter the 6-digit code';
+
+  @override
+  String get mfaCodeHint => 'Verification code';
+
+  @override
+  String get mfaVerify => 'Verify';
+
+  @override
+  String get mfaVerifying => 'Verifying...';
+
+  @override
+  String get mfaSuccess => 'Phone verified successfully';
+
+  @override
+  String get mfaErrorInvalidCode => 'Invalid code. Please try again.';
+
+  @override
+  String get mfaErrorExpiredCode => 'Code has expired. Request a new one.';
+
+  @override
+  String get mfaErrorTooManyRequests =>
+      'Too many attempts. Please wait a few minutes.';
+
+  @override
+  String get mfaErrorGeneric => 'Verification error. Please try again.';
+
+  @override
+  String get mfaSignInTitle => 'Verification required';
+
+  @override
+  String get mfaSignInSubtitle =>
+      'We sent an SMS code to your registered phone.';
+
+  @override
+  String get mfaPhoneLabel => 'Colombian phone number';
+
+  @override
+  String get mfaPhoneHint => '3001234567';
+
+  @override
+  String get mfaRequiredMessage => 'You must verify your phone to continue';
+
+  @override
+  String get mfaNotSupported =>
+      'This account has two-factor authentication enabled. Please contact support to disable it.';
+
+  @override
+  String get avatarSelectTitle => 'Select your avatar';
+
+  @override
+  String get avatarChange => 'Change avatar';
+
+  @override
+  String get avatarSelected => 'Avatar selected';
 }

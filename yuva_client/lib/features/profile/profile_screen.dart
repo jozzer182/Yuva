@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../design_system/components/yuva_scaffold.dart';
 import '../../design_system/components/yuva_card.dart';
 import '../../design_system/components/yuva_button.dart';
+import '../../design_system/components/avatar_picker.dart';
 import '../../design_system/typography.dart';
 import '../../design_system/colors.dart';
 import '../../core/providers.dart';
@@ -49,33 +50,10 @@ class ProfileScreen extends ConsumerWidget {
                       children: [
                         Hero(
                           tag: 'user_avatar',
-                          child: Container(
-                            width: 72,
-                            height: 72,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              gradient: LinearGradient(
-                                colors: [
-                                  YuvaColors.primaryTeal,
-                                  YuvaColors.primaryTealDark,
-                                ],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: YuvaColors.primaryTeal.withValues(alpha: 0.3),
-                                  blurRadius: 12,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                            child: Center(
-                              child: Text(
-                                user?.name.substring(0, 1).toUpperCase() ?? 'U',
-                                style: YuvaTypography.hero(color: Colors.white),
-                              ),
-                            ),
+                          child: AvatarDisplay(
+                            avatarId: user?.avatarId,
+                            fallbackInitial: user?.name ?? 'U',
+                            size: 72,
                           ),
                         ),
                         const SizedBox(width: 16),

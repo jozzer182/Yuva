@@ -551,5 +551,114 @@
   "completeProfileExitMessage": "Si sales ahora, tendrás que completar tu perfil la próxima vez que inicies sesión.",
   "@completeProfileExitMessage": {
     "description": "Exit confirmation dialog message"
+  },
+  "phoneValidationInvalid": "Ingresa un número de 10 dígitos (solo números)",
+  "@phoneValidationInvalid": {
+    "description": "Phone validation error for Colombian numbers"
+  },
+  "phoneValidationRequired": "El número de teléfono es requerido",
+  "@phoneValidationRequired": {
+    "description": "Phone required validation message"
+  },
+  "phonePrefix": "+57",
+  "@phonePrefix": {
+    "description": "Colombian phone prefix"
+  },
+  "mfaEnrollmentTitle": "Verificación de seguridad",
+  "@mfaEnrollmentTitle": {
+    "description": "MFA enrollment screen title"
+  },
+  "mfaEnrollmentSubtitle": "Para tu seguridad, verificaremos tu número de teléfono con un código SMS.",
+  "@mfaEnrollmentSubtitle": {
+    "description": "MFA enrollment screen subtitle"
+  },
+  "mfaSendCode": "Enviar código",
+  "@mfaSendCode": {
+    "description": "Send SMS code button"
+  },
+  "mfaResendCode": "Reenviar código",
+  "@mfaResendCode": {
+    "description": "Resend SMS code button"
+  },
+  "mfaCodeSent": "Código enviado a {phone}",
+  "@mfaCodeSent": {
+    "description": "Code sent confirmation message",
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
+  "mfaEnterCode": "Ingresa el código de 6 dígitos",
+  "@mfaEnterCode": {
+    "description": "Enter verification code prompt"
+  },
+  "mfaCodeHint": "Código de verificación",
+  "@mfaCodeHint": {
+    "description": "Verification code field hint"
+  },
+  "mfaVerify": "Verificar",
+  "@mfaVerify": {
+    "description": "Verify button"
+  },
+  "mfaVerifying": "Verificando...",
+  "@mfaVerifying": {
+    "description": "Verifying loading text"
+  },
+  "mfaSuccess": "Teléfono verificado exitosamente",
+  "@mfaSuccess": {
+    "description": "MFA enrollment success message"
+  },
+  "mfaErrorInvalidCode": "Código inválido. Intenta nuevamente.",
+  "@mfaErrorInvalidCode": {
+    "description": "Invalid verification code error"
+  },
+  "mfaErrorExpiredCode": "El código ha expirado. Solicita uno nuevo.",
+  "@mfaErrorExpiredCode": {
+    "description": "Expired verification code error"
+  },
+  "mfaErrorTooManyRequests": "Demasiados intentos. Espera unos minutos.",
+  "@mfaErrorTooManyRequests": {
+    "description": "Too many requests error"
+  },
+  "mfaErrorGeneric": "Error al verificar. Intenta nuevamente.",
+  "@mfaErrorGeneric": {
+    "description": "Generic MFA error"
+  },
+  "mfaSignInTitle": "Verificación requerida",
+  "@mfaSignInTitle": {
+    "description": "MFA sign-in challenge title"
+  },
+  "mfaSignInSubtitle": "Enviamos un código SMS a tu teléfono registrado.",
+  "@mfaSignInSubtitle": {
+    "description": "MFA sign-in challenge subtitle"
+  },
+  "mfaPhoneLabel": "Número de teléfono colombiano",
+  "@mfaPhoneLabel": {
+    "description": "Colombian phone number field label"
+  },
+  "mfaPhoneHint": "3001234567",
+  "@mfaPhoneHint": {
+    "description": "Colombian phone number hint (10 digits)"
+  },
+  "mfaRequiredMessage": "Debes verificar tu teléfono para continuar",
+  "@mfaRequiredMessage": {
+    "description": "MFA required message"
+  },
+  "mfaNotSupported": "Esta cuenta tiene verificación en dos pasos activada. Por favor, contacta soporte para desactivarla.",
+  "@mfaNotSupported": {
+    "description": "Message when user has MFA but app doesn't support it"
+  },
+  "avatarSelectTitle": "Selecciona tu avatar",
+  "@avatarSelectTitle": {
+    "description": "Title for avatar selection dialog"
+  },
+  "avatarChange": "Cambiar avatar",
+  "@avatarChange": {
+    "description": "Button text to change avatar"
+  },
+  "avatarSelected": "Avatar seleccionado",
+  "@avatarSelected": {
+    "description": "Confirmation when avatar is selected"
   }
 }

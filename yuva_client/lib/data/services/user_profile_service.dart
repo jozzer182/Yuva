@@ -37,6 +37,7 @@ class UserProfileService {
     required String email,
     String? photoUrl,
     String? phone,
+    String? avatarId,
     required DateTime createdAt,
   }) async {
     final now = DateTime.now();
@@ -48,6 +49,7 @@ class UserProfileService {
       'email': email,
       'photoUrl': photoUrl,
       'phone': phone,
+      'avatarId': avatarId,
       'createdAt': Timestamp.fromDate(createdAt),
       'updatedAt': Timestamp.fromDate(now),
     };
@@ -81,6 +83,7 @@ class UserProfile {
   final String email;
   final String? photoUrl;
   final String? phone;
+  final String? avatarId;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -91,6 +94,7 @@ class UserProfile {
     required this.email,
     this.photoUrl,
     this.phone,
+    this.avatarId,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -103,6 +107,7 @@ class UserProfile {
       email: data['email'] as String? ?? '',
       photoUrl: data['photoUrl'] as String?,
       phone: data['phone'] as String?,
+      avatarId: data['avatarId'] as String?,
       createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
       updatedAt: (data['updatedAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
     );
@@ -116,6 +121,7 @@ class UserProfile {
       email: email,
       photoUrl: photoUrl,
       phone: phone,
+      avatarId: avatarId,
       createdAt: createdAt,
     );
   }

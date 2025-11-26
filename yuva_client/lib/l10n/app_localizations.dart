@@ -1657,6 +1657,162 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Si sales ahora, tendrás que completar tu perfil la próxima vez que inicies sesión.'**
   String get completeProfileExitMessage;
+
+  /// Phone validation error for Colombian numbers
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresa un número de 10 dígitos (solo números)'**
+  String get phoneValidationInvalid;
+
+  /// Phone required validation message
+  ///
+  /// In es, this message translates to:
+  /// **'El número de teléfono es requerido'**
+  String get phoneValidationRequired;
+
+  /// Colombian phone prefix
+  ///
+  /// In es, this message translates to:
+  /// **'+57'**
+  String get phonePrefix;
+
+  /// MFA enrollment screen title
+  ///
+  /// In es, this message translates to:
+  /// **'Verificación de seguridad'**
+  String get mfaEnrollmentTitle;
+
+  /// MFA enrollment screen subtitle
+  ///
+  /// In es, this message translates to:
+  /// **'Para tu seguridad, verificaremos tu número de teléfono con un código SMS.'**
+  String get mfaEnrollmentSubtitle;
+
+  /// Send SMS code button
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar código'**
+  String get mfaSendCode;
+
+  /// Resend SMS code button
+  ///
+  /// In es, this message translates to:
+  /// **'Reenviar código'**
+  String get mfaResendCode;
+
+  /// Code sent confirmation message
+  ///
+  /// In es, this message translates to:
+  /// **'Código enviado a {phone}'**
+  String mfaCodeSent(String phone);
+
+  /// Enter verification code prompt
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresa el código de 6 dígitos'**
+  String get mfaEnterCode;
+
+  /// Verification code field hint
+  ///
+  /// In es, this message translates to:
+  /// **'Código de verificación'**
+  String get mfaCodeHint;
+
+  /// Verify button
+  ///
+  /// In es, this message translates to:
+  /// **'Verificar'**
+  String get mfaVerify;
+
+  /// Verifying loading text
+  ///
+  /// In es, this message translates to:
+  /// **'Verificando...'**
+  String get mfaVerifying;
+
+  /// MFA enrollment success message
+  ///
+  /// In es, this message translates to:
+  /// **'Teléfono verificado exitosamente'**
+  String get mfaSuccess;
+
+  /// Invalid verification code error
+  ///
+  /// In es, this message translates to:
+  /// **'Código inválido. Intenta nuevamente.'**
+  String get mfaErrorInvalidCode;
+
+  /// Expired verification code error
+  ///
+  /// In es, this message translates to:
+  /// **'El código ha expirado. Solicita uno nuevo.'**
+  String get mfaErrorExpiredCode;
+
+  /// Too many requests error
+  ///
+  /// In es, this message translates to:
+  /// **'Demasiados intentos. Espera unos minutos.'**
+  String get mfaErrorTooManyRequests;
+
+  /// Generic MFA error
+  ///
+  /// In es, this message translates to:
+  /// **'Error al verificar. Intenta nuevamente.'**
+  String get mfaErrorGeneric;
+
+  /// MFA sign-in challenge title
+  ///
+  /// In es, this message translates to:
+  /// **'Verificación requerida'**
+  String get mfaSignInTitle;
+
+  /// MFA sign-in challenge subtitle
+  ///
+  /// In es, this message translates to:
+  /// **'Enviamos un código SMS a tu teléfono registrado.'**
+  String get mfaSignInSubtitle;
+
+  /// Colombian phone number field label
+  ///
+  /// In es, this message translates to:
+  /// **'Número de teléfono colombiano'**
+  String get mfaPhoneLabel;
+
+  /// Colombian phone number hint (10 digits)
+  ///
+  /// In es, this message translates to:
+  /// **'3001234567'**
+  String get mfaPhoneHint;
+
+  /// MFA required message
+  ///
+  /// In es, this message translates to:
+  /// **'Debes verificar tu teléfono para continuar'**
+  String get mfaRequiredMessage;
+
+  /// Message when user has MFA but app doesn't support it
+  ///
+  /// In es, this message translates to:
+  /// **'Esta cuenta tiene verificación en dos pasos activada. Por favor, contacta soporte para desactivarla.'**
+  String get mfaNotSupported;
+
+  /// Title for avatar selection dialog
+  ///
+  /// In es, this message translates to:
+  /// **'Selecciona tu avatar'**
+  String get avatarSelectTitle;
+
+  /// Button text to change avatar
+  ///
+  /// In es, this message translates to:
+  /// **'Cambiar avatar'**
+  String get avatarChange;
+
+  /// Confirmation when avatar is selected
+  ///
+  /// In es, this message translates to:
+  /// **'Avatar seleccionado'**
+  String get avatarSelected;
 }
 
 class _AppLocalizationsDelegate

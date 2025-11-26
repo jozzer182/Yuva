@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../design_system/colors.dart';
 import '../../design_system/typography.dart';
 import '../../design_system/components/yuva_button.dart';
 import '../../design_system/components/yuva_card.dart';
+import '../../design_system/components/avatar_picker.dart';
 import '../../core/providers.dart';
+import '../../core/phone_validator.dart';
 import '../../data/models/user.dart';
 import 'package:yuva/l10n/app_localizations.dart';
 
@@ -23,6 +26,7 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _nameController;
   late TextEditingController _phoneController;
+  String? _selectedAvatarId;
   bool _isSaving = false;
 
   @override
@@ -30,6 +34,7 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
     super.initState();
     _nameController = TextEditingController(text: widget.authUser.name);
     _phoneController = TextEditingController(text: widget.authUser.phone ?? '');
+    _selectedAvatarId = widget.authUser.avatarId;
   }
 
   @override
@@ -46,7 +51,11 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
 
     try {
       final displayName = _nameController.text.trim();
-      final phone = _phoneController.text.trim();
+      final rawPhone = _phoneController.text.trim();
+      
+      // Clean and format phone number
+      final cleanedPhone = PhoneValidator.cleanNumber(rawPhone);
+      final formattedPhone = PhoneValidator.toE164(cleanedPhone);
 
       // Update displayName in Firebase Auth if changed
       final firebaseAuth = ref.read(firebaseAuthProvider);
@@ -59,7 +68,8 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
       // Create updated User with completed profile
       final updatedUser = widget.authUser.copyWith(
         name: displayName,
-        phone: phone,
+        phone: formattedPhone,
+        avatarId: _selectedAvatarId,
       );
 
       // Save to Firestore
@@ -69,7 +79,8 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
         displayName: displayName,
         email: updatedUser.email,
         photoUrl: updatedUser.photoUrl,
-        phone: phone,
+        phone: formattedPhone,
+        avatarId: _selectedAvatarId,
         createdAt: updatedUser.createdAt,
       );
 
@@ -173,8 +184,20 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
                     ),
                     const SizedBox(height: 32),
 
-                    // Profile photo and email (pre-filled from Google)
-                    if (widget.authUser.photoUrl != null) ...[
+                    // Avatar picker
+                    Center(
+                      child: AvatarPicker(
+                        selectedAvatarId: _selectedAvatarId,
+                        fallbackInitial: widget.authUser.name,
+                        onAvatarSelected: (avatarId) {
+                          setState(() => _selectedAvatarId = avatarId);
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Profile photo from Google (if available)
+                    if (widget.authUser.photoUrl != null && _selectedAvatarId == null) ...[
                       Center(
                         child: CircleAvatar(
                           radius: 50,
@@ -211,18 +234,26 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
                           ),
                           const SizedBox(height: 16),
 
-                          // Phone field (required for clients)
+                          // Phone field (required for clients - Colombian 10 digits)
                           TextFormField(
                             controller: _phoneController,
                             keyboardType: TextInputType.phone,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                              LengthLimitingTextInputFormatter(10),
+                            ],
                             decoration: InputDecoration(
-                              labelText: l10n.completeProfilePhone,
-                              hintText: l10n.completeProfilePhoneHint,
+                              labelText: l10n.mfaPhoneLabel,
+                              hintText: l10n.mfaPhoneHint,
                               prefixIcon: const Icon(Icons.phone_outlined),
+                              prefixText: '${l10n.phonePrefix} ',
                             ),
                             validator: (value) {
                               if (value == null || value.trim().isEmpty) {
-                                return l10n.completeProfilePhoneRequired;
+                                return l10n.phoneValidationRequired;
+                              }
+                              if (!PhoneValidator.isValid(value)) {
+                                return l10n.phoneValidationInvalid;
                               }
                               return null;
                             },
