@@ -1,28 +1,38 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import '../models/user.dart';
+import '../models/worker_user.dart';
+import '../services/user_profile_service.dart';
 
 /// Auth state for workers
 class AuthState {
   final User? user;
+  final WorkerUser? workerUser;
   final bool isLoading;
   final String? errorMessage;
+  final bool profileLoaded;
 
   const AuthState({
     this.user,
+    this.workerUser,
     this.isLoading = false,
     this.errorMessage,
+    this.profileLoaded = false,
   });
 
   AuthState copyWith({
     User? user,
+    WorkerUser? workerUser,
     bool? isLoading,
     String? errorMessage,
+    bool? profileLoaded,
   }) {
     return AuthState(
       user: user ?? this.user,
+      workerUser: workerUser ?? this.workerUser,
       isLoading: isLoading ?? this.isLoading,
       errorMessage: errorMessage,
+      profileLoaded: profileLoaded ?? this.profileLoaded,
     );
   }
 
@@ -31,22 +41,62 @@ class AuthState {
 
 /// Auth state notifier for workers
 /// Listens to Firebase auth state changes
+/// Also fetches additional profile data from Firestore
 class AuthStateNotifier extends StateNotifier<AuthState> {
   final firebase_auth.FirebaseAuth _firebaseAuth;
+  final UserProfileService _userProfileService;
 
-  AuthStateNotifier({firebase_auth.FirebaseAuth? firebaseAuth})
-      : _firebaseAuth = firebaseAuth ?? firebase_auth.FirebaseAuth.instance,
+  AuthStateNotifier({
+    firebase_auth.FirebaseAuth? firebaseAuth,
+    UserProfileService? userProfileService,
+  })  : _firebaseAuth = firebaseAuth ?? firebase_auth.FirebaseAuth.instance,
+        _userProfileService = userProfileService ?? UserProfileService(),
         super(const AuthState(isLoading: true)) {
     // Listen to auth state changes
-    _firebaseAuth.authStateChanges().listen((firebaseUser) {
+    _firebaseAuth.authStateChanges().listen((firebaseUser) async {
       if (firebaseUser == null) {
         state = const AuthState();
       } else {
-        state = AuthState(user: _mapFirebaseUserToUser(firebaseUser));
+        // First set basic user from Firebase Auth
+        final basicUser = _mapFirebaseUserToUser(firebaseUser);
+        state = AuthState(user: basicUser, isLoading: true);
+        
+        // Then try to fetch additional profile data from Firestore
+        await _loadFirestoreProfile(firebaseUser.uid, basicUser);
       }
     }, onError: (error) {
       state = AuthState(errorMessage: error.toString());
     });
+  }
+
+  /// Load additional profile data from Firestore
+  Future<void> _loadFirestoreProfile(String uid, User basicUser) async {
+    try {
+      final profile = await _userProfileService.getWorkerProfile(uid);
+      
+      if (profile != null) {
+        // Create enriched user from Firestore data
+        final enrichedUser = basicUser.copyWith(
+          name: profile.displayName.isNotEmpty ? profile.displayName : basicUser.name,
+          phone: profile.phone ?? basicUser.phone,
+        );
+        
+        // Create WorkerUser from Firestore profile
+        final workerUser = profile.toWorkerUser();
+        
+        state = AuthState(
+          user: enrichedUser,
+          workerUser: workerUser,
+          profileLoaded: true,
+        );
+      } else {
+        // No Firestore profile yet - use basic user
+        state = AuthState(user: basicUser, profileLoaded: false);
+      }
+    } catch (e) {
+      // On error, just use basic user from Firebase Auth
+      state = AuthState(user: basicUser, profileLoaded: false);
+    }
   }
 
   /// Maps a FirebaseUser to our app's User model

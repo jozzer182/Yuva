@@ -33,6 +33,7 @@ import '../data/repositories_empty/empty_worker_active_jobs_repository.dart';
 import '../data/repositories_empty/empty_worker_proposals_repository.dart';
 import 'settings_controller.dart';
 import 'worker_user_controller.dart';
+import '../data/services/user_profile_service.dart';
 
 final firebaseAuthProvider = Provider<firebase_auth.FirebaseAuth>((ref) {
   return firebase_auth.FirebaseAuth.instance;
@@ -115,4 +116,9 @@ final appSettingsProvider =
 
 final workerUserProvider = StateNotifierProvider<WorkerUserController, WorkerUser?>((ref) {
   return WorkerUserController();
+});
+
+// User Profile Service Provider (Firestore)
+final userProfileServiceProvider = Provider<UserProfileService>((ref) {
+  return UserProfileService();
 });

@@ -41,7 +41,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         _emailController.text,
         _passwordController.text,
       );
-      ref.read(currentUserProvider.notifier).state = user;
+      
+      // Try to load profile from Firestore first
+      final userProfileService = ref.read(userProfileServiceProvider);
+      final firestoreProfile = await userProfileService.getUserProfile(user.id);
+      
+      // Merge Firestore data with auth user
+      final enrichedUser = firestoreProfile != null
+          ? user.copyWith(
+              name: firestoreProfile.displayName.isNotEmpty ? firestoreProfile.displayName : user.name,
+              phone: firestoreProfile.phone ?? user.phone,
+            )
+          : user;
+      
+      ref.read(currentUserProvider.notifier).state = enrichedUser;
 
       // Verificar si el email está verificado
       final firebaseUser = FirebaseAuth.instance.currentUser;
@@ -50,6 +63,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
               builder: (context) => const EmailVerificationScreen(),
+            ),
+          );
+        }
+        return;
+      }
+
+      // Check if profile is complete
+      if (!enrichedUser.isProfileComplete) {
+        if (mounted) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => CompleteProfileScreen(authUser: enrichedUser),
             ),
           );
         }
@@ -80,15 +105,28 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     try {
       final authRepo = ref.read(authRepositoryProvider);
       final user = await authRepo.signInWithGoogle();
-      ref.read(currentUserProvider.notifier).state = user;
+      
+      // Try to load profile from Firestore first
+      final userProfileService = ref.read(userProfileServiceProvider);
+      final firestoreProfile = await userProfileService.getUserProfile(user.id);
+      
+      // Merge Firestore data with auth user
+      final enrichedUser = firestoreProfile != null
+          ? user.copyWith(
+              name: firestoreProfile.displayName.isNotEmpty ? firestoreProfile.displayName : user.name,
+              phone: firestoreProfile.phone ?? user.phone,
+            )
+          : user;
+      
+      ref.read(currentUserProvider.notifier).state = enrichedUser;
 
       // Check if profile is complete (client needs phone)
-      if (!user.isProfileComplete) {
+      if (!enrichedUser.isProfileComplete) {
         // Navigate to complete profile screen
         if (mounted) {
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
-              builder: (context) => CompleteProfileScreen(authUser: user),
+              builder: (context) => CompleteProfileScreen(authUser: enrichedUser),
             ),
           );
         }

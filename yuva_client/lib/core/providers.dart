@@ -34,6 +34,7 @@ import 'package:yuva/data/repositories_empty/empty_ratings_repository.dart';
 import 'package:yuva/data/repositories_empty/empty_pro_summary_repository.dart';
 import 'package:yuva/data/repositories_empty/empty_client_active_job_repository.dart';
 import 'package:yuva/data/services/booking_price_calculator.dart';
+import 'package:yuva/data/services/user_profile_service.dart';
 
 import 'settings_controller.dart';
 
@@ -115,3 +116,8 @@ final clientActiveJobRepositoryProvider = Provider<ClientActiveJobRepository>((r
 // App settings (locale + toggles)
 final appSettingsProvider =
     StateNotifierProvider<AppSettingsController, AppSettings>((ref) => AppSettingsController());
+
+// User Profile Service Provider (Firestore)
+final userProfileServiceProvider = Provider<UserProfileService>((ref) {
+  return UserProfileService();
+});

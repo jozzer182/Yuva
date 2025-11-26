@@ -62,6 +62,17 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
         phone: phone,
       );
 
+      // Save to Firestore
+      final userProfileService = ref.read(userProfileServiceProvider);
+      await userProfileService.saveUserProfile(
+        uid: updatedUser.id,
+        displayName: displayName,
+        email: updatedUser.email,
+        photoUrl: updatedUser.photoUrl,
+        phone: phone,
+        createdAt: updatedUser.createdAt,
+      );
+
       // Save to state
       ref.read(currentUserProvider.notifier).state = updatedUser;
 

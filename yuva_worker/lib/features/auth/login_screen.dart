@@ -44,19 +44,29 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       );
       ref.read(currentUserProvider.notifier).state = user;
 
-      // Load or create WorkerUser
-      final existingWorkerUser = ref.read(workerUserProvider);
-      if (existingWorkerUser == null || existingWorkerUser.uid != user.id) {
-        // Create basic WorkerUser if doesn't exist
-        final workerUser = WorkerUser.fromAuthUser(
-          user,
-          cityOrZone: existingWorkerUser?.cityOrZone ?? 'No especificado',
-          baseHourlyRate: existingWorkerUser?.baseHourlyRate ?? 0.0,
-        );
+      // Try to load WorkerUser from Firestore first
+      final userProfileService = ref.read(userProfileServiceProvider);
+      final firestoreProfile = await userProfileService.getWorkerProfile(user.id);
+      
+      if (firestoreProfile != null && firestoreProfile.isComplete) {
+        // Use Firestore data - profile exists and is complete
+        final workerUser = firestoreProfile.toWorkerUser();
         await ref.read(workerUserProvider.notifier).setWorkerUser(workerUser);
       } else {
-        // Update auth fields in existing WorkerUser
-        await ref.read(workerUserProvider.notifier).updateFromAuthUser(user);
+        // Fall back to local data or create new
+        final existingWorkerUser = ref.read(workerUserProvider);
+        if (existingWorkerUser == null || existingWorkerUser.uid != user.id) {
+          // Create basic WorkerUser if doesn't exist
+          final workerUser = WorkerUser.fromAuthUser(
+            user,
+            cityOrZone: firestoreProfile?.cityOrZone ?? 'No especificado',
+            baseHourlyRate: firestoreProfile?.baseHourlyRate ?? 0.0,
+          );
+          await ref.read(workerUserProvider.notifier).setWorkerUser(workerUser);
+        } else {
+          // Update auth fields in existing WorkerUser
+          await ref.read(workerUserProvider.notifier).updateFromAuthUser(user);
+        }
       }
 
       // Verificar si el email está verificado
@@ -66,6 +76,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
               builder: (context) => const EmailVerificationScreen(),
+            ),
+          );
+        }
+        return;
+      }
+
+      // Check if profile is complete
+      final currentWorkerUser = ref.read(workerUserProvider);
+      if (currentWorkerUser != null && !currentWorkerUser.isProfileComplete) {
+        if (mounted) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => CompleteProfileScreen(authUser: user),
             ),
           );
         }
@@ -98,45 +121,42 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       final user = await authRepo.signInWithGoogle();
       ref.read(currentUserProvider.notifier).state = user;
 
-      // Load or create WorkerUser
-      final existingWorkerUser = ref.read(workerUserProvider);
-      if (existingWorkerUser == null || existingWorkerUser.uid != user.id) {
-        // Create WorkerUser with existing data or defaults
-        final workerUser = WorkerUser.fromAuthUser(
-          user,
-          cityOrZone: existingWorkerUser?.cityOrZone ?? 'No especificado',
-          baseHourlyRate: existingWorkerUser?.baseHourlyRate ?? 0.0,
-        );
+      // Try to load WorkerUser from Firestore first
+      final userProfileService = ref.read(userProfileServiceProvider);
+      final firestoreProfile = await userProfileService.getWorkerProfile(user.id);
+      
+      if (firestoreProfile != null && firestoreProfile.isComplete) {
+        // Use Firestore data - profile exists and is complete
+        final workerUser = firestoreProfile.toWorkerUser();
         await ref.read(workerUserProvider.notifier).setWorkerUser(workerUser);
-
-        // Check if profile is complete
-        if (!workerUser.isProfileComplete) {
-          // Navigate to complete profile screen
-          if (mounted) {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (context) => CompleteProfileScreen(authUser: user),
-              ),
-            );
-          }
-          return;
+        
+        // Profile is complete, go to main
+        if (mounted) {
+          Navigator.of(context).pushReplacementNamed('/main');
         }
-      } else {
-        // Update auth fields in existing WorkerUser
-        await ref.read(workerUserProvider.notifier).updateFromAuthUser(user);
+        return;
+      }
+      
+      // No complete Firestore profile - check local or create new
+      final existingWorkerUser = ref.read(workerUserProvider);
+      final workerUser = WorkerUser.fromAuthUser(
+        user,
+        cityOrZone: firestoreProfile?.cityOrZone ?? existingWorkerUser?.cityOrZone ?? 'No especificado',
+        baseHourlyRate: firestoreProfile?.baseHourlyRate ?? existingWorkerUser?.baseHourlyRate ?? 0.0,
+      );
+      await ref.read(workerUserProvider.notifier).setWorkerUser(workerUser);
 
-        // Check if existing profile is complete
-        final updatedWorkerUser = ref.read(workerUserProvider);
-        if (updatedWorkerUser != null && !updatedWorkerUser.isProfileComplete) {
-          if (mounted) {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (context) => CompleteProfileScreen(authUser: user),
-              ),
-            );
-          }
-          return;
+      // Check if profile is complete
+      if (!workerUser.isProfileComplete) {
+        // Navigate to complete profile screen
+        if (mounted) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => CompleteProfileScreen(authUser: user),
+            ),
+          );
         }
+        return;
       }
 
       // Google Sign-In ya verifica el email automáticamente

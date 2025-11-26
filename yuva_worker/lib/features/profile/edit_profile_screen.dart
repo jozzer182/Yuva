@@ -72,6 +72,20 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
         baseHourlyRate: newBaseHourlyRate,
       );
       
+      // Save to Firestore
+      final userProfileService = ref.read(userProfileServiceProvider);
+      await userProfileService.saveWorkerProfile(
+        uid: updated.uid,
+        displayName: newDisplayName,
+        email: updated.email,
+        photoUrl: updated.photoUrl,
+        phone: updated.phone,
+        createdAt: updated.createdAt,
+        cityOrZone: updated.cityOrZone,
+        baseHourlyRate: newBaseHourlyRate,
+      );
+      
+      // Save to local state (SharedPreferences)
       await ref.read(workerUserProvider.notifier).setWorkerUser(updated);
       
       if (!mounted) return;

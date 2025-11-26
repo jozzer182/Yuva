@@ -108,29 +108,65 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
       _isSaving = true;
     });
 
-    await Future.delayed(const Duration(milliseconds: 500)); // Simulate save
+    try {
+      final currentUser = ref.read(currentUserProvider);
+      if (currentUser != null) {
+        final displayName = _nameController.text.trim();
+        final phone = _phoneController.text.trim().isEmpty ? null : _phoneController.text.trim();
+        
+        // Update displayName in Firebase Auth if changed
+        final firebaseAuth = ref.read(firebaseAuthProvider);
+        final authUser = firebaseAuth.currentUser;
+        if (authUser != null && displayName != currentUser.name) {
+          await authUser.updateDisplayName(displayName);
+          await authUser.reload();
+        }
 
-    final currentUser = ref.read(currentUserProvider);
-    if (currentUser != null) {
-      final updatedUser = currentUser.copyWith(
-        name: _nameController.text.trim(),
-        email: _emailController.text.trim(),
-        phone: _phoneController.text.trim().isEmpty ? null : _phoneController.text.trim(),
-      );
-      ref.read(currentUserProvider.notifier).state = updatedUser;
-    }
+        final updatedUser = currentUser.copyWith(
+          name: displayName,
+          email: _emailController.text.trim(),
+          phone: phone,
+        );
 
-    if (mounted) {
-      setState(() {
-        _isSaving = false;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.profileUpdated),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-      Navigator.of(context).pop();
+        // Save to Firestore
+        final userProfileService = ref.read(userProfileServiceProvider);
+        await userProfileService.saveUserProfile(
+          uid: updatedUser.id,
+          displayName: displayName,
+          email: updatedUser.email,
+          photoUrl: updatedUser.photoUrl,
+          phone: phone,
+          createdAt: updatedUser.createdAt,
+        );
+
+        // Update local state
+        ref.read(currentUserProvider.notifier).state = updatedUser;
+      }
+
+      if (mounted) {
+        setState(() {
+          _isSaving = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.profileUpdated),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+        Navigator.of(context).pop();
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isSaving = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 }

@@ -73,7 +73,20 @@ class _CompleteProfileScreenState extends ConsumerState<CompleteProfileScreen> {
         baseHourlyRate: baseHourlyRate,
       );
 
-      // Save to state
+      // Save to Firestore
+      final userProfileService = ref.read(userProfileServiceProvider);
+      await userProfileService.saveWorkerProfile(
+        uid: workerUser.uid,
+        displayName: displayName,
+        email: workerUser.email,
+        photoUrl: workerUser.photoUrl,
+        phone: workerUser.phone,
+        createdAt: workerUser.createdAt,
+        cityOrZone: cityOrZone,
+        baseHourlyRate: baseHourlyRate,
+      );
+
+      // Save to local state (SharedPreferences)
       await ref.read(workerUserProvider.notifier).setWorkerUser(workerUser);
 
       // Update currentUser with new name if changed
