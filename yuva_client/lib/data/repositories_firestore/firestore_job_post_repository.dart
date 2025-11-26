@@ -59,15 +59,75 @@ class FirestoreJobPostRepository implements JobPostRepository {
 
   @override
   Future<JobPost> updateJobPost(JobPost post) async {
+    // Verify the job exists and is modifiable
+    final doc = await _jobsCollection.doc(post.id).get();
+    if (!doc.exists || doc.data() == null) {
+      throw StateError('Job ${post.id} not found');
+    }
+    
+    final currentJob = JobPost.fromMap(doc.data()!, doc.id);
+    
+    // Verify ownership
+    if (currentJob.userId != _currentUserId) {
+      throw const JobNotModifiableException('You do not own this job.');
+    }
+    
+    // Verify job is still modifiable
+    if (!currentJob.canClientModify) {
+      throw const JobNotModifiableException('This job can no longer be edited.');
+    }
+    
     final now = DateTime.now();
     final updatedPost = post.copyWith(updatedAt: now);
 
+    // Only update modifiable fields, preserve system fields
     await _jobsCollection.doc(post.id).update({
-      ...updatedPost.toMap(),
+      'titleKey': updatedPost.titleKey,
+      'descriptionKey': updatedPost.descriptionKey,
+      'customTitle': updatedPost.customTitle,
+      'customDescription': updatedPost.customDescription,
+      'serviceTypeId': updatedPost.serviceTypeId,
+      'propertyType': updatedPost.propertyDetails.type.name,
+      'sizeCategory': updatedPost.propertyDetails.sizeCategory.name,
+      'bedrooms': updatedPost.propertyDetails.bedrooms,
+      'bathrooms': updatedPost.propertyDetails.bathrooms,
+      'budgetType': updatedPost.budgetType.name,
+      'hourlyRateFrom': updatedPost.hourlyRateFrom,
+      'hourlyRateTo': updatedPost.hourlyRateTo,
+      'fixedBudget': updatedPost.fixedBudget,
+      'areaLabel': updatedPost.areaLabel,
+      'frequency': updatedPost.frequency.name,
+      'preferredStartDate': updatedPost.preferredStartDate,
       'updatedAt': FieldValue.serverTimestamp(),
     });
 
     return updatedPost;
+  }
+
+  @override
+  Future<void> deleteJob(String jobId) async {
+    final doc = await _jobsCollection.doc(jobId).get();
+    if (!doc.exists || doc.data() == null) {
+      throw StateError('Job $jobId not found');
+    }
+    
+    final job = JobPost.fromMap(doc.data()!, doc.id);
+    
+    // Verify ownership
+    if (job.userId != _currentUserId) {
+      throw const JobNotModifiableException('You do not own this job.');
+    }
+    
+    // Verify job is still modifiable
+    if (!job.canClientModify) {
+      throw const JobNotModifiableException('This job can no longer be deleted.');
+    }
+    
+    // Mark as cancelled instead of hard delete to preserve history
+    await _jobsCollection.doc(jobId).update({
+      'status': JobPostStatus.cancelled.name,
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
   }
 
   @override

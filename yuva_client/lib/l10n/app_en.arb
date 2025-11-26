@@ -397,5 +397,16 @@
   "mfaNotSupported": "This account has two-factor authentication enabled. Please contact support to disable it.",
   "avatarSelectTitle": "Select your avatar",
   "avatarChange": "Change avatar",
-  "avatarSelected": "Avatar selected"
+  "avatarSelected": "Avatar selected",
+  "editJob": "Edit job",
+  "deleteJob": "Delete job",
+  "editJobTitle": "Edit job",
+  "deleteJobTitle": "Delete job",
+  "deleteJobConfirmation": "Are you sure you want to delete this job? This action cannot be undone.",
+  "delete": "Delete",
+  "cancel": "Cancel",
+  "saveChanges": "Save changes",
+  "jobDeletedSuccess": "Job deleted successfully",
+  "jobUpdatedSuccess": "Job updated successfully",
+  "jobCannotBeModified": "This job can no longer be modified"
 }

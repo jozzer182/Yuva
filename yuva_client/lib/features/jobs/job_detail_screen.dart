@@ -6,6 +6,7 @@ import '../../core/providers.dart';
 import '../../data/models/booking_request.dart';
 import '../../data/models/job_models.dart';
 import '../../data/models/rating.dart';
+import '../../data/repositories/job_post_repository.dart';
 import '../../design_system/colors.dart';
 import '../../design_system/components/yuva_button.dart';
 import '../../design_system/components/yuva_card.dart';
@@ -15,6 +16,7 @@ import '../../design_system/typography.dart';
 import '../../l10n/app_localizations.dart';
 import '../ratings/rate_job_screen.dart';
 import '../ratings/ratings_providers.dart';
+import 'edit_job_screen.dart';
 import 'job_providers.dart';
 import 'proposal_detail_screen.dart';
 
@@ -36,6 +38,45 @@ class JobDetailScreen extends ConsumerWidget {
       useGradientBackground: true,
       appBar: AppBar(
         title: Text(l10n.jobDetailTitle, style: YuvaTypography.subtitle()),
+        actions: [
+          jobAsync.whenOrNull(
+            data: (job) {
+              if (job == null || !job.canClientModify) return null;
+              return PopupMenuButton<String>(
+                icon: const Icon(Icons.more_vert),
+                onSelected: (value) {
+                  if (value == 'edit') {
+                    _navigateToEdit(context, job);
+                  } else if (value == 'delete') {
+                    _showDeleteConfirmation(context, ref, l10n, job);
+                  }
+                },
+                itemBuilder: (context) => [
+                  PopupMenuItem(
+                    value: 'edit',
+                    child: Row(
+                      children: [
+                        const Icon(Icons.edit_outlined),
+                        const SizedBox(width: 8),
+                        Text(l10n.editJob),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem(
+                    value: 'delete',
+                    child: Row(
+                      children: [
+                        Icon(Icons.delete_outline, color: Colors.red.shade400),
+                        const SizedBox(width: 8),
+                        Text(l10n.deleteJob, style: TextStyle(color: Colors.red.shade400)),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            },
+          ) ?? const SizedBox.shrink(),
+        ],
       ),
       body: SafeArea(
         child: jobAsync.when(
@@ -63,6 +104,63 @@ class JobDetailScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  void _navigateToEdit(BuildContext context, JobPost job) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => EditJobScreen(job: job)),
+    );
+  }
+
+  Future<void> _showDeleteConfirmation(
+    BuildContext context,
+    WidgetRef ref,
+    AppLocalizations l10n,
+    JobPost job,
+  ) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.deleteJobTitle),
+        content: Text(l10n.deleteJobConfirmation),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: Text(l10n.delete),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true && context.mounted) {
+      try {
+        await ref.read(jobPostRepositoryProvider).deleteJob(job.id);
+        ref.invalidate(jobPostsProvider);
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(l10n.jobDeletedSuccess)),
+          );
+          Navigator.of(context).pop();
+        }
+      } on JobNotModifiableException {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(l10n.jobCannotBeModified)),
+          );
+        }
+      } catch (e) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(e.toString())),
+          );
+        }
+      }
+    }
   }
 
   Widget _buildContent(

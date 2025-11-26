@@ -925,4 +925,32 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get avatarSelected => 'Avatar selected';
+
+  @override
+  String get editJob => 'Edit job';
+
+  @override
+  String get deleteJob => 'Delete job';
+
+  @override
+  String get editJobTitle => 'Edit job';
+
+  @override
+  String get deleteJobTitle => 'Delete job';
+
+  @override
+  String get deleteJobConfirmation =>
+      'Are you sure you want to delete this job? This action cannot be undone.';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get jobDeletedSuccess => 'Job deleted successfully';
+
+  @override
+  String get jobUpdatedSuccess => 'Job updated successfully';
+
+  @override
+  String get jobCannotBeModified => 'This job can no longer be modified';
 }

@@ -660,5 +660,49 @@
   "avatarSelected": "Avatar seleccionado",
   "@avatarSelected": {
     "description": "Confirmation when avatar is selected"
+  },
+  "editJob": "Editar trabajo",
+  "@editJob": {
+    "description": "Edit job menu item"
+  },
+  "deleteJob": "Eliminar trabajo",
+  "@deleteJob": {
+    "description": "Delete job menu item"
+  },
+  "editJobTitle": "Editar trabajo",
+  "@editJobTitle": {
+    "description": "Edit job screen title"
+  },
+  "deleteJobTitle": "Eliminar trabajo",
+  "@deleteJobTitle": {
+    "description": "Delete job dialog title"
+  },
+  "deleteJobConfirmation": "¿Estás seguro de eliminar este trabajo? Esta acción no se puede deshacer.",
+  "@deleteJobConfirmation": {
+    "description": "Delete job confirmation message"
+  },
+  "delete": "Eliminar",
+  "@delete": {
+    "description": "Delete button text"
+  },
+  "cancel": "Cancelar",
+  "@cancel": {
+    "description": "Cancel button text"
+  },
+  "saveChanges": "Guardar cambios",
+  "@saveChanges": {
+    "description": "Save changes button text"
+  },
+  "jobDeletedSuccess": "Trabajo eliminado correctamente",
+  "@jobDeletedSuccess": {
+    "description": "Job deleted success message"
+  },
+  "jobUpdatedSuccess": "Trabajo actualizado correctamente",
+  "@jobUpdatedSuccess": {
+    "description": "Job updated success message"
+  },
+  "jobCannotBeModified": "Este trabajo ya no se puede modificar",
+  "@jobCannotBeModified": {
+    "description": "Job cannot be modified error message"
   }
 }

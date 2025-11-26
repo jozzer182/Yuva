@@ -24,6 +24,11 @@ class EmptyJobPostRepository implements JobPostRepository {
   }
 
   @override
+  Future<void> deleteJob(String jobId) async {
+    throw UnimplementedError('Job posts not available in empty mode');
+  }
+
+  @override
   Future<JobPost> invitePro({required String jobPostId, required String proId}) async {
     throw UnimplementedError('Job posts not available in empty mode');
   }

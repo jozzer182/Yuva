@@ -47,9 +47,39 @@ class DummyJobPostRepository implements JobPostRepository {
     if (index == -1) {
       throw StateError('Job ${post.id} not found');
     }
+    
+    final currentJob = _store.jobPosts[index];
+    
+    // Verify job is still modifiable
+    if (!currentJob.canClientModify) {
+      throw const JobNotModifiableException('This job can no longer be edited.');
+    }
+    
     final updated = post.copyWith(updatedAt: DateTime.now());
     _store.jobPosts[index] = updated;
     return updated;
+  }
+
+  @override
+  Future<void> deleteJob(String jobId) async {
+    await Future.delayed(_latency);
+    final index = _store.jobPosts.indexWhere((element) => element.id == jobId);
+    if (index == -1) {
+      throw StateError('Job $jobId not found');
+    }
+    
+    final job = _store.jobPosts[index];
+    
+    // Verify job is still modifiable
+    if (!job.canClientModify) {
+      throw const JobNotModifiableException('This job can no longer be deleted.');
+    }
+    
+    // Mark as cancelled instead of removing to match Firestore behavior
+    _store.jobPosts[index] = job.copyWith(
+      status: JobPostStatus.cancelled,
+      updatedAt: DateTime.now(),
+    );
   }
 
   @override

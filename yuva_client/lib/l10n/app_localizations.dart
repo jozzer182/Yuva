@@ -914,13 +914,13 @@ abstract class AppLocalizations {
   /// **'Ver'**
   String get viewRating;
 
-  /// No description provided for @saveChanges.
+  /// Save changes button text
   ///
   /// In es, this message translates to:
   /// **'Guardar cambios'**
   String get saveChanges;
 
-  /// No description provided for @cancel.
+  /// Cancel button text
   ///
   /// In es, this message translates to:
   /// **'Cancelar'**
@@ -1813,6 +1813,60 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Avatar seleccionado'**
   String get avatarSelected;
+
+  /// Edit job menu item
+  ///
+  /// In es, this message translates to:
+  /// **'Editar trabajo'**
+  String get editJob;
+
+  /// Delete job menu item
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar trabajo'**
+  String get deleteJob;
+
+  /// Edit job screen title
+  ///
+  /// In es, this message translates to:
+  /// **'Editar trabajo'**
+  String get editJobTitle;
+
+  /// Delete job dialog title
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar trabajo'**
+  String get deleteJobTitle;
+
+  /// Delete job confirmation message
+  ///
+  /// In es, this message translates to:
+  /// **'¿Estás seguro de eliminar este trabajo? Esta acción no se puede deshacer.'**
+  String get deleteJobConfirmation;
+
+  /// Delete button text
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar'**
+  String get delete;
+
+  /// Job deleted success message
+  ///
+  /// In es, this message translates to:
+  /// **'Trabajo eliminado correctamente'**
+  String get jobDeletedSuccess;
+
+  /// Job updated success message
+  ///
+  /// In es, this message translates to:
+  /// **'Trabajo actualizado correctamente'**
+  String get jobUpdatedSuccess;
+
+  /// Job cannot be modified error message
+  ///
+  /// In es, this message translates to:
+  /// **'Este trabajo ya no se puede modificar'**
+  String get jobCannotBeModified;
 }
 
 class _AppLocalizationsDelegate

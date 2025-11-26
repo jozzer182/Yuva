@@ -218,6 +218,24 @@ class JobPost extends Equatable {
         updatedAt,
       ];
 
+  /// Returns true if the client can edit or delete this job.
+  /// A job is modifiable only if:
+  /// - It has not been assigned to a worker (hiredProId is null/empty)
+  /// - Its status is 'draft', 'open', or 'underReview'
+  bool get canClientModify {
+    // Job is not modifiable if a worker has been hired
+    if (hiredProId != null && hiredProId!.isNotEmpty) {
+      return false;
+    }
+    // Only allow modification for these statuses
+    const modifiableStatuses = {
+      JobPostStatus.draft,
+      JobPostStatus.open,
+      JobPostStatus.underReview,
+    };
+    return modifiableStatuses.contains(status);
+  }
+
   /// Creates a JobPost from a Firestore document map.
   factory JobPost.fromMap(Map<String, dynamic> map, String docId) {
     return JobPost(

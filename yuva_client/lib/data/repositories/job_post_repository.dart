@@ -7,6 +7,11 @@ abstract class JobPostRepository {
   Future<JobPost?> getJobPostById(String id);
   Future<JobPost> createJobPost(JobPost post);
   Future<JobPost> updateJobPost(JobPost post);
+  
+  /// Deletes a job post. Only allowed if job.canClientModify is true.
+  /// Throws [JobNotModifiableException] if the job cannot be deleted.
+  Future<void> deleteJob(String jobId);
+  
   Future<JobPost> invitePro({
     required String jobPostId,
     required String proId,
@@ -20,4 +25,13 @@ abstract class JobPostRepository {
     required String jobPostId,
     required JobPostStatus status,
   });
+}
+
+/// Exception thrown when trying to modify a job that is no longer modifiable.
+class JobNotModifiableException implements Exception {
+  final String message;
+  const JobNotModifiableException([this.message = 'This job can no longer be modified.']);
+  
+  @override
+  String toString() => message;
 }
