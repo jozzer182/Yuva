@@ -42,5 +42,4 @@ flutter:
   generate: true
   
   assets:
-    - assets/images/
     - icons/Android/
