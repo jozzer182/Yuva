@@ -10,7 +10,7 @@ class AppSettings {
   const AppSettings({
     this.localeCode = 'es', // Spanish as default
     this.notificationsEnabled = true,
-    this.isDummyMode = true, // Default ON for first run
+    this.isDummyMode = false, // Default OFF - real data mode
   });
 
   AppSettings copyWith({
@@ -38,12 +38,10 @@ class AppSettingsController extends StateNotifier<AppSettings> {
 
   Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
-    // Check if dummy mode has been set before (if not, default to true for first run)
-    final dummyModeSet = prefs.containsKey(_dummyModeKey);
     state = AppSettings(
       localeCode: prefs.getString(_localeKey) ?? 'es',
       notificationsEnabled: prefs.getBool(_notificationsKey) ?? true,
-      isDummyMode: dummyModeSet ? (prefs.getBool(_dummyModeKey) ?? true) : true,
+      isDummyMode: prefs.getBool(_dummyModeKey) ?? false,
     );
   }
 

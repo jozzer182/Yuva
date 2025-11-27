@@ -357,6 +357,18 @@
   "@demoModeDescription": {
     "description": "Demo mode description"
   },
+  "demoModeWarningTitle": "Warning",
+  "@demoModeWarningTitle": {
+    "description": "Demo mode warning dialog title"
+  },
+  "demoModeWarningMessage": "Demo mode shows fictional data that is NOT real.\n\n• The jobs shown do not exist\n• The professionals are made up\n• Bookings will not actually be processed\n\nThis mode is only for exploring the app.",
+  "@demoModeWarningMessage": {
+    "description": "Demo mode warning dialog message"
+  },
+  "enableDemoMode": "Enable demo mode",
+  "@enableDemoMode": {
+    "description": "Enable demo mode button"
+  },
   "completeProfileTitle": "Complete your profile",
   "completeProfileSubtitleClient": "We need your phone number to coordinate services.",
   "completeProfileNameRequired": "Name is required",

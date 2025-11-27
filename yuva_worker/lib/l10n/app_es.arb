@@ -452,6 +452,18 @@
   "@demoModeDescription": {
     "description": "Demo mode description"
   },
+  "demoModeWarningTitle": "Advertencia",
+  "@demoModeWarningTitle": {
+    "description": "Demo mode warning dialog title"
+  },
+  "demoModeWarningMessage": "El modo demo muestra datos ficticios que NO son reales.\n\n• Los trabajos mostrados no existen\n• Los clientes son inventados\n• Las propuestas no se enviarán realmente\n\nEste modo es solo para explorar la aplicación.",
+  "@demoModeWarningMessage": {
+    "description": "Demo mode warning dialog message"
+  },
+  "enableDemoMode": "Activar modo demo",
+  "@enableDemoMode": {
+    "description": "Enable demo mode button"
+  },
   "completeProfileTitle": "Completa tu perfil",
   "@completeProfileTitle": {
     "description": "Complete profile screen title"

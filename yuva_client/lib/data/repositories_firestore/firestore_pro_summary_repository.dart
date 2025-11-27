@@ -3,21 +3,21 @@ import '../models/job_models.dart';
 import '../repositories/pro_summary_repository.dart';
 
 /// Firestore implementation of ProSummaryRepository.
-/// Reads worker profiles from the 'workers' collection.
+/// Reads worker profiles from the 'users' collection where role == 'worker'.
 class FirestoreProSummaryRepository implements ProSummaryRepository {
   final FirebaseFirestore _firestore;
 
   FirestoreProSummaryRepository({FirebaseFirestore? firestore})
       : _firestore = firestore ?? FirebaseFirestore.instance;
 
-  CollectionReference<Map<String, dynamic>> get _workersCollection =>
-      _firestore.collection('workers');
+  CollectionReference<Map<String, dynamic>> get _usersCollection =>
+      _firestore.collection('users');
 
   @override
   Future<List<ProSummary>> getPros() async {
-    // Get all workers - we'll filter out incomplete profiles client-side if needed
-    // This is more flexible as workers might not have isProfileComplete field set
-    final snapshot = await _workersCollection
+    // Get all users with role 'worker'
+    final snapshot = await _usersCollection
+        .where('role', isEqualTo: 'worker')
         .limit(50)
         .get();
 
@@ -36,7 +36,7 @@ class FirestoreProSummaryRepository implements ProSummaryRepository {
   Future<ProSummary?> getProById(String id) async {
     if (id.isEmpty) return null;
     
-    final doc = await _workersCollection.doc(id).get();
+    final doc = await _usersCollection.doc(id).get();
     if (!doc.exists || doc.data() == null) return null;
     
     return _proSummaryFromMap(doc.data()!, doc.id);
@@ -50,7 +50,7 @@ class FirestoreProSummaryRepository implements ProSummaryRepository {
     final results = <ProSummary>[];
     for (var i = 0; i < ids.length; i += 10) {
       final batch = ids.skip(i).take(10).toList();
-      final snapshot = await _workersCollection
+      final snapshot = await _usersCollection
           .where(FieldPath.documentId, whereIn: batch)
           .get();
       
@@ -86,6 +86,7 @@ class FirestoreProSummaryRepository implements ProSummaryRepository {
                    map['reviewCount'] as int? ?? 
                    0,
       areaLabel: map['areaLabel'] as String? ?? 
+                 map['cityOrZone'] as String? ?? 
                  map['zone'] as String? ?? 
                  map['location'] as String? ?? 
                  '',
@@ -96,6 +97,7 @@ class FirestoreProSummaryRepository implements ProSummaryRepository {
         ['standard'],
       ),
       avatarInitials: initials,
+      avatarId: map['avatarId'] as String?,
     );
   }
 }

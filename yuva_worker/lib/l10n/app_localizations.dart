@@ -704,6 +704,24 @@ abstract class AppLocalizations {
   /// **'Activa para ver datos de ejemplo, desactiva para modo vacío'**
   String get demoModeDescription;
 
+  /// Demo mode warning dialog title
+  ///
+  /// In es, this message translates to:
+  /// **'Advertencia'**
+  String get demoModeWarningTitle;
+
+  /// Demo mode warning dialog message
+  ///
+  /// In es, this message translates to:
+  /// **'El modo demo muestra datos ficticios que NO son reales.\n\n• Los trabajos mostrados no existen\n• Los clientes son inventados\n• Las propuestas no se enviarán realmente\n\nEste modo es solo para explorar la aplicación.'**
+  String get demoModeWarningMessage;
+
+  /// Enable demo mode button
+  ///
+  /// In es, this message translates to:
+  /// **'Activar modo demo'**
+  String get enableDemoMode;
+
   /// Complete profile screen title
   ///
   /// In es, this message translates to:

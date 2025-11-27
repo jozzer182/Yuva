@@ -466,6 +466,7 @@ class ProSummary extends Equatable {
   final String areaLabel;
   final List<String> offeredServiceTypeIds;
   final String? avatarInitials;
+  final String? avatarId;
 
   const ProSummary({
     required this.id,
@@ -475,6 +476,7 @@ class ProSummary extends Equatable {
     required this.areaLabel,
     required this.offeredServiceTypeIds,
     this.avatarInitials,
+    this.avatarId,
   });
 
   @override
@@ -486,5 +488,6 @@ class ProSummary extends Equatable {
         areaLabel,
         offeredServiceTypeIds,
         avatarInitials,
+        avatarId,
       ];
 }

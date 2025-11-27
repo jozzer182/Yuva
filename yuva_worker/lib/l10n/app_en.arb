@@ -155,6 +155,18 @@
   "@demoModeDescription": {
     "description": "Demo mode description"
   },
+  "demoModeWarningTitle": "Warning",
+  "@demoModeWarningTitle": {
+    "description": "Demo mode warning dialog title"
+  },
+  "demoModeWarningMessage": "Demo mode shows fictional data that is NOT real.\n\n• The jobs shown do not exist\n• The clients are made up\n• Proposals will not actually be sent\n\nThis mode is only for exploring the app.",
+  "@demoModeWarningMessage": {
+    "description": "Demo mode warning dialog message"
+  },
+  "enableDemoMode": "Enable demo mode",
+  "@enableDemoMode": {
+    "description": "Enable demo mode button"
+  },
   "completeProfileTitle": "Complete your profile",
   "completeProfileSubtitle": "We need some additional information so you can receive jobs.",
   "completeProfileNameRequired": "Name is required",

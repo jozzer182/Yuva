@@ -13,7 +13,7 @@ class AppSettings {
     this.localeCode = 'es',
     this.notificationsEnabled = true,
     this.marketingOptIn = false,
-    this.isDummyMode = true, // Default ON for first run
+    this.isDummyMode = false, // Default OFF - real data mode
   });
 
   AppSettings copyWith({
@@ -50,13 +50,11 @@ class AppSettingsController extends StateNotifier<AppSettings> {
   Future<void> _restore() async {
     try {
       final prefs = _preferences ?? await SharedPreferences.getInstance();
-      // Check if dummy mode has been set before (if not, default to true for first run)
-      final dummyModeSet = prefs.containsKey(_dummyModeKey);
       state = state.copyWith(
         localeCode: prefs.getString(_localeKey) ?? state.localeCode,
         notificationsEnabled: prefs.getBool(_notificationsKey) ?? state.notificationsEnabled,
         marketingOptIn: prefs.getBool(_marketingKey) ?? state.marketingOptIn,
-        isDummyMode: dummyModeSet ? (prefs.getBool(_dummyModeKey) ?? true) : true,
+        isDummyMode: prefs.getBool(_dummyModeKey) ?? false,
       );
     } catch (_) {
       // Default in-memory state is good enough if persistence fails.

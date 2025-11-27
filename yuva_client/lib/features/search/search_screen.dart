@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/providers.dart';
 import '../../data/models/job_models.dart';
 import '../../design_system/colors.dart';
+import '../../design_system/components/avatar_picker.dart';
 import '../../design_system/components/yuva_button.dart';
 import '../../design_system/components/yuva_card.dart';
 import '../../design_system/components/yuva_chip.dart';
@@ -148,10 +149,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         children: [
           Row(
             children: [
-              CircleAvatar(
-                radius: 28,
-                backgroundColor: YuvaColors.primaryTeal.withValues(alpha: 0.12),
-                child: Text(pro.avatarInitials ?? pro.displayName.characters.take(2).toString()),
+              AvatarDisplay(
+                avatarId: pro.avatarId,
+                fallbackInitial: pro.avatarInitials ?? pro.displayName,
+                size: 56,
               ),
               const SizedBox(width: 12),
               Expanded(

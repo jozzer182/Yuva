@@ -341,6 +341,16 @@ class AppLocalizationsEs extends AppLocalizations {
       'Activa para ver datos de ejemplo, desactiva para modo vacío';
 
   @override
+  String get demoModeWarningTitle => 'Advertencia';
+
+  @override
+  String get demoModeWarningMessage =>
+      'El modo demo muestra datos ficticios que NO son reales.\n\n• Los trabajos mostrados no existen\n• Los clientes son inventados\n• Las propuestas no se enviarán realmente\n\nEste modo es solo para explorar la aplicación.';
+
+  @override
+  String get enableDemoMode => 'Activar modo demo';
+
+  @override
   String get completeProfileTitle => 'Completa tu perfil';
 
   @override

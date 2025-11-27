@@ -44,8 +44,42 @@ class ProfileScreen extends ConsumerWidget {
                 title: Text(l10n.demoMode),
                 subtitle: Text(l10n.demoModeDescription),
                 value: isDummyMode,
-                onChanged: (value) {
-                  ref.read(appSettingsProvider.notifier).setDummyMode(value);
+                onChanged: (value) async {
+                  if (value) {
+                    // Show warning dialog when trying to enable dummy mode
+                    final confirmed = await showDialog<bool>(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: Row(
+                          children: [
+                            Icon(Icons.warning_amber_rounded, color: YuvaColors.warning),
+                            const SizedBox(width: 8),
+                            Expanded(child: Text(l10n.demoModeWarningTitle)),
+                          ],
+                        ),
+                        content: Text(l10n.demoModeWarningMessage),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(false),
+                            child: Text(l10n.cancel),
+                          ),
+                          ElevatedButton(
+                            onPressed: () => Navigator.of(context).pop(true),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: YuvaColors.warning,
+                              foregroundColor: Colors.white,
+                            ),
+                            child: Text(l10n.enableDemoMode),
+                          ),
+                        ],
+                      ),
+                    );
+                    if (confirmed == true) {
+                      ref.read(appSettingsProvider.notifier).setDummyMode(true);
+                    }
+                  } else {
+                    ref.read(appSettingsProvider.notifier).setDummyMode(false);
+                  }
                 },
               ),
             ),

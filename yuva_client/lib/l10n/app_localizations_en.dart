@@ -816,6 +816,16 @@ class AppLocalizationsEn extends AppLocalizations {
       'Enable to see sample data, disable for empty mode';
 
   @override
+  String get demoModeWarningTitle => 'Warning';
+
+  @override
+  String get demoModeWarningMessage =>
+      'Demo mode shows fictional data that is NOT real.\n\n• The jobs shown do not exist\n• The professionals are made up\n• Bookings will not actually be processed\n\nThis mode is only for exploring the app.';
+
+  @override
+  String get enableDemoMode => 'Enable demo mode';
+
+  @override
   String get completeProfileTitle => 'Complete your profile';
 
   @override
