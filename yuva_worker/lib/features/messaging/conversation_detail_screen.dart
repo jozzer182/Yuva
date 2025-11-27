@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:yuva_worker/l10n/app_localizations.dart';
@@ -5,52 +7,93 @@ import '../../core/providers.dart';
 import '../../data/models/worker_conversation.dart';
 import '../../data/models/worker_message.dart';
 import '../../design_system/colors.dart';
+import '../../design_system/components/user_avatar.dart';
 import '../../design_system/typography.dart';
 
 /// Pantalla de detalle de conversación (chat)
 class ConversationDetailScreen extends ConsumerStatefulWidget {
   final WorkerConversation conversation;
 
-  const ConversationDetailScreen({
-    super.key,
-    required this.conversation,
-  });
+  const ConversationDetailScreen({super.key, required this.conversation});
 
   @override
-  ConsumerState<ConversationDetailScreen> createState() => _ConversationDetailScreenState();
+  ConsumerState<ConversationDetailScreen> createState() =>
+      _ConversationDetailScreenState();
 }
 
-class _ConversationDetailScreenState extends ConsumerState<ConversationDetailScreen> {
+class _ConversationDetailScreenState
+    extends ConsumerState<ConversationDetailScreen> {
   List<WorkerMessage>? _messages;
   bool _isLoading = true;
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   bool _isSending = false;
+  StreamSubscription<List<WorkerMessage>>? _messagesSubscription;
 
   @override
   void initState() {
     super.initState();
-    _loadMessages();
+    _subscribeToMessages();
     _markConversationRead();
   }
 
   @override
   void dispose() {
+    _messagesSubscription?.cancel();
     _messageController.dispose();
     _scrollController.dispose();
     super.dispose();
   }
 
-  Future<void> _loadMessages() async {
+  /// Se suscribe al stream de mensajes para actualizaciones en tiempo real
+  void _subscribeToMessages() {
+    final repo = ref.read(workerConversationsRepositoryProvider);
+    _messagesSubscription = repo
+        .watchMessages(widget.conversation.id)
+        .listen(
+          (messages) {
+            if (mounted) {
+              final shouldScroll =
+                  _messages == null ||
+                  messages.length > (_messages?.length ?? 0);
+              setState(() {
+                _messages = messages;
+                _isLoading = false;
+              });
+              // Scroll al final si hay nuevos mensajes
+              if (shouldScroll) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (_scrollController.hasClients) {
+                    _scrollController.animateTo(
+                      _scrollController.position.maxScrollExtent,
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeOut,
+                    );
+                  }
+                });
+              }
+            }
+          },
+          onError: (error) {
+            if (mounted) {
+              setState(() {
+                _isLoading = false;
+              });
+            }
+          },
+        );
+  }
+
+  /// Refresca los mensajes manualmente (para pull-to-refresh)
+  Future<void> _refreshMessages() async {
     final repo = ref.read(workerConversationsRepositoryProvider);
     final messages = await repo.getConversationMessages(widget.conversation.id);
 
     if (mounted) {
       setState(() {
         _messages = messages;
-        _isLoading = false;
       });
-      // Scroll al final
+      // Scroll al final después de refrescar
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (_scrollController.hasClients) {
           _scrollController.animateTo(
@@ -68,9 +111,12 @@ class _ConversationDetailScreenState extends ConsumerState<ConversationDetailScr
     await repo.markConversationRead(widget.conversation.id);
   }
 
-  Future<void> _showBlockDialog(BuildContext context, AppLocalizations l10n) async {
+  Future<void> _showBlockDialog(
+    BuildContext context,
+    AppLocalizations l10n,
+  ) async {
     final reasonController = TextEditingController();
-    
+
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -117,7 +163,7 @@ class _ConversationDetailScreenState extends ConsumerState<ConversationDetailScr
     if (confirmed == true && mounted) {
       await _blockUser(reasonController.text.trim(), l10n);
     }
-    
+
     reasonController.dispose();
   }
 
@@ -161,27 +207,18 @@ class _ConversationDetailScreenState extends ConsumerState<ConversationDetailScr
       _isSending = true;
     });
 
-    final repo = ref.read(workerConversationsRepositoryProvider);
-    final newMessage = await repo.sendMessage(widget.conversation.id, text);
-
-    _messageController.clear();
-
-    if (mounted) {
-      setState(() {
-        _messages = [...(_messages ?? []), newMessage];
-        _isSending = false;
-      });
-      // Scroll al final
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (_scrollController.hasClients) {
-          _scrollController.animateTo(
-            _scrollController.position.maxScrollExtent,
-            duration: const Duration(milliseconds: 300),
-            curve: Curves.easeOut,
-          );
-        }
-      });
+    try {
+      final repo = ref.read(workerConversationsRepositoryProvider);
+      await repo.sendMessage(widget.conversation.id, text);
+      _messageController.clear();
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSending = false;
+        });
+      }
     }
+    // El mensaje llegará automáticamente por el stream
   }
 
   @override
@@ -191,17 +228,54 @@ class _ConversationDetailScreenState extends ConsumerState<ConversationDetailScr
 
     return Scaffold(
       appBar: AppBar(
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        titleSpacing: 0,
+        title: Row(
           children: [
-            Text(widget.conversation.clientDisplayName),
-            Text(
-              l10n.activeJob,
-              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
+            // Use Consumer to fetch client avatar if not in conversation
+            Consumer(
+              builder: (context, ref, _) {
+                String? avatarId = widget.conversation.clientAvatarId;
+
+                // If not available, fetch from client's profile
+                if (avatarId == null && widget.conversation.clientId.isNotEmpty) {
+                  final asyncAvatarId = ref.watch(
+                    clientAvatarIdProvider(widget.conversation.clientId),
+                  );
+                  avatarId = asyncAvatarId.valueOrNull;
+                }
+
+                return UserAvatar(
+                  avatarId: avatarId,
+                  displayName: widget.conversation.clientDisplayName,
+                  radius: 20,
+                );
+              },
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    widget.conversation.clientDisplayName,
+                    style: const TextStyle(fontSize: 16),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    l10n.activeJob,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
-        backgroundColor: isDark ? YuvaColors.darkSurface : YuvaColors.primaryTeal,
+        backgroundColor: isDark
+            ? YuvaColors.darkSurface
+            : YuvaColors.primaryTeal,
         foregroundColor: Colors.white,
         actions: [
           IconButton(
@@ -216,93 +290,131 @@ class _ConversationDetailScreenState extends ConsumerState<ConversationDetailScr
           Expanded(
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator())
-                : _messages == null || _messages!.isEmpty
-                    ? Center(
-                        child: Text(
-                          l10n.noMessagesInConversation,
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: Colors.grey[600],
+                : RefreshIndicator(
+                    onRefresh: _refreshMessages,
+                    color: YuvaColors.primaryTeal,
+                    child: _messages == null || _messages!.isEmpty
+                        ? ListView(
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            children: [
+                              SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.5,
+                                child: Center(
+                                  child: Text(
+                                    l10n.noMessagesInConversation,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.copyWith(color: Colors.grey[600]),
+                                  ),
+                                ),
                               ),
-                        ),
-                      )
-                    : ListView.builder(
-                        controller: _scrollController,
-                        padding: const EdgeInsets.all(16),
-                        itemCount: _messages!.length,
-                        itemBuilder: (context, index) {
-                          final message = _messages![index];
-                          final isWorker = message.senderType == MessageSenderType.worker;
-                          final isSystem = message.senderType == MessageSenderType.system;
+                            ],
+                          )
+                        : ListView.builder(
+                            controller: _scrollController,
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            padding: const EdgeInsets.all(16),
+                            itemCount: _messages!.length,
+                            itemBuilder: (context, index) {
+                              final message = _messages![index];
+                              final isWorker =
+                                  message.senderType ==
+                                  MessageSenderType.worker;
+                              final isSystem =
+                                  message.senderType ==
+                                  MessageSenderType.system;
 
-                          if (isSystem) {
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 8),
-                              child: Center(
-                                child: Container(
+                              if (isSystem) {
+                                return Padding(
                                   padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 6,
+                                    vertical: 8,
+                                  ),
+                                  child: Center(
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 6,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey[200],
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Text(
+                                        message.text,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall
+                                            ?.copyWith(
+                                              color: Colors.grey[700],
+                                              fontStyle: FontStyle.italic,
+                                            ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }
+
+                              return Align(
+                                alignment: isWorker
+                                    ? Alignment.centerRight
+                                    : Alignment.centerLeft,
+                                child: Container(
+                                  margin: const EdgeInsets.only(bottom: 12),
+                                  constraints: BoxConstraints(
+                                    maxWidth:
+                                        MediaQuery.of(context).size.width *
+                                        0.75,
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                    vertical: 12,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: Colors.grey[200],
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: Text(
-                                    message.text,
-                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                          color: Colors.grey[700],
-                                          fontStyle: FontStyle.italic,
+                                    color: isWorker
+                                        ? YuvaColors.primaryTeal
+                                        : Colors.grey[200],
+                                    borderRadius: BorderRadius.circular(16)
+                                        .copyWith(
+                                          bottomRight: isWorker
+                                              ? const Radius.circular(4)
+                                              : null,
+                                          bottomLeft: !isWorker
+                                              ? const Radius.circular(4)
+                                              : null,
                                         ),
                                   ),
-                                ),
-                              ),
-                            );
-                          }
-
-                          return Align(
-                            alignment: isWorker ? Alignment.centerRight : Alignment.centerLeft,
-                            child: Container(
-                              margin: const EdgeInsets.only(bottom: 12),
-                              constraints: BoxConstraints(
-                                maxWidth: MediaQuery.of(context).size.width * 0.75,
-                              ),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 12,
-                              ),
-                              decoration: BoxDecoration(
-                                color: isWorker ? YuvaColors.primaryTeal : Colors.grey[200],
-                                borderRadius: BorderRadius.circular(16).copyWith(
-                                  bottomRight: isWorker ? const Radius.circular(4) : null,
-                                  bottomLeft: !isWorker ? const Radius.circular(4) : null,
-                                ),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    message.text,
-                                    style: TextStyle(
-                                      color: isWorker ? Colors.white : Colors.black87,
-                                      fontSize: 15,
-                                    ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        message.text,
+                                        style: TextStyle(
+                                          color: isWorker
+                                              ? Colors.white
+                                              : Colors.black87,
+                                          fontSize: 15,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        _formatTime(message.createdAt),
+                                        style: TextStyle(
+                                          color: isWorker
+                                              ? Colors.white70
+                                              : Colors.grey[600],
+                                          fontSize: 11,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    _formatTime(message.createdAt),
-                                    style: TextStyle(
-                                      color: isWorker
-                                          ? Colors.white70
-                                          : Colors.grey[600],
-                                      fontSize: 11,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      ),
+                                ),
+                              );
+                            },
+                          ),
+                  ),
           ),
           Container(
             padding: const EdgeInsets.all(16),
@@ -376,4 +488,3 @@ class _ConversationDetailScreenState extends ConsumerState<ConversationDetailScr
     }
   }
 }
-

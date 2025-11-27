@@ -9,6 +9,9 @@ service cloud.firestore {
     match /users/{userId} {
       // Users can read and write their own profile
       allow read, write: if request.auth != null && request.auth.uid == userId;
+      // Any authenticated user can read other users' public profile info
+      // (needed for displaying avatars in conversations, proposals, etc.)
+      allow read: if request.auth != null;
     }
     
     // =======================
@@ -43,11 +46,17 @@ service cloud.firestore {
     // =======================
     match /proposals/{proposalId} {
       // Worker who created the proposal can read/write
-      allow read, write: if request.auth != null && 
-                           request.auth.uid == resource.data.workerId;
-      // Client who owns the job can read proposals
+      // Note: For queries with where clauses, we allow read if authenticated
+      // and the query includes workerId filter matching the user
       allow read: if request.auth != null && 
-                    request.auth.uid == resource.data.clientId;
+                    (resource.data.workerId == request.auth.uid ||
+                     resource.data.clientId == request.auth.uid);
+      // Worker can write their own proposals
+      allow write: if request.auth != null && 
+                     request.auth.uid == resource.data.workerId;
+      // Allow creating proposals if user is the worker
+      allow create: if request.auth != null && 
+                      request.auth.uid == request.resource.data.workerId;
     }
     
     // =======================
@@ -100,15 +109,16 @@ service cloud.firestore {
     }
     
     match /conversations/{conversationId}/messages/{messageId} {
-      // Client can read and create messages
-      allow read, create: if request.auth != null && 
-                            request.auth.uid == get(/databases/$(database)/documents/conversations/$(conversationId)).data.clientId;
-      // Worker can read and create messages
-      allow read, create: if request.auth != null && 
-                            request.auth.uid == get(/databases/$(database)/documents/conversations/$(conversationId)).data.workerId;
-      // Participants can read and create messages (fallback)
-      allow read, create: if request.auth != null && 
-                            request.auth.uid in get(/databases/$(database)/documents/conversations/$(conversationId)).data.participants;
+      // Helper function to check if user is participant
+      function isConversationParticipant() {
+        let conversation = get(/databases/$(database)/documents/conversations/$(conversationId)).data;
+        return request.auth.uid == conversation.clientId || 
+               request.auth.uid == conversation.workerId ||
+               (conversation.keys().hasAny(['participants']) && request.auth.uid in conversation.participants);
+      }
+      
+      // Participants can read, create, and update messages (update needed for marking as read)
+      allow read, create, update: if request.auth != null && isConversationParticipant();
     }
     
     // =======================
@@ -186,6 +196,17 @@ service cloud.firestore {
       // Job owner can update proposal status (shortlist, reject, hire)
       allow update: if request.auth != null && 
                       request.auth.uid == get(/databases/$(database)/documents/jobs/$(jobId)).data.clientId;
+    }
+    
+    // =======================
+    // Collection Group Query for Proposals
+    // =======================
+    // This allows workers to query all their proposals across all jobs
+    // using collectionGroup('proposals')
+    match /{path=**}/proposals/{proposalId} {
+      // Worker can read their own proposals via collection group query
+      allow read: if request.auth != null && 
+                    resource.data.workerId == request.auth.uid;
     }
   }
 }

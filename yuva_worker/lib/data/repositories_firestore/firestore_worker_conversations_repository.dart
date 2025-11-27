@@ -6,21 +6,23 @@ import '../repositories/worker_conversations_repository.dart';
 /// Firestore implementation of WorkerConversationsRepository.
 /// Conversations are stored in a top-level 'conversations' collection.
 /// Messages are stored in 'conversations/{conversationId}/messages' subcollection.
-class FirestoreWorkerConversationsRepository implements WorkerConversationsRepository {
+class FirestoreWorkerConversationsRepository
+    implements WorkerConversationsRepository {
   final FirebaseFirestore _firestore;
   final String _currentUserId;
 
   FirestoreWorkerConversationsRepository({
     FirebaseFirestore? firestore,
     required String currentUserId,
-  })  : _firestore = firestore ?? FirebaseFirestore.instance,
-        _currentUserId = currentUserId;
+  }) : _firestore = firestore ?? FirebaseFirestore.instance,
+       _currentUserId = currentUserId;
 
   CollectionReference<Map<String, dynamic>> get _conversationsCollection =>
       _firestore.collection('conversations');
 
-  CollectionReference<Map<String, dynamic>> _messagesCollection(String conversationId) =>
-      _conversationsCollection.doc(conversationId).collection('messages');
+  CollectionReference<Map<String, dynamic>> _messagesCollection(
+    String conversationId,
+  ) => _conversationsCollection.doc(conversationId).collection('messages');
 
   @override
   Future<List<WorkerConversation>> getConversations() async {
@@ -35,10 +37,12 @@ class FirestoreWorkerConversationsRepository implements WorkerConversationsRepos
   }
 
   @override
-  Future<List<WorkerMessage>> getConversationMessages(String conversationId) async {
-    final snapshot = await _messagesCollection(conversationId)
-        .orderBy('createdAt', descending: false)
-        .get();
+  Future<List<WorkerMessage>> getConversationMessages(
+    String conversationId,
+  ) async {
+    final snapshot = await _messagesCollection(
+      conversationId,
+    ).orderBy('createdAt', descending: false).get();
 
     return snapshot.docs
         .map((doc) => WorkerMessage.fromMap(doc.data(), doc.id))
@@ -46,9 +50,12 @@ class FirestoreWorkerConversationsRepository implements WorkerConversationsRepos
   }
 
   @override
-  Future<WorkerMessage> sendMessage(String conversationId, String textFromWorker) async {
+  Future<WorkerMessage> sendMessage(
+    String conversationId,
+    String textFromWorker,
+  ) async {
     final now = DateTime.now();
-    
+
     final messageData = {
       'conversationId': conversationId,
       'senderType': 'worker',
@@ -62,8 +69,8 @@ class FirestoreWorkerConversationsRepository implements WorkerConversationsRepos
 
     // Update conversation's last message
     await _conversationsCollection.doc(conversationId).update({
-      'lastMessagePreview': textFromWorker.length > 50 
-          ? '${textFromWorker.substring(0, 50)}...' 
+      'lastMessagePreview': textFromWorker.length > 50
+          ? '${textFromWorker.substring(0, 50)}...'
           : textFromWorker,
       'lastMessageAt': FieldValue.serverTimestamp(),
       'clientUnreadCount': FieldValue.increment(1),
@@ -105,18 +112,23 @@ class FirestoreWorkerConversationsRepository implements WorkerConversationsRepos
         .where('workerId', isEqualTo: _currentUserId)
         .orderBy('lastMessageAt', descending: true)
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => WorkerConversation.fromMap(doc.data(), doc.id))
-            .toList());
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) => WorkerConversation.fromMap(doc.data(), doc.id))
+              .toList(),
+        );
   }
 
   /// Stream of messages for a conversation for real-time updates
+  @override
   Stream<List<WorkerMessage>> watchMessages(String conversationId) {
     return _messagesCollection(conversationId)
         .orderBy('createdAt', descending: false)
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => WorkerMessage.fromMap(doc.data(), doc.id))
-            .toList());
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) => WorkerMessage.fromMap(doc.data(), doc.id))
+              .toList(),
+        );
   }
 }

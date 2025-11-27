@@ -55,42 +55,49 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
         title: Text(l10n.jobDetailTitle, style: YuvaTypography.subtitle()),
         actions: [
           jobAsync.whenOrNull(
-            data: (job) {
-              if (job == null || !job.canClientModify) return null;
-              return PopupMenuButton<String>(
-                icon: const Icon(Icons.more_vert),
-                onSelected: (value) {
-                  if (value == 'edit') {
-                    _navigateToEdit(context, job);
-                  } else if (value == 'delete') {
-                    _showDeleteConfirmation(context, ref, l10n, job);
-                  }
+                data: (job) {
+                  if (job == null || !job.canClientModify) return null;
+                  return PopupMenuButton<String>(
+                    icon: const Icon(Icons.more_vert),
+                    onSelected: (value) {
+                      if (value == 'edit') {
+                        _navigateToEdit(context, job);
+                      } else if (value == 'delete') {
+                        _showDeleteConfirmation(context, ref, l10n, job);
+                      }
+                    },
+                    itemBuilder: (context) => [
+                      PopupMenuItem(
+                        value: 'edit',
+                        child: Row(
+                          children: [
+                            const Icon(Icons.edit_outlined),
+                            const SizedBox(width: 8),
+                            Text(l10n.editJob),
+                          ],
+                        ),
+                      ),
+                      PopupMenuItem(
+                        value: 'delete',
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.delete_outline,
+                              color: Colors.red.shade400,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              l10n.deleteJob,
+                              style: TextStyle(color: Colors.red.shade400),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  );
                 },
-                itemBuilder: (context) => [
-                  PopupMenuItem(
-                    value: 'edit',
-                    child: Row(
-                      children: [
-                        const Icon(Icons.edit_outlined),
-                        const SizedBox(width: 8),
-                        Text(l10n.editJob),
-                      ],
-                    ),
-                  ),
-                  PopupMenuItem(
-                    value: 'delete',
-                    child: Row(
-                      children: [
-                        Icon(Icons.delete_outline, color: Colors.red.shade400),
-                        const SizedBox(width: 8),
-                        Text(l10n.deleteJob, style: TextStyle(color: Colors.red.shade400)),
-                      ],
-                    ),
-                  ),
-                ],
-              );
-            },
-          ) ?? const SizedBox.shrink(),
+              ) ??
+              const SizedBox.shrink(),
         ],
       ),
       body: SafeArea(
@@ -104,13 +111,22 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
             final proposals = proposalsAsync.valueOrNull ?? [];
             final pros = prosAsync.valueOrNull ?? [];
             final rating = ratingAsync.valueOrNull;
-            
+
             // Show loading only if job data is still loading
             if (proposalsAsync.isLoading && proposals.isEmpty) {
               return const Center(child: CircularProgressIndicator());
             }
-            
-            return _buildContent(context, l10n, job, proposals, pros, rating, isDark, ref);
+
+            return _buildContent(
+              context,
+              l10n,
+              job,
+              proposals,
+              pros,
+              rating,
+              isDark,
+              ref,
+            );
           },
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (error, _) => Center(child: Text(error.toString())),
@@ -120,9 +136,9 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
   }
 
   void _navigateToEdit(BuildContext context, JobPost job) {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => EditJobScreen(job: job)),
-    );
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (_) => EditJobScreen(job: job)));
   }
 
   Future<void> _showDeleteConfirmation(
@@ -155,22 +171,22 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
         await ref.read(jobPostRepositoryProvider).deleteJob(job.id);
         ref.invalidate(jobPostsProvider);
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(l10n.jobDeletedSuccess)),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(l10n.jobDeletedSuccess)));
           Navigator.of(context).pop();
         }
       } on JobNotModifiableException {
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(l10n.jobCannotBeModified)),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(l10n.jobCannotBeModified)));
         }
       } catch (e) {
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(e.toString())),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(e.toString())));
         }
       }
     }
@@ -188,7 +204,9 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
   ) {
     final locale = Localizations.localeOf(context).toString();
     final prosById = {for (final pro in pros) pro.id: pro};
-    final invited = pros.where((pro) => job.invitedProIds.contains(pro.id)).toList();
+    final invited = pros
+        .where((pro) => job.invitedProIds.contains(pro.id))
+        .toList();
     final hired = job.hiredProId != null ? prosById[job.hiredProId] : null;
 
     return RefreshIndicator(
@@ -197,132 +215,164 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
         child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          YuvaCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        _resolveTitle(l10n, job),
-                        style: YuvaTypography.subtitle(),
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            YuvaCard(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          _resolveTitle(l10n, job),
+                          style: YuvaTypography.subtitle(),
+                        ),
                       ),
-                    ),
-                    YuvaChip(
-                      label: _localizeStatus(l10n, job.status),
-                      isSelected: true,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  _resolveDescription(l10n, job),
-                  style: YuvaTypography.body(color: YuvaColors.textSecondary),
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Icon(Icons.place_outlined, color: YuvaColors.primaryTeal),
-                    const SizedBox(width: 6),
-                    Text(job.areaLabel, style: YuvaTypography.body()),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    Icon(Icons.schedule_rounded, color: YuvaColors.primaryTeal),
-                    const SizedBox(width: 6),
-                    Text(
-                      job.preferredStartDate != null
-                          ? DateFormat.yMMMd(locale).add_Hm().format(job.preferredStartDate!)
-                          : l10n.jobToBeScheduled,
-                      style: YuvaTypography.body(),
-                    ),
-                  ],
-                ),
-              ],
+                      YuvaChip(
+                        label: _localizeStatus(l10n, job.status),
+                        isSelected: true,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    _resolveDescription(l10n, job),
+                    style: YuvaTypography.body(color: YuvaColors.textSecondary),
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Icon(Icons.place_outlined, color: YuvaColors.primaryTeal),
+                      const SizedBox(width: 6),
+                      Text(job.areaLabel, style: YuvaTypography.body()),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.schedule_rounded,
+                        color: YuvaColors.primaryTeal,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        job.preferredStartDate != null
+                            ? DateFormat.yMMMd(
+                                locale,
+                              ).add_Hm().format(job.preferredStartDate!)
+                            : l10n.jobToBeScheduled,
+                        style: YuvaTypography.body(),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: 14),
-          YuvaCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(l10n.jobPropertyTitle, style: YuvaTypography.subtitle()),
-                const SizedBox(height: 10),
-                Wrap(
-                  spacing: 12,
-                  runSpacing: 8,
-                  children: [
-                    _infoChip(
-                      icon: Icons.home_work_outlined,
-                      label: _localizeProperty(l10n, job.propertyDetails.type),
-                      isDark: isDark,
-                    ),
-                    _infoChip(
-                      icon: Icons.aspect_ratio,
-                      label: _localizeSize(l10n, job.propertyDetails.sizeCategory),
-                      isDark: isDark,
-                    ),
-                    _infoChip(
-                      icon: Icons.bed_outlined,
-                      label: l10n.roomsCount(job.propertyDetails.bedrooms, job.propertyDetails.bathrooms),
-                      isDark: isDark,
-                    ),
-                    _infoChip(
-                      icon: Icons.repeat_rounded,
-                      label: _localizeFrequency(l10n, job.frequency),
-                      isDark: isDark,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Icon(Icons.monetization_on_outlined, color: YuvaColors.primaryTeal),
-                    const SizedBox(width: 6),
-                    Text(_budgetCopy(context, l10n, job), style: YuvaTypography.body()),
-                  ],
-                ),
-              ],
+            const SizedBox(height: 14),
+            YuvaCard(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(l10n.jobPropertyTitle, style: YuvaTypography.subtitle()),
+                  const SizedBox(height: 10),
+                  Wrap(
+                    spacing: 12,
+                    runSpacing: 8,
+                    children: [
+                      _infoChip(
+                        icon: Icons.home_work_outlined,
+                        label: _localizeProperty(
+                          l10n,
+                          job.propertyDetails.type,
+                        ),
+                        isDark: isDark,
+                      ),
+                      _infoChip(
+                        icon: Icons.aspect_ratio,
+                        label: _localizeSize(
+                          l10n,
+                          job.propertyDetails.sizeCategory,
+                        ),
+                        isDark: isDark,
+                      ),
+                      _infoChip(
+                        icon: Icons.bed_outlined,
+                        label: l10n.roomsCount(
+                          job.propertyDetails.bedrooms,
+                          job.propertyDetails.bathrooms,
+                        ),
+                        isDark: isDark,
+                      ),
+                      _infoChip(
+                        icon: Icons.repeat_rounded,
+                        label: _localizeFrequency(l10n, job.frequency),
+                        isDark: isDark,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.monetization_on_outlined,
+                        color: YuvaColors.primaryTeal,
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        _budgetCopy(context, l10n, job),
+                        style: YuvaTypography.body(),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: 14),
-          Text(l10n.invitedPros, style: YuvaTypography.sectionTitle()),
-          const SizedBox(height: 8),
-          if (invited.isEmpty)
-            Text(l10n.noInvitedYet, style: YuvaTypography.body(color: YuvaColors.textSecondary))
-          else
-            Column(
-              children: invited
-                  .map((pro) => Padding(
+            const SizedBox(height: 14),
+            Text(l10n.invitedPros, style: YuvaTypography.sectionTitle()),
+            const SizedBox(height: 8),
+            if (invited.isEmpty)
+              Text(
+                l10n.noInvitedYet,
+                style: YuvaTypography.body(color: YuvaColors.textSecondary),
+              )
+            else
+              Column(
+                children: invited
+                    .map(
+                      (pro) => Padding(
                         padding: const EdgeInsets.only(bottom: 10),
                         child: _proRow(pro),
-                      ))
-                  .toList(),
-            ),
-          const SizedBox(height: 18),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(l10n.receivedProposals, style: YuvaTypography.sectionTitle()),
-              YuvaChip(
-                label: l10n.proposalsCount(proposals.length),
-                isSelected: true,
+                      ),
+                    )
+                    .toList(),
               ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          if (proposals.isEmpty)
-            Text(l10n.noProposalsYet, style: YuvaTypography.body(color: YuvaColors.textSecondary))
-          else
-            Column(
-              children: proposals
-                  .map((proposal) => Padding(
+            const SizedBox(height: 18),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  l10n.receivedProposals,
+                  style: YuvaTypography.sectionTitle(),
+                ),
+                YuvaChip(
+                  label: l10n.proposalsCount(proposals.length),
+                  isSelected: true,
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            if (proposals.isEmpty)
+              Text(
+                l10n.noProposalsYet,
+                style: YuvaTypography.body(color: YuvaColors.textSecondary),
+              )
+            else
+              Column(
+                children: proposals
+                    .map(
+                      (proposal) => Padding(
                         padding: const EdgeInsets.only(bottom: 12),
                         child: _proposalCard(
                           context,
@@ -333,29 +383,32 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
                           isDark,
                           ref,
                         ),
-                    ))
-                .toList(),
-            ),
-          const SizedBox(height: 12),
-          if ((job.status == JobPostStatus.hired ||
-                  job.status == JobPostStatus.inProgress ||
-                  job.status == JobPostStatus.completed) &&
-              hired != null)
-            rating == null
-                ? YuvaButton(
-                    text: l10n.rateJobCta,
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => RateJobScreen(job: job, pro: hired),
-                        ),
-                      );
-                    },
-                  )
-                : Text(
-                    l10n.ratingAlreadySent,
-                    style: YuvaTypography.body(color: YuvaColors.textSecondary),
-                  ),
+                      ),
+                    )
+                    .toList(),
+              ),
+            const SizedBox(height: 12),
+            if ((job.status == JobPostStatus.hired ||
+                    job.status == JobPostStatus.inProgress ||
+                    job.status == JobPostStatus.completed) &&
+                hired != null)
+              rating == null
+                  ? YuvaButton(
+                      text: l10n.rateJobCta,
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => RateJobScreen(job: job, pro: hired),
+                          ),
+                        );
+                      },
+                    )
+                  : Text(
+                      l10n.ratingAlreadySent,
+                      style: YuvaTypography.body(
+                        color: YuvaColors.textSecondary,
+                      ),
+                    ),
           ],
         ),
       ),
@@ -368,7 +421,10 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
         children: [
           CircleAvatar(
             backgroundColor: YuvaColors.primaryTeal.withValues(alpha: 0.15),
-            child: Text(pro.avatarInitials ?? pro.displayName.characters.take(2).toString()),
+            child: Text(
+              pro.avatarInitials ??
+                  pro.displayName.characters.take(2).toString(),
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -379,7 +435,9 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
                 const SizedBox(height: 2),
                 Text(
                   '${pro.areaLabel} · ${pro.ratingAverage.toStringAsFixed(1)} (${pro.ratingCount})',
-                  style: YuvaTypography.caption(color: YuvaColors.textSecondary),
+                  style: YuvaTypography.caption(
+                    color: YuvaColors.textSecondary,
+                  ),
                 ),
               ],
             ),
@@ -403,10 +461,14 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
     final statusLabel = _localizeProposalStatus(l10n, proposal.status);
 
     // Use denormalized worker info from proposal if ProSummary not available
-    final workerName = pro?.displayName ?? proposal.workerDisplayName ?? l10n.proDeleted;
-    final workerInitials = pro?.avatarInitials 
-        ?? proposal.workerAvatarInitials 
-        ?? (workerName != l10n.proDeleted ? workerName.characters.take(2).toString().toUpperCase() : '?');
+    final workerName =
+        pro?.displayName ?? proposal.workerDisplayName ?? l10n.proDeleted;
+    final workerInitials =
+        pro?.avatarInitials ??
+        proposal.workerAvatarInitials ??
+        (workerName != l10n.proDeleted
+            ? workerName.characters.take(2).toString().toUpperCase()
+            : '?');
     final hasProInfo = pro != null;
 
     return YuvaCard(
@@ -420,13 +482,15 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
                 builder: (context, ref, _) {
                   // First try proposal's denormalized avatarId
                   String? avatarId = proposal.workerAvatarId;
-                  
+
                   // If not available, fetch from worker's profile
                   if (avatarId == null && proposal.proId.isNotEmpty) {
-                    final asyncAvatarId = ref.watch(workerAvatarIdProvider(proposal.proId));
+                    final asyncAvatarId = ref.watch(
+                      workerAvatarIdProvider(proposal.proId),
+                    );
                     avatarId = asyncAvatarId.valueOrNull;
                   }
-                  
+
                   return AvatarDisplay(
                     avatarId: avatarId,
                     fallbackInitial: workerInitials,
@@ -445,7 +509,9 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
                       hasProInfo
                           ? '${pro.ratingAverage.toStringAsFixed(1)} (${pro.ratingCount}) · ${pro.areaLabel}'
                           : '',
-                      style: YuvaTypography.caption(color: YuvaColors.textSecondary),
+                      style: YuvaTypography.caption(
+                        color: YuvaColors.textSecondary,
+                      ),
                     ),
                   ],
                 ),
@@ -463,12 +529,19 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
           const SizedBox(height: 12),
           Row(
             children: [
-              Icon(Icons.monetization_on_outlined, color: YuvaColors.primaryTeal),
+              Icon(
+                Icons.monetization_on_outlined,
+                color: YuvaColors.primaryTeal,
+              ),
               const SizedBox(width: 6),
               Text(
                 proposal.proposedHourlyRate != null
-                    ? l10n.perHour('\$${formatAmount(proposal.proposedHourlyRate!, context)}')
-                    : l10n.fixedPriceLabel(formatAmount(proposal.proposedFixedPrice ?? 0, context)),
+                    ? l10n.perHour(
+                        '\$${formatAmount(proposal.proposedHourlyRate!, context)}',
+                      )
+                    : l10n.fixedPriceLabel(
+                        formatAmount(proposal.proposedFixedPrice ?? 0, context),
+                      ),
                 style: YuvaTypography.body(),
               ),
               const Spacer(),
@@ -483,25 +556,38 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
             children: [
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (_) => ProposalDetailScreen(
-                      job: job,
-                      proposal: proposal,
-                      pro: pro,
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => ProposalDetailScreen(
+                        job: job,
+                        proposal: proposal,
+                        pro: pro,
+                      ),
                     ),
-                  ));
+                  );
                 },
                 child: Text(l10n.viewDetails),
               ),
               if (_canModifyProposal(proposal, job)) ...[
                 if (proposal.status == ProposalStatus.submitted)
                   TextButton(
-                    onPressed: () => _updateProposalStatus(ref, job, proposal, ProposalStatus.shortlisted, context, l10n),
+                    onPressed: () => _updateProposalStatus(
+                      ref,
+                      job,
+                      proposal,
+                      ProposalStatus.shortlisted,
+                      context,
+                      l10n,
+                    ),
                     child: Text(l10n.shortlistAction),
                   ),
                 TextButton(
-                  onPressed: () => _confirmReject(ref, job, proposal, context, l10n),
-                  child: Text(l10n.rejectAction, style: TextStyle(color: YuvaColors.error)),
+                  onPressed: () =>
+                      _confirmReject(ref, job, proposal, context, l10n),
+                  child: Text(
+                    l10n.rejectAction,
+                    style: TextStyle(color: YuvaColors.error),
+                  ),
                 ),
               ],
               if (_canHire(proposal, job))
@@ -509,12 +595,12 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
                   text: l10n.hireAction,
                   buttonStyle: YuvaButtonStyle.primary,
                   onPressed: () => _confirmHire(
-                    ref, 
-                    job, 
-                    proposal, 
-                    pro?.displayName ?? proposal.workerDisplayName ?? '', 
+                    ref,
+                    job,
+                    proposal,
+                    pro?.displayName ?? proposal.workerDisplayName ?? '',
                     proposal.workerAvatarId,
-                    context, 
+                    context,
                     l10n,
                   ),
                 ),
@@ -528,14 +614,14 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
   /// Check if proposal can be modified (preselect/reject)
   bool _canModifyProposal(Proposal proposal, JobPost job) {
     // Can't modify if job is already hired or cancelled
-    if (job.status == JobPostStatus.hired || 
+    if (job.status == JobPostStatus.hired ||
         job.status == JobPostStatus.cancelled ||
         job.status == JobPostStatus.completed) {
       return false;
     }
     // Can only modify submitted or shortlisted proposals
-    return proposal.status == ProposalStatus.submitted || 
-           proposal.status == ProposalStatus.shortlisted;
+    return proposal.status == ProposalStatus.submitted ||
+        proposal.status == ProposalStatus.shortlisted;
   }
 
   /// Check if proposal can be hired
@@ -543,16 +629,17 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
     // Can't hire if job already has a hired worker
     if (job.hiredProId != null) return false;
     // Can only hire from open or under review jobs
-    if (job.status != JobPostStatus.open && job.status != JobPostStatus.underReview) {
+    if (job.status != JobPostStatus.open &&
+        job.status != JobPostStatus.underReview) {
       return false;
     }
     // Can only hire submitted or shortlisted proposals
-    return proposal.status == ProposalStatus.submitted || 
-           proposal.status == ProposalStatus.shortlisted;
+    return proposal.status == ProposalStatus.submitted ||
+        proposal.status == ProposalStatus.shortlisted;
   }
 
   Future<void> _updateProposalStatus(
-    WidgetRef ref, 
+    WidgetRef ref,
     JobPost job,
     Proposal proposal,
     ProposalStatus status,
@@ -560,34 +647,42 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
     AppLocalizations l10n,
   ) async {
     try {
-      await ref.read(proposalRepositoryProvider).updateProposalStatus(
-        jobPostId: widget.jobId,
-        proposalId: proposal.id,
-        status: status,
-      );
-      
+      await ref
+          .read(proposalRepositoryProvider)
+          .updateProposalStatus(
+            jobPostId: widget.jobId,
+            proposalId: proposal.id,
+            status: status,
+          );
+
       // Send notification to worker
       if (status == ProposalStatus.shortlisted) {
-        await ref.read(notificationServiceProvider).notifyWorkerShortlisted(
-          workerId: proposal.proId,
-          jobPostId: job.id,
-          jobTitle: job.customTitle ?? job.titleKey,
-        );
+        await ref
+            .read(notificationServiceProvider)
+            .notifyWorkerShortlisted(
+              workerId: proposal.proId,
+              jobPostId: job.id,
+              jobTitle: job.customTitle ?? job.titleKey,
+            );
       } else if (status == ProposalStatus.rejected) {
-        await ref.read(notificationServiceProvider).notifyWorkerRejected(
-          workerId: proposal.proId,
-          jobPostId: job.id,
-          jobTitle: job.customTitle ?? job.titleKey,
-        );
+        await ref
+            .read(notificationServiceProvider)
+            .notifyWorkerRejected(
+              workerId: proposal.proId,
+              jobPostId: job.id,
+              jobTitle: job.customTitle ?? job.titleKey,
+            );
       }
-      
+
       ref.invalidate(proposalsForJobProvider(widget.jobId));
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(status == ProposalStatus.shortlisted 
-              ? l10n.proposalShortlistedSuccess 
-              : l10n.proposalRejectedSuccess),
+          content: Text(
+            status == ProposalStatus.shortlisted
+                ? l10n.proposalShortlistedSuccess
+                : l10n.proposalRejectedSuccess,
+          ),
           backgroundColor: YuvaColors.success,
         ),
       );
@@ -626,9 +721,16 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
         ],
       ),
     );
-    
+
     if (confirmed == true) {
-      await _updateProposalStatus(ref, job, proposal, ProposalStatus.rejected, context, l10n);
+      await _updateProposalStatus(
+        ref,
+        job,
+        proposal,
+        ProposalStatus.rejected,
+        context,
+        l10n,
+      );
     }
   }
 
@@ -645,7 +747,11 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text(l10n.hireProposalTitle),
-        content: Text(l10n.hireProposalConfirmation(proName.isNotEmpty ? proName : 'este profesional')),
+        content: Text(
+          l10n.hireProposalConfirmation(
+            proName.isNotEmpty ? proName : 'este profesional',
+          ),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
@@ -662,48 +768,59 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
         ],
       ),
     );
-    
+
     if (confirmed == true) {
       try {
         // 1. Hire the proposal
-        await ref.read(jobPostRepositoryProvider).hireProposal(
+        await ref
+            .read(jobPostRepositoryProvider)
+            .hireProposal(
               jobPostId: job.id,
               proposalId: proposal.id,
               proId: proposal.proId,
             );
-        
+
         // 2. Create conversation between client and worker
         final currentUser = ref.read(currentUserProvider);
         if (currentUser != null) {
-          await ref.read(clientConversationsRepositoryProvider).createConversation(
-            clientId: currentUser.id,
-            workerId: proposal.proId,
-            jobPostId: job.id,
-            workerDisplayName: proName.isNotEmpty ? proName : 'Profesional',
-            workerAvatarId: workerAvatarId,
-            clientDisplayName: currentUser.name,
-          );
-          
+          await ref
+              .read(clientConversationsRepositoryProvider)
+              .createConversation(
+                clientId: currentUser.id,
+                workerId: proposal.proId,
+                jobPostId: job.id,
+                workerDisplayName: proName.isNotEmpty ? proName : 'Profesional',
+                workerAvatarId: workerAvatarId,
+                clientDisplayName: currentUser.name,
+                clientAvatarId: currentUser.avatarId,
+              );
+
           // 3. Send notification to the hired worker
-          debugPrint('📢 Sending hire notification to worker: ${proposal.proId}');
-          debugPrint('📢 Job: ${job.id}, Title: ${job.customTitle ?? job.titleKey}');
+          debugPrint(
+            '📢 Sending hire notification to worker: ${proposal.proId}',
+          );
+          debugPrint(
+            '📢 Job: ${job.id}, Title: ${job.customTitle ?? job.titleKey}',
+          );
           try {
-            await ref.read(notificationServiceProvider).notifyWorkerHired(
-              workerId: proposal.proId,
-              jobPostId: job.id,
-              jobTitle: job.customTitle ?? job.titleKey,
-              clientName: currentUser.name,
-            );
+            await ref
+                .read(notificationServiceProvider)
+                .notifyWorkerHired(
+                  workerId: proposal.proId,
+                  jobPostId: job.id,
+                  jobTitle: job.customTitle ?? job.titleKey,
+                  clientName: currentUser.name,
+                );
             debugPrint('📢 Hire notification sent successfully');
           } catch (e) {
             debugPrint('❌ Error sending hire notification: $e');
           }
         }
-        
+
         ref.invalidate(jobPostsProvider);
         ref.invalidate(jobPostProvider(job.id));
         ref.invalidate(proposalsForJobProvider(job.id));
-        
+
         if (!context.mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -723,7 +840,11 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
     }
   }
 
-  Widget _infoChip({required IconData icon, required String label, required bool isDark}) {
+  Widget _infoChip({
+    required IconData icon,
+    required String label,
+    required bool isDark,
+  }) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
@@ -838,7 +959,8 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
   }
 
   String _resolveTitle(AppLocalizations l10n, JobPost job) {
-    if (job.customTitle != null && job.customTitle!.isNotEmpty) return job.customTitle!;
+    if (job.customTitle != null && job.customTitle!.isNotEmpty)
+      return job.customTitle!;
     switch (job.titleKey) {
       case 'jobTitleDeepCleanApt':
         return l10n.jobTitleDeepCleanApt;

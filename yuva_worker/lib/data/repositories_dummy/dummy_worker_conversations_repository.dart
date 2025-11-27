@@ -2,7 +2,8 @@ import '../repositories/worker_conversations_repository.dart';
 import '../models/worker_conversation.dart';
 import '../models/worker_message.dart';
 
-class DummyWorkerConversationsRepository implements WorkerConversationsRepository {
+class DummyWorkerConversationsRepository
+    implements WorkerConversationsRepository {
   // Datos dummy en memoria
   final List<WorkerConversation> _conversations = [
     WorkerConversation(
@@ -101,15 +102,20 @@ class DummyWorkerConversationsRepository implements WorkerConversationsRepositor
   }
 
   @override
-  Future<List<WorkerMessage>> getConversationMessages(String conversationId) async {
+  Future<List<WorkerMessage>> getConversationMessages(
+    String conversationId,
+  ) async {
     await Future.delayed(const Duration(milliseconds: 300));
     return List.from(_messages[conversationId] ?? []);
   }
 
   @override
-  Future<WorkerMessage> sendMessage(String conversationId, String textFromWorker) async {
+  Future<WorkerMessage> sendMessage(
+    String conversationId,
+    String textFromWorker,
+  ) async {
     await Future.delayed(const Duration(milliseconds: 400));
-    
+
     final newMessage = WorkerMessage(
       id: 'msg_${DateTime.now().millisecondsSinceEpoch}',
       conversationId: conversationId,
@@ -120,10 +126,15 @@ class DummyWorkerConversationsRepository implements WorkerConversationsRepositor
     );
 
     // Agregar mensaje a la lista
-    _messages[conversationId] = [...(_messages[conversationId] ?? []), newMessage];
+    _messages[conversationId] = [
+      ...(_messages[conversationId] ?? []),
+      newMessage,
+    ];
 
     // Actualizar conversación
-    final conversationIndex = _conversations.indexWhere((c) => c.id == conversationId);
+    final conversationIndex = _conversations.indexWhere(
+      (c) => c.id == conversationId,
+    );
     if (conversationIndex != -1) {
       final conversation = _conversations[conversationIndex];
       _conversations[conversationIndex] = conversation.copyWith(
@@ -138,7 +149,7 @@ class DummyWorkerConversationsRepository implements WorkerConversationsRepositor
   @override
   Future<void> markConversationRead(String conversationId) async {
     await Future.delayed(const Duration(milliseconds: 200));
-    
+
     // Marcar todos los mensajes como leídos
     final messages = _messages[conversationId] ?? [];
     for (var i = 0; i < messages.length; i++) {
@@ -146,11 +157,18 @@ class DummyWorkerConversationsRepository implements WorkerConversationsRepositor
     }
 
     // Actualizar unreadCount en la conversación
-    final conversationIndex = _conversations.indexWhere((c) => c.id == conversationId);
+    final conversationIndex = _conversations.indexWhere(
+      (c) => c.id == conversationId,
+    );
     if (conversationIndex != -1) {
       final conversation = _conversations[conversationIndex];
       _conversations[conversationIndex] = conversation.copyWith(unreadCount: 0);
     }
   }
-}
 
+  @override
+  Stream<List<WorkerMessage>> watchMessages(String conversationId) {
+    // En modo dummy, emitimos los mensajes actuales una vez
+    return Stream.value(List.from(_messages[conversationId] ?? []));
+  }
+}

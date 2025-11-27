@@ -46,17 +46,31 @@ class ProposalDetailScreen extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(_resolveJobTitle(l10n, job), style: YuvaTypography.subtitle()),
+                    Text(
+                      _resolveJobTitle(l10n, job),
+                      style: YuvaTypography.subtitle(),
+                    ),
                     const SizedBox(height: 6),
-                    Text(job.areaLabel, style: YuvaTypography.body(color: YuvaColors.textSecondary)),
+                    Text(
+                      job.areaLabel,
+                      style: YuvaTypography.body(
+                        color: YuvaColors.textSecondary,
+                      ),
+                    ),
                     const SizedBox(height: 10),
                     Row(
                       children: [
-                        Icon(Icons.calendar_today, size: 16, color: YuvaColors.primaryTeal),
+                        Icon(
+                          Icons.calendar_today,
+                          size: 16,
+                          color: YuvaColors.primaryTeal,
+                        ),
                         const SizedBox(width: 6),
                         Text(
                           job.preferredStartDate != null
-                              ? DateFormat.yMMMd(locale).add_Hm().format(job.preferredStartDate!)
+                              ? DateFormat.yMMMd(
+                                  locale,
+                                ).add_Hm().format(job.preferredStartDate!)
                               : l10n.jobToBeScheduled,
                           style: YuvaTypography.bodySmall(),
                         ),
@@ -65,9 +79,16 @@ class ProposalDetailScreen extends ConsumerWidget {
                     const SizedBox(height: 8),
                     Row(
                       children: [
-                        Icon(Icons.monetization_on_outlined, size: 16, color: YuvaColors.primaryTeal),
+                        Icon(
+                          Icons.monetization_on_outlined,
+                          size: 16,
+                          color: YuvaColors.primaryTeal,
+                        ),
                         const SizedBox(width: 6),
-                        Text(_budgetCopy(l10n, job, proposal, context), style: YuvaTypography.body()),
+                        Text(
+                          _budgetCopy(l10n, job, proposal, context),
+                          style: YuvaTypography.body(),
+                        ),
                       ],
                     ),
                   ],
@@ -84,16 +105,24 @@ class ProposalDetailScreen extends ConsumerWidget {
                         Consumer(
                           builder: (context, ref, _) {
                             String? avatarId = proposal.workerAvatarId;
-                            
+
                             // If not available, fetch from worker's profile
                             if (avatarId == null && proposal.proId.isNotEmpty) {
-                              final asyncAvatarId = ref.watch(workerAvatarIdProvider(proposal.proId));
+                              final asyncAvatarId = ref.watch(
+                                workerAvatarIdProvider(proposal.proId),
+                              );
                               avatarId = asyncAvatarId.valueOrNull;
                             }
-                            
+
                             return AvatarDisplay(
                               avatarId: avatarId,
-                              fallbackInitial: pro?.avatarInitials ?? proposal.workerAvatarInitials ?? pro?.displayName.characters.take(2).toString() ?? '?',
+                              fallbackInitial:
+                                  pro?.avatarInitials ??
+                                  proposal.workerAvatarInitials ??
+                                  pro?.displayName.characters
+                                      .take(2)
+                                      .toString() ??
+                                  '?',
                               size: 40,
                             );
                           },
@@ -102,27 +131,43 @@ class ProposalDetailScreen extends ConsumerWidget {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(pro?.displayName ?? proposal.workerDisplayName ?? l10n.proDeleted, style: YuvaTypography.subtitle()),
+                            Text(
+                              pro?.displayName ??
+                                  proposal.workerDisplayName ??
+                                  l10n.proDeleted,
+                              style: YuvaTypography.subtitle(),
+                            ),
                             const SizedBox(height: 4),
                             if (pro != null)
                               Text(
                                 '${pro!.ratingAverage.toStringAsFixed(1)} (${pro!.ratingCount}) · ${pro!.areaLabel}',
-                                style: YuvaTypography.caption(color: YuvaColors.textSecondary),
+                                style: YuvaTypography.caption(
+                                  color: YuvaColors.textSecondary,
+                                ),
                               ),
                           ],
                         ),
                       ],
                     ),
                     const SizedBox(height: 12),
-                    Text(_coverLetter(l10n, proposal.coverLetterKey), style: YuvaTypography.body()),
+                    Text(
+                      _coverLetter(l10n, proposal.coverLetterKey),
+                      style: YuvaTypography.body(),
+                    ),
                     const SizedBox(height: 12),
                     Row(
                       children: [
-                        Icon(Icons.schedule_rounded, size: 16, color: YuvaColors.primaryTeal),
+                        Icon(
+                          Icons.schedule_rounded,
+                          size: 16,
+                          color: YuvaColors.primaryTeal,
+                        ),
                         const SizedBox(width: 6),
                         Text(
                           DateFormat.yMMMd(locale).format(proposal.createdAt),
-                          style: YuvaTypography.caption(color: YuvaColors.textSecondary),
+                          style: YuvaTypography.caption(
+                            color: YuvaColors.textSecondary,
+                          ),
                         ),
                       ],
                     ),
@@ -140,7 +185,15 @@ class ProposalDetailScreen extends ConsumerWidget {
                         Expanded(
                           child: YuvaButton(
                             text: l10n.hireAction,
-                            onPressed: () => _confirmHire(ref, proposal.proId, pro?.displayName ?? proposal.workerDisplayName ?? '', context, l10n),
+                            onPressed: () => _confirmHire(
+                              ref,
+                              proposal.proId,
+                              pro?.displayName ??
+                                  proposal.workerDisplayName ??
+                                  '',
+                              context,
+                              l10n,
+                            ),
                           ),
                         ),
                       ],
@@ -177,22 +230,26 @@ class ProposalDetailScreen extends ConsumerWidget {
         ],
       ),
     );
-    
+
     if (confirmed == true) {
       try {
-        await ref.read(proposalRepositoryProvider).updateProposalStatus(
-          jobPostId: job.id,
-          proposalId: proposal.id,
-          status: ProposalStatus.rejected,
-        );
-        
+        await ref
+            .read(proposalRepositoryProvider)
+            .updateProposalStatus(
+              jobPostId: job.id,
+              proposalId: proposal.id,
+              status: ProposalStatus.rejected,
+            );
+
         // Send notification to worker
-        await ref.read(notificationServiceProvider).notifyWorkerRejected(
-          workerId: proposal.proId,
-          jobPostId: job.id,
-          jobTitle: job.customTitle ?? job.titleKey,
-        );
-        
+        await ref
+            .read(notificationServiceProvider)
+            .notifyWorkerRejected(
+              workerId: proposal.proId,
+              jobPostId: job.id,
+              jobTitle: job.customTitle ?? job.titleKey,
+            );
+
         ref.invalidate(proposalsForJobProvider(job.id));
         if (!context.mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
@@ -225,7 +282,11 @@ class ProposalDetailScreen extends ConsumerWidget {
       context: context,
       builder: (context) => AlertDialog(
         title: Text(l10n.hireProposalTitle),
-        content: Text(l10n.hireProposalConfirmation(proName.isNotEmpty ? proName : 'este profesional')),
+        content: Text(
+          l10n.hireProposalConfirmation(
+            proName.isNotEmpty ? proName : 'este profesional',
+          ),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
@@ -242,37 +303,44 @@ class ProposalDetailScreen extends ConsumerWidget {
         ],
       ),
     );
-    
+
     if (confirmed == true) {
       try {
         // 1. Hire the proposal
-        await ref.read(jobPostRepositoryProvider).hireProposal(
+        await ref
+            .read(jobPostRepositoryProvider)
+            .hireProposal(
               jobPostId: job.id,
               proposalId: proposal.id,
               proId: proId,
             );
-        
+
         // 2. Create conversation between client and worker
         final currentUser = ref.read(currentUserProvider);
         if (currentUser != null) {
-          await ref.read(clientConversationsRepositoryProvider).createConversation(
-            clientId: currentUser.id,
-            workerId: proId,
-            jobPostId: job.id,
-            workerDisplayName: proName.isNotEmpty ? proName : 'Profesional',
-            workerAvatarId: proposal.workerAvatarId,
-            clientDisplayName: currentUser.name,
-          );
-          
+          await ref
+              .read(clientConversationsRepositoryProvider)
+              .createConversation(
+                clientId: currentUser.id,
+                workerId: proId,
+                jobPostId: job.id,
+                workerDisplayName: proName.isNotEmpty ? proName : 'Profesional',
+                workerAvatarId: proposal.workerAvatarId,
+                clientDisplayName: currentUser.name,
+                clientAvatarId: currentUser.avatarId,
+              );
+
           // 3. Send notification to the hired worker
-          await ref.read(notificationServiceProvider).notifyWorkerHired(
-            workerId: proId,
-            jobPostId: job.id,
-            jobTitle: job.customTitle ?? job.titleKey,
-            clientName: currentUser.name,
-          );
+          await ref
+              .read(notificationServiceProvider)
+              .notifyWorkerHired(
+                workerId: proId,
+                jobPostId: job.id,
+                jobTitle: job.customTitle ?? job.titleKey,
+                clientName: currentUser.name,
+              );
         }
-        
+
         ref.invalidate(jobPostProvider(job.id));
         ref.invalidate(jobPostsProvider);
         ref.invalidate(proposalsForJobProvider(job.id));
@@ -296,18 +364,28 @@ class ProposalDetailScreen extends ConsumerWidget {
     }
   }
 
-  String _budgetCopy(AppLocalizations l10n, JobPost job, Proposal proposal, BuildContext context) {
+  String _budgetCopy(
+    AppLocalizations l10n,
+    JobPost job,
+    Proposal proposal,
+    BuildContext context,
+  ) {
     if (proposal.proposedHourlyRate != null) {
-      return l10n.perHour('\$${formatAmount(proposal.proposedHourlyRate!, context)}');
+      return l10n.perHour(
+        '\$${formatAmount(proposal.proposedHourlyRate!, context)}',
+      );
     }
     if (proposal.proposedFixedPrice != null) {
-      return l10n.fixedPriceLabel(formatAmount(proposal.proposedFixedPrice!, context));
+      return l10n.fixedPriceLabel(
+        formatAmount(proposal.proposedFixedPrice!, context),
+      );
     }
     return l10n.budgetCopyFallback;
   }
 
   String _resolveJobTitle(AppLocalizations l10n, JobPost job) {
-    if (job.customTitle != null && job.customTitle!.isNotEmpty) return job.customTitle!;
+    if (job.customTitle != null && job.customTitle!.isNotEmpty)
+      return job.customTitle!;
     switch (job.titleKey) {
       case 'jobTitleDeepCleanApt':
         return l10n.jobTitleDeepCleanApt;

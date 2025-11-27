@@ -76,6 +76,22 @@ class UserProfileService {
         .doc(uid)
         .update(fields);
   }
+
+  /// Get any user's profile by UID (worker or client)
+  /// Used to fetch client avatar when not denormalized in conversation
+  Future<String?> getUserAvatarId(String uid) async {
+    try {
+      final doc = await _firestore.collection(_usersCollection).doc(uid).get();
+      
+      if (!doc.exists || doc.data() == null) {
+        return null;
+      }
+      
+      return doc.data()!['avatarId'] as String?;
+    } catch (e) {
+      return null;
+    }
+  }
 }
 
 /// Worker profile data from Firestore

@@ -6,21 +6,23 @@ import '../repositories/client_conversations_repository.dart';
 /// Firestore implementation of ClientConversationsRepository.
 /// Conversations are stored in a top-level 'conversations' collection.
 /// Messages are stored in 'conversations/{conversationId}/messages' subcollection.
-class FirestoreClientConversationsRepository implements ClientConversationsRepository {
+class FirestoreClientConversationsRepository
+    implements ClientConversationsRepository {
   final FirebaseFirestore _firestore;
   final String _currentUserId;
 
   FirestoreClientConversationsRepository({
     FirebaseFirestore? firestore,
     required String currentUserId,
-  })  : _firestore = firestore ?? FirebaseFirestore.instance,
-        _currentUserId = currentUserId;
+  }) : _firestore = firestore ?? FirebaseFirestore.instance,
+       _currentUserId = currentUserId;
 
   CollectionReference<Map<String, dynamic>> get _conversationsCollection =>
       _firestore.collection('conversations');
 
-  CollectionReference<Map<String, dynamic>> _messagesCollection(String conversationId) =>
-      _conversationsCollection.doc(conversationId).collection('messages');
+  CollectionReference<Map<String, dynamic>> _messagesCollection(
+    String conversationId,
+  ) => _conversationsCollection.doc(conversationId).collection('messages');
 
   @override
   Future<List<ClientConversation>> getConversations() async {
@@ -46,14 +48,19 @@ class FirestoreClientConversationsRepository implements ClientConversationsRepos
       return null;
     }
 
-    return ClientConversation.fromMap(snapshot.docs.first.data(), snapshot.docs.first.id);
+    return ClientConversation.fromMap(
+      snapshot.docs.first.data(),
+      snapshot.docs.first.id,
+    );
   }
 
   @override
-  Future<List<ClientMessage>> getConversationMessages(String conversationId) async {
-    final snapshot = await _messagesCollection(conversationId)
-        .orderBy('createdAt', descending: false)
-        .get();
+  Future<List<ClientMessage>> getConversationMessages(
+    String conversationId,
+  ) async {
+    final snapshot = await _messagesCollection(
+      conversationId,
+    ).orderBy('createdAt', descending: false).get();
 
     return snapshot.docs
         .map((doc) => ClientMessage.fromMap(doc.data(), doc.id))
@@ -61,9 +68,12 @@ class FirestoreClientConversationsRepository implements ClientConversationsRepos
   }
 
   @override
-  Future<ClientMessage> sendMessage(String conversationId, String textFromClient) async {
+  Future<ClientMessage> sendMessage(
+    String conversationId,
+    String textFromClient,
+  ) async {
     final now = DateTime.now();
-    
+
     final messageData = {
       'conversationId': conversationId,
       'senderType': 'client',
@@ -77,8 +87,8 @@ class FirestoreClientConversationsRepository implements ClientConversationsRepos
 
     // Update conversation's last message
     await _conversationsCollection.doc(conversationId).update({
-      'lastMessagePreview': textFromClient.length > 50 
-          ? '${textFromClient.substring(0, 50)}...' 
+      'lastMessagePreview': textFromClient.length > 50
+          ? '${textFromClient.substring(0, 50)}...'
           : textFromClient,
       'lastMessageAt': FieldValue.serverTimestamp(),
       'workerUnreadCount': FieldValue.increment(1),
@@ -122,6 +132,7 @@ class FirestoreClientConversationsRepository implements ClientConversationsRepos
     required String workerDisplayName,
     String? workerAvatarId,
     String? clientDisplayName,
+    String? clientAvatarId,
   }) async {
     // Check if conversation already exists for this job
     final existing = await getConversationForJob(jobPostId);
@@ -139,6 +150,7 @@ class FirestoreClientConversationsRepository implements ClientConversationsRepos
       'workerDisplayName': workerDisplayName,
       'workerAvatarId': workerAvatarId,
       'clientDisplayName': clientDisplayName,
+      'clientAvatarId': clientAvatarId,
       'lastMessagePreview': initialMessage,
       'lastMessageAt': FieldValue.serverTimestamp(),
       'clientUnreadCount': 0,
@@ -148,11 +160,21 @@ class FirestoreClientConversationsRepository implements ClientConversationsRepos
 
     final docRef = await _conversationsCollection.add(conversationData);
 
-    // Create initial system message
+    // Create initial system message with helpful instructions
+    final systemMessage =
+        '''¡$clientDisplayName ha contratado a $workerDisplayName para este trabajo!
+
+Usa este chat para coordinar los detalles:
+• Fecha y hora del servicio
+• Confirmar el precio final y forma de pago
+• Materiales o herramientas que debe traer el profesional
+• Documentos o requisitos de acceso al lugar
+• Cualquier otra indicación importante''';
+
     await _messagesCollection(docRef.id).add({
       'conversationId': docRef.id,
       'senderType': 'system',
-      'text': '¡$clientDisplayName ha contratado a $workerDisplayName para este trabajo!',
+      'text': systemMessage,
       'createdAt': FieldValue.serverTimestamp(),
       'isRead': true,
     });
@@ -176,18 +198,23 @@ class FirestoreClientConversationsRepository implements ClientConversationsRepos
         .where('clientId', isEqualTo: _currentUserId)
         .orderBy('lastMessageAt', descending: true)
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => ClientConversation.fromMap(doc.data(), doc.id))
-            .toList());
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) => ClientConversation.fromMap(doc.data(), doc.id))
+              .toList(),
+        );
   }
 
   /// Stream of messages for a conversation for real-time updates
+  @override
   Stream<List<ClientMessage>> watchMessages(String conversationId) {
     return _messagesCollection(conversationId)
         .orderBy('createdAt', descending: false)
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map((doc) => ClientMessage.fromMap(doc.data(), doc.id))
-            .toList());
+        .map(
+          (snapshot) => snapshot.docs
+              .map((doc) => ClientMessage.fromMap(doc.data(), doc.id))
+              .toList(),
+        );
   }
 }

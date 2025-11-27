@@ -4,7 +4,8 @@ import '../repositories/client_conversations_repository.dart';
 
 /// Empty implementation that returns empty lists when dummy mode is OFF
 /// This is a placeholder - real Firestore implementation is in firestore_client_conversations_repository.dart
-class EmptyClientConversationsRepository implements ClientConversationsRepository {
+class EmptyClientConversationsRepository
+    implements ClientConversationsRepository {
   @override
   Future<List<ClientConversation>> getConversations() async {
     return [];
@@ -16,12 +17,17 @@ class EmptyClientConversationsRepository implements ClientConversationsRepositor
   }
 
   @override
-  Future<List<ClientMessage>> getConversationMessages(String conversationId) async {
+  Future<List<ClientMessage>> getConversationMessages(
+    String conversationId,
+  ) async {
     return [];
   }
 
   @override
-  Future<ClientMessage> sendMessage(String conversationId, String textFromClient) async {
+  Future<ClientMessage> sendMessage(
+    String conversationId,
+    String textFromClient,
+  ) async {
     throw UnimplementedError('Messages not available in empty mode');
   }
 
@@ -38,8 +44,13 @@ class EmptyClientConversationsRepository implements ClientConversationsRepositor
     required String workerDisplayName,
     String? workerAvatarId,
     String? clientDisplayName,
+    String? clientAvatarId,
   }) async {
     throw UnimplementedError('Conversations not available in empty mode');
   }
-}
 
+  @override
+  Stream<List<ClientMessage>> watchMessages(String conversationId) {
+    return Stream.value([]);
+  }
+}

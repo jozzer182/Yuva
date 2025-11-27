@@ -2,7 +2,8 @@ import '../repositories/client_conversations_repository.dart';
 import '../models/client_conversation.dart';
 import '../models/client_message.dart';
 
-class DummyClientConversationsRepository implements ClientConversationsRepository {
+class DummyClientConversationsRepository
+    implements ClientConversationsRepository {
   // Datos dummy en memoria - usando IDs consistentes con marketplace_memory_store
   final List<ClientConversation> _conversations = [
     ClientConversation(
@@ -11,7 +12,8 @@ class DummyClientConversationsRepository implements ClientConversationsRepositor
       workerId: 'dummy_worker_1',
       jobPostId: 'job_open_apartment',
       workerDisplayName: 'Luisa Rincón',
-      lastMessagePreview: 'Hola, me gustaría confirmar los detalles del trabajo',
+      lastMessagePreview:
+          'Hola, me gustaría confirmar los detalles del trabajo',
       lastMessageAt: DateTime.now().subtract(const Duration(hours: 1)),
       unreadCount: 1,
     ),
@@ -80,7 +82,9 @@ class DummyClientConversationsRepository implements ClientConversationsRepositor
         conversationId: 'conv_client_job3',
         senderType: MessageSenderType.system,
         text: 'El profesional ha marcado el trabajo como completado',
-        createdAt: DateTime.now().subtract(const Duration(hours: 2, minutes: 30)),
+        createdAt: DateTime.now().subtract(
+          const Duration(hours: 2, minutes: 30),
+        ),
         isRead: false,
       ),
     ],
@@ -110,15 +114,18 @@ class DummyClientConversationsRepository implements ClientConversationsRepositor
     required String workerDisplayName,
     String? workerAvatarId,
     String? clientDisplayName,
+    String? clientAvatarId,
   }) async {
     await Future.delayed(const Duration(milliseconds: 400));
-    
+
     // Check if conversation already exists
-    final existing = _conversations.where((c) => c.jobPostId == jobPostId).toList();
+    final existing = _conversations
+        .where((c) => c.jobPostId == jobPostId)
+        .toList();
     if (existing.isNotEmpty) {
       return existing.first;
     }
-    
+
     final newConversation = ClientConversation(
       id: 'conv_${DateTime.now().millisecondsSinceEpoch}',
       clientId: clientId,
@@ -130,32 +137,47 @@ class DummyClientConversationsRepository implements ClientConversationsRepositor
       lastMessageAt: DateTime.now(),
       unreadCount: 0,
     );
-    
+
     _conversations.insert(0, newConversation);
-    
-    // Create initial system message
+
+    // Create initial system message with helpful instructions
+    final systemMessage =
+        '''¡Has contratado a $workerDisplayName para este trabajo!
+
+Usa este chat para coordinar los detalles:
+• Fecha y hora del servicio
+• Confirmar el precio final y forma de pago
+• Materiales o herramientas que debe traer el profesional
+• Documentos o requisitos de acceso al lugar
+• Cualquier otra indicación importante''';
+
     _messages[newConversation.id] = [
       ClientMessage(
         id: 'msg_${DateTime.now().millisecondsSinceEpoch}',
         conversationId: newConversation.id,
         senderType: MessageSenderType.system,
-        text: '¡Has contratado a $workerDisplayName para este trabajo!',
+        text: systemMessage,
         createdAt: DateTime.now(),
         isRead: true,
       ),
     ];
-    
+
     return newConversation;
   }
 
   @override
-  Future<List<ClientMessage>> getConversationMessages(String conversationId) async {
+  Future<List<ClientMessage>> getConversationMessages(
+    String conversationId,
+  ) async {
     await Future.delayed(const Duration(milliseconds: 300));
     return List.from(_messages[conversationId] ?? []);
   }
 
   @override
-  Future<ClientMessage> sendMessage(String conversationId, String textFromClient) async {
+  Future<ClientMessage> sendMessage(
+    String conversationId,
+    String textFromClient,
+  ) async {
     await Future.delayed(const Duration(milliseconds: 400));
 
     final newMessage = ClientMessage(
@@ -168,10 +190,15 @@ class DummyClientConversationsRepository implements ClientConversationsRepositor
     );
 
     // Agregar mensaje a la lista
-    _messages[conversationId] = [...(_messages[conversationId] ?? []), newMessage];
+    _messages[conversationId] = [
+      ...(_messages[conversationId] ?? []),
+      newMessage,
+    ];
 
     // Actualizar conversación
-    final conversationIndex = _conversations.indexWhere((c) => c.id == conversationId);
+    final conversationIndex = _conversations.indexWhere(
+      (c) => c.id == conversationId,
+    );
     if (conversationIndex != -1) {
       final conversation = _conversations[conversationIndex];
       _conversations[conversationIndex] = conversation.copyWith(
@@ -194,11 +221,18 @@ class DummyClientConversationsRepository implements ClientConversationsRepositor
     }
 
     // Actualizar unreadCount en la conversación
-    final conversationIndex = _conversations.indexWhere((c) => c.id == conversationId);
+    final conversationIndex = _conversations.indexWhere(
+      (c) => c.id == conversationId,
+    );
     if (conversationIndex != -1) {
       final conversation = _conversations[conversationIndex];
       _conversations[conversationIndex] = conversation.copyWith(unreadCount: 0);
     }
   }
-}
 
+  @override
+  Stream<List<ClientMessage>> watchMessages(String conversationId) {
+    // En modo dummy, emitimos los mensajes actuales una vez
+    return Stream.value(List.from(_messages[conversationId] ?? []));
+  }
+}

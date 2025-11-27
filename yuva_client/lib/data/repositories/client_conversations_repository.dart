@@ -5,9 +5,15 @@ abstract class ClientConversationsRepository {
   Future<List<ClientConversation>> getConversations();
   Future<ClientConversation?> getConversationForJob(String jobPostId);
   Future<List<ClientMessage>> getConversationMessages(String conversationId);
-  Future<ClientMessage> sendMessage(String conversationId, String textFromClient);
+  Future<ClientMessage> sendMessage(
+    String conversationId,
+    String textFromClient,
+  );
   Future<void> markConversationRead(String conversationId);
-  
+
+  /// Stream of messages for real-time updates
+  Stream<List<ClientMessage>> watchMessages(String conversationId);
+
   /// Creates a new conversation when a worker is hired
   Future<ClientConversation> createConversation({
     required String clientId,
@@ -16,6 +22,6 @@ abstract class ClientConversationsRepository {
     required String workerDisplayName,
     String? workerAvatarId,
     String? clientDisplayName,
+    String? clientAvatarId,
   });
 }
-

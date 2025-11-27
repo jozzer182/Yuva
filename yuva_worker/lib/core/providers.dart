@@ -26,8 +26,6 @@ import '../data/repositories_dummy/dummy_worker_proposals_repository.dart';
 import '../data/repositories_empty/empty_worker_profile_repository.dart';
 import '../data/repositories_empty/empty_worker_earnings_repository.dart';
 import '../data/repositories_empty/empty_worker_reviews_repository.dart';
-import '../data/repositories_empty/empty_worker_conversations_repository.dart';
-import '../data/repositories_empty/empty_worker_notifications_repository.dart';
 import '../data/repositories_empty/empty_worker_active_jobs_repository.dart';
 import '../data/repositories_firestore/firestore_worker_job_feed_repository.dart';
 import '../data/repositories_firestore/firestore_worker_proposals_repository.dart';
@@ -175,4 +173,12 @@ final blockServiceProvider = Provider<BlockService>((ref) {
 final blockedUserIdsProvider = FutureProvider<List<String>>((ref) async {
   final blockService = ref.watch(blockServiceProvider);
   return blockService.getBlockedUserIds();
+});
+
+// Provider for fetching client avatar by userId
+// Used when clientAvatarId is not denormalized in conversation
+final clientAvatarIdProvider = FutureProvider.family<String?, String>((ref, clientId) async {
+  if (clientId.isEmpty) return null;
+  final userProfileService = ref.watch(userProfileServiceProvider);
+  return userProfileService.getUserAvatarId(clientId);
 });
