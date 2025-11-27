@@ -1081,6 +1081,24 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Error al bloquear usuario. Intenta de nuevo.'**
   String get blockError;
+
+  /// Help us improve button
+  ///
+  /// In es, this message translates to:
+  /// **'Ayúdanos a mejorar'**
+  String get helpUsImprove;
+
+  /// Help us improve description
+  ///
+  /// In es, this message translates to:
+  /// **'Comparte tu opinión sobre la app'**
+  String get helpUsImproveDescription;
+
+  /// Link copied to clipboard message
+  ///
+  /// In es, this message translates to:
+  /// **'Enlace copiado al portapapeles'**
+  String get linkCopied;
 }
 
 class _AppLocalizationsDelegate

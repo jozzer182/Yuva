@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:yuva_worker/l10n/app_localizations.dart';
 import '../../core/providers.dart';
 import '../../data/models/worker_user.dart';
@@ -38,49 +40,22 @@ class ProfileScreen extends ConsumerWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            // Dummy Mode Switch - at the top
+            // Help Us Improve - at the top for visibility
             YuvaCard(
-              child: SwitchListTile(
-                title: Text(l10n.demoMode),
-                subtitle: Text(l10n.demoModeDescription),
-                value: isDummyMode,
-                onChanged: (value) async {
-                  if (value) {
-                    // Show warning dialog when trying to enable dummy mode
-                    final confirmed = await showDialog<bool>(
-                      context: context,
-                      builder: (context) => AlertDialog(
-                        title: Row(
-                          children: [
-                            Icon(Icons.warning_amber_rounded, color: YuvaColors.warning),
-                            const SizedBox(width: 8),
-                            Expanded(child: Text(l10n.demoModeWarningTitle)),
-                          ],
-                        ),
-                        content: Text(l10n.demoModeWarningMessage),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.of(context).pop(false),
-                            child: Text(l10n.cancel),
-                          ),
-                          ElevatedButton(
-                            onPressed: () => Navigator.of(context).pop(true),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: YuvaColors.warning,
-                              foregroundColor: Colors.white,
-                            ),
-                            child: Text(l10n.enableDemoMode),
-                          ),
-                        ],
-                      ),
-                    );
-                    if (confirmed == true) {
-                      ref.read(appSettingsProvider.notifier).setDummyMode(true);
-                    }
-                  } else {
-                    ref.read(appSettingsProvider.notifier).setDummyMode(false);
-                  }
-                },
+              child: ListTile(
+                leading: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: YuvaColors.primaryTeal.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Icon(Icons.feedback_outlined, color: YuvaColors.primaryTeal),
+                ),
+                title: Text(l10n.helpUsImprove),
+                subtitle: Text(l10n.helpUsImproveDescription),
+                trailing: const Icon(Icons.open_in_new_rounded),
+                onTap: () => _openFeedbackForm(context, l10n),
               ),
             ),
 
@@ -178,6 +153,54 @@ class ProfileScreen extends ConsumerWidget {
               child: _LanguageSelector(),
             ),
 
+            const SizedBox(height: 12),
+
+            // Dummy Mode Switch - at the bottom before logout
+            YuvaCard(
+              child: SwitchListTile(
+                title: Text(l10n.demoMode),
+                subtitle: Text(l10n.demoModeDescription),
+                value: isDummyMode,
+                onChanged: (value) async {
+                  if (value) {
+                    // Show warning dialog when trying to enable dummy mode
+                    final confirmed = await showDialog<bool>(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: Row(
+                          children: [
+                            Icon(Icons.warning_amber_rounded, color: YuvaColors.warning),
+                            const SizedBox(width: 8),
+                            Expanded(child: Text(l10n.demoModeWarningTitle)),
+                          ],
+                        ),
+                        content: Text(l10n.demoModeWarningMessage),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(false),
+                            child: Text(l10n.cancel),
+                          ),
+                          ElevatedButton(
+                            onPressed: () => Navigator.of(context).pop(true),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: YuvaColors.warning,
+                              foregroundColor: Colors.white,
+                            ),
+                            child: Text(l10n.enableDemoMode),
+                          ),
+                        ],
+                      ),
+                    );
+                    if (confirmed == true) {
+                      ref.read(appSettingsProvider.notifier).setDummyMode(true);
+                    }
+                  } else {
+                    ref.read(appSettingsProvider.notifier).setDummyMode(false);
+                  }
+                },
+              ),
+            ),
+
             const SizedBox(height: 24),
 
             // Logout button
@@ -197,6 +220,37 @@ class ProfileScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _openFeedbackForm(BuildContext context, AppLocalizations l10n) async {
+    const feedbackUrl = 'https://forms.gle/52gzoNH6dmX6zRp49';
+    final uri = Uri.parse(feedbackUrl);
+    
+    try {
+      // Try to open in external browser
+      final launched = await launchUrl(
+        uri,
+        mode: LaunchMode.externalApplication,
+      );
+      
+      if (!launched) {
+        // If couldn't launch, copy to clipboard
+        await Clipboard.setData(const ClipboardData(text: feedbackUrl));
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(l10n.linkCopied)),
+          );
+        }
+      }
+    } catch (e) {
+      // On error, copy to clipboard
+      await Clipboard.setData(const ClipboardData(text: feedbackUrl));
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(l10n.linkCopied)),
+        );
+      }
+    }
   }
 }
 

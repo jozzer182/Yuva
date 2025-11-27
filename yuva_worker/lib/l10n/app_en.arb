@@ -250,5 +250,17 @@
   "blockReasonHint": "Why do you want to block this user? (optional)",
   "blockConfirm": "Block",
   "blockSuccess": "User blocked successfully",
-  "blockError": "Error blocking user. Please try again."
+  "blockError": "Error blocking user. Please try again.",
+  "helpUsImprove": "Help us improve",
+  "@helpUsImprove": {
+    "description": "Help us improve button"
+  },
+  "helpUsImproveDescription": "Share your feedback about the app",
+  "@helpUsImproveDescription": {
+    "description": "Help us improve description"
+  },
+  "linkCopied": "Link copied to clipboard",
+  "@linkCopied": {
+    "description": "Link copied to clipboard message"
+  }
 }

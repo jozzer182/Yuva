@@ -793,5 +793,17 @@
   "blockError": "Error al bloquear usuario. Intenta de nuevo.",
   "@blockError": {
     "description": "Block error message"
+  },
+  "helpUsImprove": "Ayúdanos a mejorar",
+  "@helpUsImprove": {
+    "description": "Help us improve button"
+  },
+  "helpUsImproveDescription": "Comparte tu opinión sobre la app",
+  "@helpUsImproveDescription": {
+    "description": "Help us improve description"
+  },
+  "linkCopied": "Enlace copiado al portapapeles",
+  "@linkCopied": {
+    "description": "Link copied to clipboard message"
   }
 }

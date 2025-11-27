@@ -1036,4 +1036,13 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get blockError => 'Error al bloquear usuario. Intenta de nuevo.';
+
+  @override
+  String get helpUsImprove => 'Ayúdanos a mejorar';
+
+  @override
+  String get helpUsImproveDescription => 'Comparte tu opinión sobre la app';
+
+  @override
+  String get linkCopied => 'Enlace copiado al portapapeles';
 }

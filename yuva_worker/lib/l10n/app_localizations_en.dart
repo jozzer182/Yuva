@@ -543,4 +543,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get blockError => 'Error blocking user. Please try again.';
+
+  @override
+  String get helpUsImprove => 'Help us improve';
+
+  @override
+  String get helpUsImproveDescription => 'Share your feedback about the app';
+
+  @override
+  String get linkCopied => 'Link copied to clipboard';
 }
