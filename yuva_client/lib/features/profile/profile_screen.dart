@@ -233,34 +233,6 @@ class ProfileScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 12),
 
-              // Notification Settings
-              YuvaCard(
-                child: Column(
-                  children: [
-                    _SettingToggle(
-                      icon: Icons.notifications_outlined,
-                      title: l10n.notifications,
-                      subtitle: l10n.notificationsSubtitle,
-                      value: settings.notificationsEnabled,
-                      onChanged: (value) {
-                        ref.read(appSettingsProvider.notifier).toggleNotifications(value);
-                      },
-                    ),
-                    const Divider(height: 24),
-                    _SettingToggle(
-                      icon: Icons.campaign_outlined,
-                      title: l10n.marketingOptIn,
-                      subtitle: l10n.marketingSubtitle,
-                      value: settings.marketingOptIn,
-                      onChanged: (value) {
-                        ref.read(appSettingsProvider.notifier).toggleMarketingOptIn(value);
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16),
-
               // Dummy Mode Switch - at the bottom before logout
               YuvaCard(
                 child: SwitchListTile(
@@ -443,53 +415,3 @@ class _LanguageOption extends StatelessWidget {
   }
 }
 
-class _SettingToggle extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
-  final bool value;
-  final ValueChanged<bool> onChanged;
-
-  const _SettingToggle({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-    required this.value,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(icon, color: YuvaColors.primaryTeal, size: 20),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(title, style: YuvaTypography.subtitle()),
-              const SizedBox(height: 4),
-              Text(
-                subtitle,
-                style: YuvaTypography.caption(color: YuvaColors.textSecondary),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(width: 12),
-        Switch(
-          value: value,
-          onChanged: onChanged,
-          activeTrackColor: YuvaColors.primaryTeal.withValues(alpha: 0.5),
-          thumbColor: WidgetStateProperty.resolveWith((states) {
-            if (states.contains(WidgetState.selected)) {
-              return YuvaColors.primaryTeal;
-            }
-            return null;
-          }),
-        ),
-      ],
-    );
-  }
-}

@@ -503,14 +503,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TextField(
-                  decoration: InputDecoration(
-                    hintText: l10n.searchPlaceholder,
-                    prefixIcon: const Icon(Icons.search_rounded),
-                  ),
-                  readOnly: true,
-                ),
-                const SizedBox(height: 16),
                 Row(
                   children: [
                     Expanded(

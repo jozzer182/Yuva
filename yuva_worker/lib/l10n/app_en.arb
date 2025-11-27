@@ -119,6 +119,10 @@
   "@notifications": {
     "description": "Notifications label"
   },
+  "notificationsSubtitle": "Receive alerts about proposals and jobs",
+  "@notificationsSubtitle": {
+    "description": "Notifications subtitle"
+  },
   "markAllAsRead": "Mark all as read",
   "@markAllAsRead": {
     "description": "Mark all as read button"

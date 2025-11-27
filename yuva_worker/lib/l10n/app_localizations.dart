@@ -650,6 +650,12 @@ abstract class AppLocalizations {
   /// **'Notificaciones'**
   String get notifications;
 
+  /// Notifications subtitle
+  ///
+  /// In es, this message translates to:
+  /// **'Recibe alertas sobre propuestas y trabajos'**
+  String get notificationsSubtitle;
+
   /// Mark all as read button
   ///
   /// In es, this message translates to:

@@ -309,6 +309,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notifications => 'Notifications';
 
   @override
+  String get notificationsSubtitle => 'Receive alerts about proposals and jobs';
+
+  @override
   String get markAllAsRead => 'Mark all as read';
 
   @override

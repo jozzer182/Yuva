@@ -312,6 +312,10 @@ class AppLocalizationsEs extends AppLocalizations {
   String get notifications => 'Notificaciones';
 
   @override
+  String get notificationsSubtitle =>
+      'Recibe alertas sobre propuestas y trabajos';
+
+  @override
   String get markAllAsRead => 'Marcar todo como leído';
 
   @override

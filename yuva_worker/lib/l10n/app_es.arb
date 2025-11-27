@@ -416,6 +416,10 @@
   "@notifications": {
     "description": "Notifications label"
   },
+  "notificationsSubtitle": "Recibe alertas sobre propuestas y trabajos",
+  "@notificationsSubtitle": {
+    "description": "Notifications subtitle"
+  },
   "markAllAsRead": "Marcar todo como leído",
   "@markAllAsRead": {
     "description": "Mark all as read button"
