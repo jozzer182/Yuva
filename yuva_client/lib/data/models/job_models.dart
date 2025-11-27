@@ -41,7 +41,7 @@ extension JobPostStatusLabel on JobPostStatus {
 }
 
 /// Proposal lifecycle states.
-enum ProposalStatus { submitted, shortlisted, rejected, hired }
+enum ProposalStatus { submitted, shortlisted, rejected, hired, withdrawn }
 
 extension ProposalStatusLabel on ProposalStatus {
   String get labelKey {
@@ -54,7 +54,16 @@ extension ProposalStatusLabel on ProposalStatus {
         return 'proposalRejected';
       case ProposalStatus.hired:
         return 'proposalHired';
+      case ProposalStatus.withdrawn:
+        return 'proposalWithdrawn';
     }
+  }
+
+  /// Returns true if this is an active proposal status visible to clients
+  bool get isActiveForClient {
+    return this == ProposalStatus.submitted || 
+           this == ProposalStatus.shortlisted || 
+           this == ProposalStatus.hired;
   }
 }
 
@@ -333,6 +342,12 @@ class Proposal extends Equatable {
   final DateTime createdAt;
   /// Agreed price when proposal is hired (computed from proposed rate/price)
   final double? agreedPrice;
+  
+  /// Denormalized worker info for display (optional, populated from Firestore)
+  final String? workerDisplayName;
+  final String? workerAvatarInitials;
+  final String? workerPhotoUrl;
+  final String? workerAvatarId;
 
   const Proposal({
     required this.id,
@@ -344,6 +359,10 @@ class Proposal extends Equatable {
     this.status = ProposalStatus.submitted,
     required this.createdAt,
     this.agreedPrice,
+    this.workerDisplayName,
+    this.workerAvatarInitials,
+    this.workerPhotoUrl,
+    this.workerAvatarId,
   });
 
   Proposal copyWith({
@@ -356,6 +375,10 @@ class Proposal extends Equatable {
     ProposalStatus? status,
     DateTime? createdAt,
     double? agreedPrice,
+    String? workerDisplayName,
+    String? workerAvatarInitials,
+    String? workerPhotoUrl,
+    String? workerAvatarId,
   }) {
     return Proposal(
       id: id ?? this.id,
@@ -367,6 +390,10 @@ class Proposal extends Equatable {
       status: status ?? this.status,
       createdAt: createdAt ?? this.createdAt,
       agreedPrice: agreedPrice ?? this.agreedPrice,
+      workerDisplayName: workerDisplayName ?? this.workerDisplayName,
+      workerAvatarInitials: workerAvatarInitials ?? this.workerAvatarInitials,
+      workerPhotoUrl: workerPhotoUrl ?? this.workerPhotoUrl,
+      workerAvatarId: workerAvatarId ?? this.workerAvatarId,
     );
   }
 
@@ -381,7 +408,53 @@ class Proposal extends Equatable {
         status,
         createdAt,
         agreedPrice,
+        workerDisplayName,
+        workerAvatarInitials,
+        workerPhotoUrl,
+        workerAvatarId,
       ];
+
+  /// Creates a Proposal from a Firestore document map.
+  factory Proposal.fromMap(Map<String, dynamic> map, String docId) {
+    return Proposal(
+      id: docId,
+      jobPostId: map['jobId'] as String? ?? '',
+      proId: map['workerId'] as String? ?? '',
+      proposedHourlyRate: (map['proposedHourlyRate'] as num?)?.toDouble(),
+      proposedFixedPrice: (map['proposedFixedPrice'] as num?)?.toDouble(),
+      coverLetterKey: map['message'] as String? ?? '',
+      status: ProposalStatus.values.firstWhere(
+        (e) => e.name == (map['status'] as String? ?? 'submitted'),
+        orElse: () => ProposalStatus.submitted,
+      ),
+      createdAt: map['createdAt'] != null
+          ? (map['createdAt'] as dynamic).toDate()
+          : DateTime.now(),
+      agreedPrice: (map['agreedPrice'] as num?)?.toDouble(),
+      workerDisplayName: map['workerDisplayName'] as String?,
+      workerAvatarInitials: map['workerAvatarInitials'] as String?,
+      workerPhotoUrl: map['workerPhotoUrl'] as String?,
+      workerAvatarId: map['workerAvatarId'] as String?,
+    );
+  }
+
+  /// Converts this Proposal to a Firestore document map.
+  Map<String, dynamic> toMap() {
+    return {
+      'jobId': jobPostId,
+      'workerId': proId,
+      'proposedHourlyRate': proposedHourlyRate,
+      'proposedFixedPrice': proposedFixedPrice,
+      'message': coverLetterKey,
+      'status': status.name,
+      'createdAt': createdAt,
+      'agreedPrice': agreedPrice,
+      'workerDisplayName': workerDisplayName,
+      'workerAvatarInitials': workerAvatarInitials,
+      'workerPhotoUrl': workerPhotoUrl,
+      'workerAvatarId': workerAvatarId,
+    };
+  }
 }
 
 /// Minimal worker profile representation on the client side.

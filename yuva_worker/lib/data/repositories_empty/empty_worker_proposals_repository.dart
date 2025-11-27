@@ -32,5 +32,10 @@ class EmptyWorkerProposalsRepository implements WorkerProposalsRepository {
   Future<void> deleteDraft(String proposalId) async {
     // No-op
   }
+
+  @override
+  Future<void> withdrawProposal(String proposalId, String jobPostId) async {
+    throw UnimplementedError('Proposals not available in empty mode');
+  }
 }
 

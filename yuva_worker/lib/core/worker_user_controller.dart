@@ -19,6 +19,7 @@ class WorkerUserController extends StateNotifier<WorkerUser?> {
       final email = prefs.getString('${_keyPrefix}email');
       final photoUrl = prefs.getString('${_keyPrefix}photoUrl');
       final phone = prefs.getString('${_keyPrefix}phone');
+      final avatarId = prefs.getString('${_keyPrefix}avatarId');
       final createdAtMs = prefs.getInt('${_keyPrefix}createdAt');
       final cityOrZone = prefs.getString('${_keyPrefix}cityOrZone') ?? 'No especificado';
       final baseHourlyRate = prefs.getDouble('${_keyPrefix}baseHourlyRate') ?? 0.0;
@@ -30,6 +31,7 @@ class WorkerUserController extends StateNotifier<WorkerUser?> {
           email: email,
           photoUrl: photoUrl,
           phone: phone,
+          avatarId: avatarId,
           createdAt: DateTime.fromMillisecondsSinceEpoch(createdAtMs),
           cityOrZone: cityOrZone,
           baseHourlyRate: baseHourlyRate,
@@ -56,6 +58,11 @@ class WorkerUserController extends StateNotifier<WorkerUser?> {
       }
       if (workerUser.phone != null) {
         await prefs.setString('${_keyPrefix}phone', workerUser.phone!);
+      }
+      if (workerUser.avatarId != null) {
+        await prefs.setString('${_keyPrefix}avatarId', workerUser.avatarId!);
+      } else {
+        await prefs.remove('${_keyPrefix}avatarId');
       }
       await prefs.setInt('${_keyPrefix}createdAt', workerUser.createdAt.millisecondsSinceEpoch);
       await prefs.setString('${_keyPrefix}cityOrZone', workerUser.cityOrZone);
@@ -87,6 +94,7 @@ class WorkerUserController extends StateNotifier<WorkerUser?> {
       await prefs.remove('${_keyPrefix}email');
       await prefs.remove('${_keyPrefix}photoUrl');
       await prefs.remove('${_keyPrefix}phone');
+      await prefs.remove('${_keyPrefix}avatarId');
       await prefs.remove('${_keyPrefix}createdAt');
       await prefs.remove('${_keyPrefix}cityOrZone');
       await prefs.remove('${_keyPrefix}baseHourlyRate');

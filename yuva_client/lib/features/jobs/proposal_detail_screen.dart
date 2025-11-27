@@ -6,6 +6,7 @@ import 'package:yuva/utils/money_formatter.dart';
 import '../../core/providers.dart';
 import '../../data/models/job_models.dart';
 import '../../design_system/colors.dart';
+import '../../design_system/components/avatar_picker.dart';
 import '../../design_system/components/yuva_button.dart';
 import '../../design_system/components/yuva_card.dart';
 import '../../design_system/components/yuva_scaffold.dart';
@@ -79,15 +80,29 @@ class ProposalDetailScreen extends ConsumerWidget {
                   children: [
                     Row(
                       children: [
-                        CircleAvatar(
-                          backgroundColor: YuvaColors.primaryTeal.withValues(alpha: 0.15),
-                          child: Text(pro?.avatarInitials ?? pro?.displayName.characters.take(2).toString() ?? '?'),
+                        // Use Consumer to fetch worker avatar if not in proposal
+                        Consumer(
+                          builder: (context, ref, _) {
+                            String? avatarId = proposal.workerAvatarId;
+                            
+                            // If not available, fetch from worker's profile
+                            if (avatarId == null && proposal.proId.isNotEmpty) {
+                              final asyncAvatarId = ref.watch(workerAvatarIdProvider(proposal.proId));
+                              avatarId = asyncAvatarId.valueOrNull;
+                            }
+                            
+                            return AvatarDisplay(
+                              avatarId: avatarId,
+                              fallbackInitial: pro?.avatarInitials ?? proposal.workerAvatarInitials ?? pro?.displayName.characters.take(2).toString() ?? '?',
+                              size: 40,
+                            );
+                          },
                         ),
                         const SizedBox(width: 10),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(pro?.displayName ?? l10n.proDeleted, style: YuvaTypography.subtitle()),
+                            Text(pro?.displayName ?? proposal.workerDisplayName ?? l10n.proDeleted, style: YuvaTypography.subtitle()),
                             const SizedBox(height: 4),
                             if (pro != null)
                               Text(
@@ -118,14 +133,14 @@ class ProposalDetailScreen extends ConsumerWidget {
                           child: YuvaButton(
                             text: l10n.rejectAction,
                             buttonStyle: YuvaButtonStyle.secondary,
-                            onPressed: () => _updateStatus(ref, ProposalStatus.rejected),
+                            onPressed: () => _confirmReject(ref, context, l10n),
                           ),
                         ),
                         const SizedBox(width: 12),
                         Expanded(
                           child: YuvaButton(
                             text: l10n.hireAction,
-                            onPressed: pro == null ? null : () => _hire(ref, pro!.id, context, l10n),
+                            onPressed: () => _confirmHire(ref, proposal.proId, pro?.displayName ?? proposal.workerDisplayName ?? '', context, l10n),
                           ),
                         ),
                       ],
@@ -140,30 +155,145 @@ class ProposalDetailScreen extends ConsumerWidget {
     );
   }
 
-  Future<void> _updateStatus(WidgetRef ref, ProposalStatus next) async {
-    await ref.read(proposalRepositoryProvider).updateProposalStatus(proposal.id, next);
-    ref.invalidate(proposalsForJobProvider(job.id));
-  }
-
-  Future<void> _hire(
+  Future<void> _confirmReject(
     WidgetRef ref,
-    String proId,
     BuildContext context,
     AppLocalizations l10n,
   ) async {
-    await ref.read(jobPostRepositoryProvider).hireProposal(
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.rejectProposalTitle),
+        content: Text(l10n.rejectProposalConfirmation),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(l10n.reject, style: TextStyle(color: YuvaColors.error)),
+          ),
+        ],
+      ),
+    );
+    
+    if (confirmed == true) {
+      try {
+        await ref.read(proposalRepositoryProvider).updateProposalStatus(
           jobPostId: job.id,
           proposalId: proposal.id,
-          proId: proId,
+          status: ProposalStatus.rejected,
         );
-    ref.invalidate(jobPostProvider(job.id));
-    ref.invalidate(jobPostsProvider);
-    ref.invalidate(proposalsForJobProvider(job.id));
-    if (!context.mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(l10n.hireSuccessMessage)),
+        
+        // Send notification to worker
+        await ref.read(notificationServiceProvider).notifyWorkerRejected(
+          workerId: proposal.proId,
+          jobPostId: job.id,
+          jobTitle: job.customTitle ?? job.titleKey,
+        );
+        
+        ref.invalidate(proposalsForJobProvider(job.id));
+        if (!context.mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.proposalRejectedSuccess),
+            backgroundColor: YuvaColors.success,
+          ),
+        );
+        Navigator.of(context).pop();
+      } catch (e) {
+        if (!context.mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.proposalUpdateError),
+            backgroundColor: YuvaColors.error,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _confirmHire(
+    WidgetRef ref,
+    String proId,
+    String proName,
+    BuildContext context,
+    AppLocalizations l10n,
+  ) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.hireProposalTitle),
+        content: Text(l10n.hireProposalConfirmation(proName.isNotEmpty ? proName : 'este profesional')),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.cancel),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: YuvaColors.primaryTeal,
+              foregroundColor: Colors.white,
+            ),
+            child: Text(l10n.hireAction),
+          ),
+        ],
+      ),
     );
-    Navigator.of(context).pop();
+    
+    if (confirmed == true) {
+      try {
+        // 1. Hire the proposal
+        await ref.read(jobPostRepositoryProvider).hireProposal(
+              jobPostId: job.id,
+              proposalId: proposal.id,
+              proId: proId,
+            );
+        
+        // 2. Create conversation between client and worker
+        final currentUser = ref.read(currentUserProvider);
+        if (currentUser != null) {
+          await ref.read(clientConversationsRepositoryProvider).createConversation(
+            clientId: currentUser.id,
+            workerId: proId,
+            jobPostId: job.id,
+            workerDisplayName: proName.isNotEmpty ? proName : 'Profesional',
+            workerAvatarId: proposal.workerAvatarId,
+            clientDisplayName: currentUser.name,
+          );
+          
+          // 3. Send notification to the hired worker
+          await ref.read(notificationServiceProvider).notifyWorkerHired(
+            workerId: proId,
+            jobPostId: job.id,
+            jobTitle: job.customTitle ?? job.titleKey,
+            clientName: currentUser.name,
+          );
+        }
+        
+        ref.invalidate(jobPostProvider(job.id));
+        ref.invalidate(jobPostsProvider);
+        ref.invalidate(proposalsForJobProvider(job.id));
+        if (!context.mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.hireSuccessMessage),
+            backgroundColor: YuvaColors.success,
+          ),
+        );
+        Navigator.of(context).pop();
+      } catch (e) {
+        if (!context.mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.hireError),
+            backgroundColor: YuvaColors.error,
+          ),
+        );
+      }
+    }
   }
 
   String _budgetCopy(AppLocalizations l10n, JobPost job, Proposal proposal, BuildContext context) {

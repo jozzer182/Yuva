@@ -61,6 +61,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             user,
             cityOrZone: firestoreProfile?.cityOrZone ?? 'No especificado',
             baseHourlyRate: firestoreProfile?.baseHourlyRate ?? 0.0,
+            avatarId: firestoreProfile?.avatarId,
           );
           await ref.read(workerUserProvider.notifier).setWorkerUser(workerUser);
         } else {
@@ -143,6 +144,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         user,
         cityOrZone: firestoreProfile?.cityOrZone ?? existingWorkerUser?.cityOrZone ?? 'No especificado',
         baseHourlyRate: firestoreProfile?.baseHourlyRate ?? existingWorkerUser?.baseHourlyRate ?? 0.0,
+        avatarId: firestoreProfile?.avatarId ?? existingWorkerUser?.avatarId,
       );
       await ref.read(workerUserProvider.notifier).setWorkerUser(workerUser);
 

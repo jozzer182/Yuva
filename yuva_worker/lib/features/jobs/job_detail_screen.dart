@@ -6,10 +6,14 @@ import '../../utils/money_formatter.dart';
 import '../../core/providers.dart';
 import '../../data/models/shared_types.dart';
 import '../../data/models/worker_job.dart';
+import '../../data/models/worker_proposal.dart';
 import '../../design_system/colors.dart';
 import '../../design_system/components/yuva_button.dart';
 import '../../design_system/components/yuva_card.dart';
 import '../../design_system/components/yuva_chip.dart';
+import '../../design_system/typography.dart';
+import 'prepare_proposal_screen.dart';
+import 'proposal_detail_screen.dart';
 
 /// Job detail screen showing full information about a job
 class JobDetailScreen extends ConsumerStatefulWidget {
@@ -23,21 +27,34 @@ class JobDetailScreen extends ConsumerStatefulWidget {
 
 class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
   WorkerJobDetail? _job;
+  WorkerProposal? _myProposal;
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _loadJob();
+    _loadData();
   }
 
-  Future<void> _loadJob() async {
-    final repo = ref.read(workerJobFeedRepositoryProvider);
-    final job = await repo.getJobDetail(widget.jobId);
+  Future<void> _loadData() async {
+    final jobRepo = ref.read(workerJobFeedRepositoryProvider);
+    final proposalRepo = ref.read(workerProposalsRepositoryProvider);
+    
+    final job = await jobRepo.getJobDetail(widget.jobId);
+    
+    // Check if worker already has a proposal for this job
+    WorkerProposal? myProposal;
+    try {
+      myProposal = await proposalRepo.getProposalForJob(widget.jobId);
+    } catch (e) {
+      // Ignore errors fetching proposals
+      debugPrint('Error fetching proposal: $e');
+    }
 
     if (mounted) {
       setState(() {
         _job = job;
+        _myProposal = myProposal;
         _isLoading = false;
       });
     }
@@ -54,9 +71,10 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Column(
+          : SafeArea(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
+                child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Title and invitation chip
@@ -169,25 +187,139 @@ class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
 
                   const SizedBox(height: 24),
 
-                  // TODO: Prepare proposal button (non-functional for now)
-                  SizedBox(
-                    width: double.infinity,
-                    child: YuvaButton(
-                      text: l10n.prepareProposal,
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(l10n.proposalFeatureComingSoon),
-                            backgroundColor: YuvaColors.info,
-                          ),
-                        );
-                      },
-                      icon: Icons.send,
+                  // Show existing proposal or prepare proposal button
+                  if (_myProposal != null)
+                    _buildMyProposalCard(l10n)
+                  else
+                    SizedBox(
+                      width: double.infinity,
+                      child: YuvaButton(
+                        text: l10n.prepareProposal,
+                        onPressed: () async {
+                          final result = await Navigator.of(context).push<bool>(
+                            MaterialPageRoute(
+                              builder: (_) => PrepareProposalScreen(job: _job!),
+                            ),
+                          );
+                          // Reload job detail if proposal was submitted
+                          if (result == true && mounted) {
+                            _loadData();
+                          }
+                        },
+                        icon: Icons.send,
+                      ),
                     ),
-                  ),
                 ],
               ),
             ),
+          ),
+    );
+  }
+
+  Widget _buildMyProposalCard(AppLocalizations l10n) {
+    final proposal = _myProposal!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
+    String getAmountText() {
+      if (proposal.proposedFixedPrice != null) {
+        return l10n.fixedBudget('\$${formatAmount(proposal.proposedFixedPrice!, context)}');
+      } else if (proposal.proposedHourlyRate != null) {
+        return l10n.perHour('\$${formatAmount(proposal.proposedHourlyRate!, context)}');
+      }
+      return '';
+    }
+
+    String getStatusLabel() {
+      switch (proposal.status) {
+        case WorkerProposalStatus.draft:
+          return l10n.proposalStatusDraft;
+        case WorkerProposalStatus.submitted:
+          return l10n.proposalStatusSent;
+        case WorkerProposalStatus.shortlisted:
+          return l10n.proposalStatusShortlisted;
+        case WorkerProposalStatus.hired:
+          return l10n.proposalStatusHired;
+        case WorkerProposalStatus.rejected:
+          return l10n.proposalStatusRejected;
+        case WorkerProposalStatus.withdrawn:
+          return l10n.proposalStatusWithdrawn;
+      }
+    }
+
+    YuvaChipStyle getStatusStyle() {
+      switch (proposal.status) {
+        case WorkerProposalStatus.hired:
+          return YuvaChipStyle.primary;
+        case WorkerProposalStatus.rejected:
+        case WorkerProposalStatus.withdrawn:
+          return YuvaChipStyle.neutral;
+        case WorkerProposalStatus.shortlisted:
+          return YuvaChipStyle.accent;
+        case WorkerProposalStatus.draft:
+        case WorkerProposalStatus.submitted:
+          return YuvaChipStyle.secondary;
+      }
+    }
+
+    return YuvaCard(
+      onTap: () async {
+        final result = await Navigator.of(context).push<bool>(
+          MaterialPageRoute(
+            builder: (_) => ProposalDetailScreen(
+              proposal: proposal,
+              proposalNumber: 1,
+            ),
+          ),
+        );
+        // Refresh if proposal was withdrawn
+        if (result == true) {
+          _loadData();
+        }
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(l10n.yourProposal, style: YuvaTypography.subtitle()),
+              ),
+              YuvaChip(
+                label: getStatusLabel(),
+                chipStyle: getStatusStyle(),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            getAmountText(),
+            style: YuvaTypography.body().copyWith(
+              color: isDark ? YuvaColors.darkPrimaryTeal : YuvaColors.primaryTeal,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          if (proposal.coverLetterKey.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Text(
+              proposal.coverLetterKey,
+              style: YuvaTypography.caption(color: YuvaColors.textSecondary),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Icon(Icons.chevron_right, color: YuvaColors.textSecondary, size: 16),
+              const SizedBox(width: 4),
+              Text(
+                l10n.proposalDetails,
+                style: YuvaTypography.caption(color: YuvaColors.primaryTeal),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 

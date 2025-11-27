@@ -664,6 +664,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get proposalHired => 'Hired';
 
   @override
+  String get proposalWithdrawn => 'Withdrawn';
+
+  @override
   String get budgetHourly => 'Hourly';
 
   @override
@@ -953,4 +956,59 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get jobCannotBeModified => 'This job can no longer be modified';
+
+  @override
+  String get proposalShortlistedSuccess => 'Proposal shortlisted';
+
+  @override
+  String get proposalRejectedSuccess => 'Proposal rejected';
+
+  @override
+  String get proposalUpdateError => 'Error updating proposal';
+
+  @override
+  String get rejectProposalTitle => 'Reject proposal?';
+
+  @override
+  String get rejectProposalConfirmation =>
+      'This will reject the professional\'s proposal. Do you want to continue?';
+
+  @override
+  String get reject => 'Reject';
+
+  @override
+  String get hireProposalTitle => 'Hire professional?';
+
+  @override
+  String hireProposalConfirmation(String proName) {
+    return 'Do you want to hire $proName for this job? Other proposals will be automatically rejected.';
+  }
+
+  @override
+  String get hireError => 'Error hiring. Please try again.';
+
+  @override
+  String get blockUser => 'Block user';
+
+  @override
+  String blockUserTitle(String name) {
+    return 'Block $name?';
+  }
+
+  @override
+  String get blockUserDescription =>
+      'By blocking this user:\n• You won\'t see this conversation anymore\n• You won\'t see their profile or jobs\n• The user won\'t be able to contact you\n\nThis action cannot be undone.';
+
+  @override
+  String get blockReasonHint =>
+      'Why do you want to block this user? (optional)';
+
+  @override
+  String get blockConfirm => 'Block';
+
+  @override
+  String get blockSuccess => 'User blocked successfully';
+
+  @override
+  String get blockError => 'Error blocking user. Please try again.';
 }

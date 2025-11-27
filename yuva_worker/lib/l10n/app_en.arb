@@ -167,5 +167,76 @@
   "completeProfileExitMessage": "If you exit now, you'll need to complete your profile next time you sign in.",
   "avatarSelectTitle": "Select your avatar",
   "avatarChange": "Change avatar",
-  "avatarSelected": "Avatar selected"
+  "avatarSelected": "Avatar selected",
+  "proposalBudgetType": "Budget type",
+  "budgetHourly": "Hourly",
+  "budgetFixed": "Fixed price",
+  "proposalHourlyRate": "Hourly rate (COP)",
+  "proposalFixedPrice": "Fixed price (COP)",
+  "proposalHourlyRateHint": "E.g: 25000",
+  "proposalFixedPriceHint": "E.g: 80000",
+  "proposalEstimatedHours": "Estimated hours",
+  "proposalEstimatedHoursHint": "E.g: 4",
+  "proposalMessage": "Message to client",
+  "proposalMessageHint": "Describe your experience and why you're ideal for this job...",
+  "proposalTotalEstimate": "Total estimate",
+  "submitProposal": "Submit proposal",
+  "clientBudgetFixed": "Client budget: {amount}",
+  "@clientBudgetFixed": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "clientBudgetHourly": "Client budget: {min} - {max}/hour",
+  "@clientBudgetHourly": {
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "proposalAmountRequired": "Enter a valid amount",
+  "proposalSubmittedSuccess": "Proposal submitted successfully!",
+  "proposalSubmitError": "Error submitting proposal. Please try again.",
+  "sentProposals": "Sent",
+  "noProposalsSent": "No proposals sent yet",
+  "noProposalsSentDescription": "When you send proposals for jobs, they will appear here.",
+  "proposalStatusDraft": "Draft",
+  "proposalStatusSent": "Sent",
+  "proposalStatusShortlisted": "Shortlisted",
+  "proposalStatusHired": "Hired",
+  "proposalStatusRejected": "Rejected",
+  "proposalStatusWithdrawn": "Withdrawn",
+  "proposalForJob": "Proposal #{jobId}",
+  "@proposalForJob": {
+    "placeholders": {
+      "jobId": {
+        "type": "String"
+      }
+    }
+  },
+  "withdrawProposal": "Withdraw",
+  "withdrawProposalTitle": "Withdraw proposal?",
+  "withdrawProposalConfirmation": "If you withdraw this proposal, the client will no longer be able to see it. This action cannot be undone.",
+  "withdraw": "Withdraw",
+  "proposalWithdrawnSuccess": "Proposal withdrawn successfully",
+  "proposalWithdrawError": "Error withdrawing proposal. Please try again.",
+  "proposalSent": "Proposal sent",
+  "proposalDetails": "Proposal details",
+  "yourProposal": "Your proposal",
+  "editProposal": "Edit proposal",
+  "updateProposal": "Update proposal",
+  "proposalUpdatedSuccess": "Proposal updated successfully",
+  "blockUser": "Block user",
+  "blockUserTitle": "Block {name}?",
+  "blockUserDescription": "By blocking this user:\n• You won't see this conversation anymore\n• You won't see their jobs\n• The user won't be able to contact you\n\nThis action cannot be undone.",
+  "blockReasonHint": "Why do you want to block this user? (optional)",
+  "blockConfirm": "Block",
+  "blockSuccess": "User blocked successfully",
+  "blockError": "Error blocking user. Please try again."
 }

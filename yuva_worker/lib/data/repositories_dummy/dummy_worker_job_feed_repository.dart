@@ -14,6 +14,7 @@ class DummyWorkerJobFeedRepository implements WorkerJobFeedRepository {
     return [
       const WorkerJobSummary(
         id: 'job_001',
+        clientId: 'client_001',
         titleKey: 'jobTitleDeepCleanApt',
         serviceTypeNameKey: 'serviceDeepClean',
         areaLabel: 'Chapinero',
@@ -26,6 +27,7 @@ class DummyWorkerJobFeedRepository implements WorkerJobFeedRepository {
       ),
       const WorkerJobSummary(
         id: 'job_002',
+        clientId: 'client_002',
         titleKey: 'jobTitleWeeklyHouse',
         serviceTypeNameKey: 'serviceStandard',
         areaLabel: 'Suba',
@@ -37,6 +39,7 @@ class DummyWorkerJobFeedRepository implements WorkerJobFeedRepository {
       ),
       const WorkerJobSummary(
         id: 'job_003',
+        clientId: 'client_003',
         titleKey: 'jobTitleOfficeReset',
         serviceTypeNameKey: 'serviceOffice',
         areaLabel: 'Usaquén',
@@ -49,6 +52,7 @@ class DummyWorkerJobFeedRepository implements WorkerJobFeedRepository {
       ),
       const WorkerJobSummary(
         id: 'job_004',
+        clientId: 'client_004',
         titleKey: 'jobTitlePostMoveCondo',
         serviceTypeNameKey: 'serviceMoveOut',
         areaLabel: 'Engativá',
@@ -60,6 +64,7 @@ class DummyWorkerJobFeedRepository implements WorkerJobFeedRepository {
       ),
       const WorkerJobSummary(
         id: 'job_005',
+        clientId: 'client_005',
         titleKey: 'jobTitleBiweeklyStudio',
         serviceTypeNameKey: 'serviceStandard',
         areaLabel: 'Teusaquillo',
@@ -80,6 +85,7 @@ class DummyWorkerJobFeedRepository implements WorkerJobFeedRepository {
     return [
       const WorkerJobSummary(
         id: 'job_006',
+        clientId: 'client_006',
         titleKey: 'jobTitleDeepCleanApt',
         serviceTypeNameKey: 'serviceDeepClean',
         areaLabel: 'Chapinero',
@@ -92,6 +98,7 @@ class DummyWorkerJobFeedRepository implements WorkerJobFeedRepository {
       ),
       const WorkerJobSummary(
         id: 'job_007',
+        clientId: 'client_007',
         titleKey: 'jobTitleWeeklyHouse',
         serviceTypeNameKey: 'serviceStandard',
         areaLabel: 'Suba',
@@ -112,6 +119,8 @@ class DummyWorkerJobFeedRepository implements WorkerJobFeedRepository {
     // In a real app, this would fetch from backend
     return WorkerJobDetail(
       id: jobId,
+      clientId: 'dummy_client_1',
+      clientName: 'María García',
       titleKey: 'jobTitleDeepCleanApt',
       descriptionKey: 'jobDescDeepCleanApt',
       serviceTypeNameKey: 'serviceDeepClean',

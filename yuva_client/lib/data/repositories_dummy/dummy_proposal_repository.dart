@@ -13,7 +13,12 @@ class DummyProposalRepository implements ProposalRepository {
   @override
   Future<List<Proposal>> getProposalsForJob(String jobPostId) async {
     await Future.delayed(_latency);
-    return _store.proposals.where((proposal) => proposal.jobPostId == jobPostId).toList(growable: false);
+    // Filter to only show active proposals (exclude withdrawn/rejected)
+    return _store.proposals
+        .where((proposal) => 
+            proposal.jobPostId == jobPostId && 
+            proposal.status.isActiveForClient)
+        .toList(growable: false);
   }
 
   @override
@@ -40,14 +45,53 @@ class DummyProposalRepository implements ProposalRepository {
   }
 
   @override
-  Future<Proposal> updateProposalStatus(String proposalId, ProposalStatus status) async {
+  Future<Proposal> updateProposalStatus({
+    required String jobPostId,
+    required String proposalId,
+    required ProposalStatus status,
+  }) async {
     await Future.delayed(_latency);
-    final index = _store.proposals.indexWhere((element) => element.id == proposalId);
+    final index = _store.proposals.indexWhere(
+      (element) => element.id == proposalId && element.jobPostId == jobPostId,
+    );
     if (index == -1) {
       throw StateError('Proposal $proposalId not found');
     }
-    final updated = _store.proposals[index].copyWith(status: status);
+    
+    final current = _store.proposals[index];
+    
+    // Validate status transition
+    if (!_canTransitionTo(current.status, status)) {
+      throw StateError('Cannot change proposal status from ${current.status.name} to ${status.name}');
+    }
+    
+    final updated = current.copyWith(status: status);
     _store.proposals[index] = updated;
     return updated;
+  }
+  
+  /// Validates if a status transition is allowed
+  bool _canTransitionTo(ProposalStatus currentStatus, ProposalStatus newStatus) {
+    // Terminal states - no transitions allowed
+    if (currentStatus == ProposalStatus.hired || currentStatus == ProposalStatus.withdrawn) {
+      return false;
+    }
+    
+    // From rejected, only allow if going back to shortlisted (undo reject)
+    if (currentStatus == ProposalStatus.rejected) {
+      return newStatus == ProposalStatus.shortlisted;
+    }
+    
+    // From submitted, can go to shortlisted, rejected, or hired
+    if (currentStatus == ProposalStatus.submitted) {
+      return [ProposalStatus.shortlisted, ProposalStatus.rejected, ProposalStatus.hired].contains(newStatus);
+    }
+    
+    // From shortlisted, can go to rejected or hired
+    if (currentStatus == ProposalStatus.shortlisted) {
+      return [ProposalStatus.rejected, ProposalStatus.hired].contains(newStatus);
+    }
+    
+    return false;
   }
 }

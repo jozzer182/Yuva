@@ -4,6 +4,7 @@ import 'shared_types.dart';
 /// Feed-friendly summary of a job post, as seen by a professional
 class WorkerJobSummary extends Equatable {
   final String id;
+  final String clientId;
   final String titleKey;
   final String? customTitle;
   final String serviceTypeNameKey;
@@ -19,6 +20,7 @@ class WorkerJobSummary extends Equatable {
 
   const WorkerJobSummary({
     required this.id,
+    required this.clientId,
     required this.titleKey,
     this.customTitle,
     required this.serviceTypeNameKey,
@@ -39,6 +41,7 @@ class WorkerJobSummary extends Equatable {
     final invitedProIds = List<String>.from(map['invitedProIds'] ?? []);
     return WorkerJobSummary(
       id: docId,
+      clientId: map['clientId'] as String? ?? map['userId'] as String? ?? '',
       titleKey: map['titleKey'] as String? ?? '',
       customTitle: map['customTitle'] as String?,
       serviceTypeNameKey: map['serviceTypeId'] as String? ?? '',
@@ -68,6 +71,7 @@ class WorkerJobSummary extends Equatable {
   @override
   List<Object?> get props => [
         id,
+        clientId,
         titleKey,
         customTitle,
         serviceTypeNameKey,
@@ -86,6 +90,8 @@ class WorkerJobSummary extends Equatable {
 /// Detailed view of a job from worker perspective
 class WorkerJobDetail extends Equatable {
   final String id;
+  final String clientId;
+  final String? clientName;
   final String titleKey;
   final String descriptionKey;
   final String? customTitle;
@@ -105,6 +111,8 @@ class WorkerJobDetail extends Equatable {
 
   const WorkerJobDetail({
     required this.id,
+    required this.clientId,
+    this.clientName,
     required this.titleKey,
     required this.descriptionKey,
     this.customTitle,
@@ -129,6 +137,8 @@ class WorkerJobDetail extends Equatable {
     final invitedProIds = List<String>.from(map['invitedProIds'] ?? []);
     return WorkerJobDetail(
       id: docId,
+      clientId: map['clientId'] as String? ?? '',
+      clientName: map['clientName'] as String?,
       titleKey: map['titleKey'] as String? ?? '',
       descriptionKey: map['descriptionKey'] as String? ?? '',
       customTitle: map['customTitle'] as String?,
@@ -175,6 +185,8 @@ class WorkerJobDetail extends Equatable {
   @override
   List<Object?> get props => [
         id,
+        clientId,
+        clientName,
         titleKey,
         descriptionKey,
         customTitle,

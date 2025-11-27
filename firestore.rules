@@ -25,14 +25,17 @@ service cloud.firestore {
     // Jobs/Service Requests
     // =======================
     match /jobs/{jobId} {
-      // Job owner can read/write
+      // Job owner can read/write their jobs
       allow read, write: if request.auth != null && 
                            request.auth.uid == resource.data.clientId;
+      // Allow creating jobs if user is the client
+      allow create: if request.auth != null && 
+                      request.auth.uid == request.resource.data.clientId;
       // Workers can read jobs to browse opportunities
       allow read: if request.auth != null;
-      // Workers can update job status when assigned
+      // Workers can update job status when assigned (hiredProId)
       allow update: if request.auth != null && 
-                      request.auth.uid == resource.data.assignedWorkerId;
+                      request.auth.uid == resource.data.hiredProId;
     }
     
     // =======================
@@ -80,13 +83,30 @@ service cloud.firestore {
     // Messages/Conversations
     // =======================
     match /conversations/{conversationId} {
-      // Participants can read and write messages
+      // Client can read and write their conversations
+      allow read, write: if request.auth != null && 
+                           request.auth.uid == resource.data.clientId;
+      // Worker can read and write their conversations
+      allow read, write: if request.auth != null && 
+                           request.auth.uid == resource.data.workerId;
+      // Participants can read and write (fallback)
       allow read, write: if request.auth != null && 
                            request.auth.uid in resource.data.participants;
+      // Allow creating conversations if user is client or worker
+      allow create: if request.auth != null && 
+                      (request.auth.uid == request.resource.data.clientId ||
+                       request.auth.uid == request.resource.data.workerId ||
+                       request.auth.uid in request.resource.data.participants);
     }
     
     match /conversations/{conversationId}/messages/{messageId} {
-      // Participants can read and create messages
+      // Client can read and create messages
+      allow read, create: if request.auth != null && 
+                            request.auth.uid == get(/databases/$(database)/documents/conversations/$(conversationId)).data.clientId;
+      // Worker can read and create messages
+      allow read, create: if request.auth != null && 
+                            request.auth.uid == get(/databases/$(database)/documents/conversations/$(conversationId)).data.workerId;
+      // Participants can read and create messages (fallback)
       allow read, create: if request.auth != null && 
                             request.auth.uid in get(/databases/$(database)/documents/conversations/$(conversationId)).data.participants;
     }
@@ -110,6 +130,62 @@ service cloud.firestore {
       allow read: if request.auth != null;
       // Only admins can write (protect in production with custom claims)
       allow write: if false;
+    }
+    
+    // =======================
+    // Blocked Users (for audit/legal)
+    // =======================
+    match /blocked_users/{blockId} {
+      // Anyone authenticated can create a block record
+      allow create: if request.auth != null && 
+                      request.auth.uid == request.resource.data.blockerId;
+      // Only the blocker can read their block records
+      allow read: if request.auth != null && 
+                    request.auth.uid == resource.data.blockerId;
+      // Block records are immutable (for legal purposes)
+      allow update, delete: if false;
+    }
+    
+    // =======================
+    // User Notifications (subcollection)
+    // =======================
+    match /users/{userId}/notifications/{notificationId} {
+      // Users can read and update their own notifications
+      allow read, update: if request.auth != null && request.auth.uid == userId;
+      // System/other users can create notifications for a user
+      allow create: if request.auth != null;
+      // Notifications cannot be deleted
+      allow delete: if false;
+    }
+    
+    // =======================
+    // Worker Notifications (subcollection)
+    // =======================
+    match /workers/{workerId}/notifications/{notificationId} {
+      // Workers can read and update their own notifications
+      allow read, update: if request.auth != null && request.auth.uid == workerId;
+      // System/other users can create notifications for a worker
+      allow create: if request.auth != null;
+      // Notifications cannot be deleted
+      allow delete: if false;
+    }
+    
+    // =======================
+    // Job Proposals (subcollection)
+    // =======================
+    match /jobs/{jobId}/proposals/{proposalId} {
+      // Worker who created the proposal can read/write (field is 'workerId')
+      allow read, write: if request.auth != null && 
+                           request.auth.uid == resource.data.workerId;
+      // Allow worker to create proposal
+      allow create: if request.auth != null && 
+                      request.auth.uid == request.resource.data.workerId;
+      // Job owner (client) can read all proposals for their job
+      allow read: if request.auth != null && 
+                    request.auth.uid == get(/databases/$(database)/documents/jobs/$(jobId)).data.clientId;
+      // Job owner can update proposal status (shortlist, reject, hire)
+      allow update: if request.auth != null && 
+                      request.auth.uid == get(/databases/$(database)/documents/jobs/$(jobId)).data.clientId;
     }
   }
 }

@@ -29,3 +29,21 @@ final proSummaryProvider = FutureProvider.autoDispose.family<ProSummary?, String
   final repository = ref.watch(proSummaryRepositoryProvider);
   return repository.getProById(proId);
 });
+
+/// Provider that returns the count of active proposals for a job.
+/// Active proposals exclude withdrawn and rejected statuses.
+final activeProposalCountProvider =
+    FutureProvider.autoDispose.family<int, String>((ref, jobId) async {
+  final proposals = await ref.watch(proposalsForJobProvider(jobId).future);
+  return proposals.length;
+});
+
+/// Provider to fetch worker's avatarId from Firestore by workerId.
+/// Used when proposal doesn't have denormalized workerAvatarId.
+final workerAvatarIdProvider =
+    FutureProvider.autoDispose.family<String?, String>((ref, workerId) async {
+  if (workerId.isEmpty) return null;
+  final userProfileService = ref.watch(userProfileServiceProvider);
+  final profile = await userProfileService.getAnyUserProfile(workerId);
+  return profile?.avatarId;
+});

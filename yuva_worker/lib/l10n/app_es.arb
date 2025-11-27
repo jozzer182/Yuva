@@ -503,5 +503,217 @@
   "avatarSelected": "Avatar seleccionado",
   "@avatarSelected": {
     "description": "Confirmation when avatar is selected"
+  },
+  "proposalBudgetType": "Tipo de presupuesto",
+  "@proposalBudgetType": {
+    "description": "Budget type label for proposal"
+  },
+  "budgetHourly": "Por hora",
+  "@budgetHourly": {
+    "description": "Hourly budget type"
+  },
+  "budgetFixed": "Precio fijo",
+  "@budgetFixed": {
+    "description": "Fixed budget type"
+  },
+  "proposalHourlyRate": "Tarifa por hora (COP)",
+  "@proposalHourlyRate": {
+    "description": "Hourly rate label"
+  },
+  "proposalFixedPrice": "Precio fijo (COP)",
+  "@proposalFixedPrice": {
+    "description": "Fixed price label"
+  },
+  "proposalHourlyRateHint": "Ej: 25000",
+  "@proposalHourlyRateHint": {
+    "description": "Hourly rate hint"
+  },
+  "proposalFixedPriceHint": "Ej: 80000",
+  "@proposalFixedPriceHint": {
+    "description": "Fixed price hint"
+  },
+  "proposalEstimatedHours": "Horas estimadas",
+  "@proposalEstimatedHours": {
+    "description": "Estimated hours label"
+  },
+  "proposalEstimatedHoursHint": "Ej: 4",
+  "@proposalEstimatedHoursHint": {
+    "description": "Estimated hours hint"
+  },
+  "proposalMessage": "Mensaje para el cliente",
+  "@proposalMessage": {
+    "description": "Message label"
+  },
+  "proposalMessageHint": "Describe tu experiencia y por qué eres ideal para este trabajo...",
+  "@proposalMessageHint": {
+    "description": "Message hint"
+  },
+  "proposalTotalEstimate": "Total estimado",
+  "@proposalTotalEstimate": {
+    "description": "Total estimate label"
+  },
+  "submitProposal": "Enviar propuesta",
+  "@submitProposal": {
+    "description": "Submit proposal button"
+  },
+  "clientBudgetFixed": "Presupuesto del cliente: {amount}",
+  "@clientBudgetFixed": {
+    "description": "Client fixed budget",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "clientBudgetHourly": "Presupuesto del cliente: {min} - {max}/hora",
+  "@clientBudgetHourly": {
+    "description": "Client hourly budget range",
+    "placeholders": {
+      "min": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "proposalAmountRequired": "Ingresa un monto válido",
+  "@proposalAmountRequired": {
+    "description": "Amount required error"
+  },
+  "proposalSubmittedSuccess": "¡Propuesta enviada exitosamente!",
+  "@proposalSubmittedSuccess": {
+    "description": "Proposal submitted success message"
+  },
+  "proposalSubmitError": "Error al enviar la propuesta. Intenta de nuevo.",
+  "@proposalSubmitError": {
+    "description": "Proposal submit error message"
+  },
+  "sentProposals": "Enviadas",
+  "@sentProposals": {
+    "description": "Sent proposals tab label"
+  },
+  "noProposalsSent": "Aún no has enviado propuestas",
+  "@noProposalsSent": {
+    "description": "No proposals sent title"
+  },
+  "noProposalsSentDescription": "Cuando envíes propuestas para trabajos, aparecerán aquí.",
+  "@noProposalsSentDescription": {
+    "description": "No proposals sent description"
+  },
+  "proposalStatusDraft": "Borrador",
+  "@proposalStatusDraft": {
+    "description": "Draft proposal status"
+  },
+  "proposalStatusSent": "Enviada",
+  "@proposalStatusSent": {
+    "description": "Sent proposal status"
+  },
+  "proposalStatusShortlisted": "Preseleccionada",
+  "@proposalStatusShortlisted": {
+    "description": "Shortlisted proposal status"
+  },
+  "proposalStatusHired": "Contratada",
+  "@proposalStatusHired": {
+    "description": "Hired proposal status"
+  },
+  "proposalStatusRejected": "Rechazada",
+  "@proposalStatusRejected": {
+    "description": "Rejected proposal status"
+  },
+  "proposalStatusWithdrawn": "Retirada",
+  "@proposalStatusWithdrawn": {
+    "description": "Withdrawn proposal status"
+  },
+  "proposalForJob": "Propuesta #{jobId}",
+  "@proposalForJob": {
+    "description": "Proposal for job label",
+    "placeholders": {
+      "jobId": {
+        "type": "String"
+      }
+    }
+  },
+  "withdrawProposal": "Retirar",
+  "@withdrawProposal": {
+    "description": "Withdraw proposal button"
+  },
+  "withdrawProposalTitle": "¿Retirar propuesta?",
+  "@withdrawProposalTitle": {
+    "description": "Withdraw proposal dialog title"
+  },
+  "withdrawProposalConfirmation": "Si retiras esta propuesta, el cliente ya no podrá verla. Esta acción no se puede deshacer.",
+  "@withdrawProposalConfirmation": {
+    "description": "Withdraw proposal confirmation message"
+  },
+  "withdraw": "Retirar",
+  "@withdraw": {
+    "description": "Withdraw action button"
+  },
+  "proposalWithdrawnSuccess": "Propuesta retirada exitosamente",
+  "@proposalWithdrawnSuccess": {
+    "description": "Proposal withdrawn success message"
+  },
+  "proposalWithdrawError": "Error al retirar la propuesta. Intenta de nuevo.",
+  "@proposalWithdrawError": {
+    "description": "Proposal withdraw error message"
+  },
+  "proposalSent": "Propuesta enviada",
+  "@proposalSent": {
+    "description": "Label indicating worker already sent a proposal for this job"
+  },
+  "proposalDetails": "Detalle de propuesta",
+  "@proposalDetails": {
+    "description": "Proposal details screen title"
+  },
+  "yourProposal": "Tu propuesta",
+  "@yourProposal": {
+    "description": "Your proposal section title"
+  },
+  "editProposal": "Editar propuesta",
+  "@editProposal": {
+    "description": "Edit proposal screen title"
+  },
+  "updateProposal": "Actualizar propuesta",
+  "@updateProposal": {
+    "description": "Update proposal button text"
+  },
+  "proposalUpdatedSuccess": "Propuesta actualizada exitosamente",
+  "@proposalUpdatedSuccess": {
+    "description": "Proposal updated success message"
+  },
+  "blockUser": "Bloquear usuario",
+  "@blockUser": {
+    "description": "Block user action"
+  },
+  "blockUserTitle": "¿Bloquear a {name}?",
+  "@blockUserTitle": {
+    "description": "Block user dialog title",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Juan"
+      }
+    }
+  },
+  "blockUserDescription": "Al bloquear a este usuario:\n• No verás más esta conversación\n• No podrás ver sus trabajos\n• El usuario no podrá contactarte\n\nEsta acción no se puede deshacer.",
+  "@blockUserDescription": {
+    "description": "Block user dialog description"
+  },
+  "blockReasonHint": "¿Por qué deseas bloquear a este usuario? (opcional)",
+  "@blockReasonHint": {
+    "description": "Block reason input hint"
+  },
+  "blockConfirm": "Bloquear",
+  "@blockConfirm": {
+    "description": "Block confirm button"
+  },
+  "blockSuccess": "Usuario bloqueado exitosamente",
+  "@blockSuccess": {
+    "description": "Block success message"
+  },
+  "blockError": "Error al bloquear usuario. Intenta de nuevo.",
+  "@blockError": {
+    "description": "Block error message"
   }
 }

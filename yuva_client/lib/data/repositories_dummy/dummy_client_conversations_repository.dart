@@ -7,6 +7,8 @@ class DummyClientConversationsRepository implements ClientConversationsRepositor
   final List<ClientConversation> _conversations = [
     ClientConversation(
       id: 'conv_client_job1',
+      clientId: 'dummy_client_1',
+      workerId: 'dummy_worker_1',
       jobPostId: 'job_open_apartment',
       workerDisplayName: 'Luisa Rincón',
       lastMessagePreview: 'Hola, me gustaría confirmar los detalles del trabajo',
@@ -15,6 +17,8 @@ class DummyClientConversationsRepository implements ClientConversationsRepositor
     ),
     ClientConversation(
       id: 'conv_client_job2',
+      clientId: 'dummy_client_1',
+      workerId: 'dummy_worker_2',
       jobPostId: 'job_hired_house',
       workerDisplayName: 'Mateo Silva',
       lastMessagePreview: 'Perfecto, nos vemos mañana a las 8am',
@@ -23,6 +27,8 @@ class DummyClientConversationsRepository implements ClientConversationsRepositor
     ),
     ClientConversation(
       id: 'conv_client_job3',
+      clientId: 'dummy_client_1',
+      workerId: 'dummy_worker_3',
       activeJobId: 'active_job_office', // Para trabajo activo
       workerDisplayName: 'Camila Ortega',
       lastMessagePreview: 'El trabajo está completado, ¿puedes revisar?',
@@ -84,6 +90,62 @@ class DummyClientConversationsRepository implements ClientConversationsRepositor
   Future<List<ClientConversation>> getConversations() async {
     await Future.delayed(const Duration(milliseconds: 500));
     return List.from(_conversations);
+  }
+
+  @override
+  Future<ClientConversation?> getConversationForJob(String jobPostId) async {
+    await Future.delayed(const Duration(milliseconds: 300));
+    try {
+      return _conversations.firstWhere((c) => c.jobPostId == jobPostId);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  @override
+  Future<ClientConversation> createConversation({
+    required String clientId,
+    required String workerId,
+    required String jobPostId,
+    required String workerDisplayName,
+    String? workerAvatarId,
+    String? clientDisplayName,
+  }) async {
+    await Future.delayed(const Duration(milliseconds: 400));
+    
+    // Check if conversation already exists
+    final existing = _conversations.where((c) => c.jobPostId == jobPostId).toList();
+    if (existing.isNotEmpty) {
+      return existing.first;
+    }
+    
+    final newConversation = ClientConversation(
+      id: 'conv_${DateTime.now().millisecondsSinceEpoch}',
+      clientId: clientId,
+      workerId: workerId,
+      jobPostId: jobPostId,
+      workerDisplayName: workerDisplayName,
+      workerAvatarId: workerAvatarId,
+      lastMessagePreview: '¡Conversación iniciada!',
+      lastMessageAt: DateTime.now(),
+      unreadCount: 0,
+    );
+    
+    _conversations.insert(0, newConversation);
+    
+    // Create initial system message
+    _messages[newConversation.id] = [
+      ClientMessage(
+        id: 'msg_${DateTime.now().millisecondsSinceEpoch}',
+        conversationId: newConversation.id,
+        senderType: MessageSenderType.system,
+        text: '¡Has contratado a $workerDisplayName para este trabajo!',
+        createdAt: DateTime.now(),
+        isRead: true,
+      ),
+    ];
+    
+    return newConversation;
   }
 
   @override

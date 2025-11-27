@@ -76,5 +76,41 @@ class ClientNotification extends Equatable {
         activeJobId,
         conversationId,
       ];
+
+  /// Creates a ClientNotification from a Firestore document map.
+  factory ClientNotification.fromMap(Map<String, dynamic> map, String docId) {
+    return ClientNotification(
+      id: docId,
+      type: ClientNotificationType.values.firstWhere(
+        (e) => e.name == (map['type'] as String? ?? 'genericInfo'),
+        orElse: () => ClientNotificationType.genericInfo,
+      ),
+      title: map['title'] as String? ?? '',
+      body: map['body'] as String? ?? '',
+      createdAt: map['createdAt'] != null
+          ? (map['createdAt'] as dynamic).toDate()
+          : DateTime.now(),
+      isRead: map['isRead'] as bool? ?? false,
+      jobPostId: map['jobPostId'] as String?,
+      proposalId: map['proposalId'] as String?,
+      activeJobId: map['activeJobId'] as String?,
+      conversationId: map['conversationId'] as String?,
+    );
+  }
+
+  /// Converts this ClientNotification to a Firestore document map.
+  Map<String, dynamic> toMap() {
+    return {
+      'type': type.name,
+      'title': title,
+      'body': body,
+      'createdAt': createdAt,
+      'isRead': isRead,
+      if (jobPostId != null) 'jobPostId': jobPostId,
+      if (proposalId != null) 'proposalId': proposalId,
+      if (activeJobId != null) 'activeJobId': activeJobId,
+      if (conversationId != null) 'conversationId': conversationId,
+    };
+  }
 }
 

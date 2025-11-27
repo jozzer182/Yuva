@@ -98,10 +98,14 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               Expanded(
                 child: prosAsync.when(
                   data: (pros) {
+                    final blockedIdsAsync = ref.watch(blockedUserIdsProvider);
+                    final blockedIds = blockedIdsAsync.valueOrNull ?? [];
+                    
                     final filtered = pros
                         .where((pro) =>
-                            pro.displayName.toLowerCase().contains(_searchController.text.toLowerCase()) ||
-                            pro.areaLabel.toLowerCase().contains(_searchController.text.toLowerCase()))
+                            !blockedIds.contains(pro.id) && // Filter out blocked workers
+                            (pro.displayName.toLowerCase().contains(_searchController.text.toLowerCase()) ||
+                            pro.areaLabel.toLowerCase().contains(_searchController.text.toLowerCase())))
                         .toList();
                     if (filtered.isEmpty) {
                       return Center(

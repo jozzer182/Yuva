@@ -377,4 +377,160 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get avatarSelected => 'Avatar selected';
+
+  @override
+  String get proposalBudgetType => 'Budget type';
+
+  @override
+  String get budgetHourly => 'Hourly';
+
+  @override
+  String get budgetFixed => 'Fixed price';
+
+  @override
+  String get proposalHourlyRate => 'Hourly rate (COP)';
+
+  @override
+  String get proposalFixedPrice => 'Fixed price (COP)';
+
+  @override
+  String get proposalHourlyRateHint => 'E.g: 25000';
+
+  @override
+  String get proposalFixedPriceHint => 'E.g: 80000';
+
+  @override
+  String get proposalEstimatedHours => 'Estimated hours';
+
+  @override
+  String get proposalEstimatedHoursHint => 'E.g: 4';
+
+  @override
+  String get proposalMessage => 'Message to client';
+
+  @override
+  String get proposalMessageHint =>
+      'Describe your experience and why you\'re ideal for this job...';
+
+  @override
+  String get proposalTotalEstimate => 'Total estimate';
+
+  @override
+  String get submitProposal => 'Submit proposal';
+
+  @override
+  String clientBudgetFixed(String amount) {
+    return 'Client budget: $amount';
+  }
+
+  @override
+  String clientBudgetHourly(String min, String max) {
+    return 'Client budget: $min - $max/hour';
+  }
+
+  @override
+  String get proposalAmountRequired => 'Enter a valid amount';
+
+  @override
+  String get proposalSubmittedSuccess => 'Proposal submitted successfully!';
+
+  @override
+  String get proposalSubmitError =>
+      'Error submitting proposal. Please try again.';
+
+  @override
+  String get sentProposals => 'Sent';
+
+  @override
+  String get noProposalsSent => 'No proposals sent yet';
+
+  @override
+  String get noProposalsSentDescription =>
+      'When you send proposals for jobs, they will appear here.';
+
+  @override
+  String get proposalStatusDraft => 'Draft';
+
+  @override
+  String get proposalStatusSent => 'Sent';
+
+  @override
+  String get proposalStatusShortlisted => 'Shortlisted';
+
+  @override
+  String get proposalStatusHired => 'Hired';
+
+  @override
+  String get proposalStatusRejected => 'Rejected';
+
+  @override
+  String get proposalStatusWithdrawn => 'Withdrawn';
+
+  @override
+  String proposalForJob(String jobId) {
+    return 'Proposal #$jobId';
+  }
+
+  @override
+  String get withdrawProposal => 'Withdraw';
+
+  @override
+  String get withdrawProposalTitle => 'Withdraw proposal?';
+
+  @override
+  String get withdrawProposalConfirmation =>
+      'If you withdraw this proposal, the client will no longer be able to see it. This action cannot be undone.';
+
+  @override
+  String get withdraw => 'Withdraw';
+
+  @override
+  String get proposalWithdrawnSuccess => 'Proposal withdrawn successfully';
+
+  @override
+  String get proposalWithdrawError =>
+      'Error withdrawing proposal. Please try again.';
+
+  @override
+  String get proposalSent => 'Proposal sent';
+
+  @override
+  String get proposalDetails => 'Proposal details';
+
+  @override
+  String get yourProposal => 'Your proposal';
+
+  @override
+  String get editProposal => 'Edit proposal';
+
+  @override
+  String get updateProposal => 'Update proposal';
+
+  @override
+  String get proposalUpdatedSuccess => 'Proposal updated successfully';
+
+  @override
+  String get blockUser => 'Block user';
+
+  @override
+  String blockUserTitle(String name) {
+    return 'Block $name?';
+  }
+
+  @override
+  String get blockUserDescription =>
+      'By blocking this user:\n• You won\'t see this conversation anymore\n• You won\'t see their jobs\n• The user won\'t be able to contact you\n\nThis action cannot be undone.';
+
+  @override
+  String get blockReasonHint =>
+      'Why do you want to block this user? (optional)';
+
+  @override
+  String get blockConfirm => 'Block';
+
+  @override
+  String get blockSuccess => 'User blocked successfully';
+
+  @override
+  String get blockError => 'Error blocking user. Please try again.';
 }

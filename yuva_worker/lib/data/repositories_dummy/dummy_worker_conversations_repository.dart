@@ -7,7 +7,9 @@ class DummyWorkerConversationsRepository implements WorkerConversationsRepositor
   final List<WorkerConversation> _conversations = [
     WorkerConversation(
       id: 'conv1',
-      relatedJobId: 'job1',
+      clientId: 'dummy_client_1',
+      workerId: 'dummy_worker_1',
+      jobPostId: 'job1',
       clientDisplayName: 'María García',
       lastMessagePreview: 'Perfecto, nos vemos mañana a las 9am',
       lastMessageAt: DateTime.now().subtract(const Duration(hours: 2)),
@@ -15,7 +17,9 @@ class DummyWorkerConversationsRepository implements WorkerConversationsRepositor
     ),
     WorkerConversation(
       id: 'conv2',
-      relatedJobId: 'job2',
+      clientId: 'dummy_client_2',
+      workerId: 'dummy_worker_1',
+      jobPostId: 'job2',
       clientDisplayName: 'Carlos López',
       lastMessagePreview: 'Gracias por el excelente trabajo',
       lastMessageAt: DateTime.now().subtract(const Duration(days: 1)),
@@ -23,7 +27,9 @@ class DummyWorkerConversationsRepository implements WorkerConversationsRepositor
     ),
     WorkerConversation(
       id: 'conv3',
-      relatedJobId: 'job3',
+      clientId: 'dummy_client_3',
+      workerId: 'dummy_worker_1',
+      jobPostId: 'job3',
       clientDisplayName: 'Ana Martínez',
       lastMessagePreview: '¿Podrías llegar 30 minutos antes?',
       lastMessageAt: DateTime.now().subtract(const Duration(hours: 5)),

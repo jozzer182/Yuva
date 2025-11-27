@@ -3,11 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../core/providers.dart';
+import '../../utils/money_formatter.dart';
 import '../../data/models/booking_request.dart';
 import '../../data/models/job_models.dart';
 import '../../data/models/rating.dart';
 import '../../data/repositories/job_post_repository.dart';
 import '../../design_system/colors.dart';
+import '../../design_system/components/avatar_picker.dart';
 import '../../design_system/components/yuva_button.dart';
 import '../../design_system/components/yuva_card.dart';
 import '../../design_system/components/yuva_chip.dart';
@@ -20,18 +22,31 @@ import 'edit_job_screen.dart';
 import 'job_providers.dart';
 import 'proposal_detail_screen.dart';
 
-class JobDetailScreen extends ConsumerWidget {
+class JobDetailScreen extends ConsumerStatefulWidget {
   final String jobId;
 
   const JobDetailScreen({super.key, required this.jobId});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<JobDetailScreen> createState() => _JobDetailScreenState();
+}
+
+class _JobDetailScreenState extends ConsumerState<JobDetailScreen> {
+  Future<void> _onRefresh() async {
+    // Invalidate providers to force re-fetch from repositories
+    ref.invalidate(jobPostProvider(widget.jobId));
+    ref.invalidate(proposalsForJobProvider(widget.jobId));
+    ref.invalidate(proSummariesProvider);
+    ref.invalidate(jobRatingProvider(widget.jobId));
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final jobAsync = ref.watch(jobPostProvider(jobId));
-    final proposalsAsync = ref.watch(proposalsForJobProvider(jobId));
+    final jobAsync = ref.watch(jobPostProvider(widget.jobId));
+    final proposalsAsync = ref.watch(proposalsForJobProvider(widget.jobId));
     final prosAsync = ref.watch(proSummariesProvider);
-    final ratingAsync = ref.watch(jobRatingProvider(jobId));
+    final ratingAsync = ref.watch(jobRatingProvider(widget.jobId));
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return YuvaScaffold(
@@ -84,20 +99,18 @@ class JobDetailScreen extends ConsumerWidget {
             if (job == null) {
               return Center(child: Text(l10n.jobNotFound));
             }
-            return proposalsAsync.when(
-              data: (proposals) => prosAsync.when(
-                data: (pros) => ratingAsync.when(
-                  data: (rating) =>
-                      _buildContent(context, l10n, job, proposals, pros, rating, isDark, ref),
-                  loading: () => const Center(child: CircularProgressIndicator()),
-                  error: (e, _) => Center(child: Text(e.toString())),
-                ),
-                loading: () => const Center(child: CircularProgressIndicator()),
-                error: (e, _) => Center(child: Text(e.toString())),
-              ),
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (e, _) => Center(child: Text(e.toString())),
-            );
+            // Handle proposals error gracefully - show empty list if query fails
+            // (e.g., missing Firestore index)
+            final proposals = proposalsAsync.valueOrNull ?? [];
+            final pros = prosAsync.valueOrNull ?? [];
+            final rating = ratingAsync.valueOrNull;
+            
+            // Show loading only if job data is still loading
+            if (proposalsAsync.isLoading && proposals.isEmpty) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            
+            return _buildContent(context, l10n, job, proposals, pros, rating, isDark, ref);
           },
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (error, _) => Center(child: Text(error.toString())),
@@ -178,9 +191,12 @@ class JobDetailScreen extends ConsumerWidget {
     final invited = pros.where((pro) => job.invitedProIds.contains(pro.id)).toList();
     final hired = job.hiredProId != null ? prosById[job.hiredProId] : null;
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-      child: Column(
+    return RefreshIndicator(
+      onRefresh: _onRefresh,
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+        child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           YuvaCard(
@@ -269,7 +285,7 @@ class JobDetailScreen extends ConsumerWidget {
                   children: [
                     Icon(Icons.monetization_on_outlined, color: YuvaColors.primaryTeal),
                     const SizedBox(width: 6),
-                    Text(_budgetCopy(l10n, job), style: YuvaTypography.body()),
+                    Text(_budgetCopy(context, l10n, job), style: YuvaTypography.body()),
                   ],
                 ),
               ],
@@ -340,7 +356,8 @@ class JobDetailScreen extends ConsumerWidget {
                     l10n.ratingAlreadySent,
                     style: YuvaTypography.body(color: YuvaColors.textSecondary),
                   ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -385,25 +402,47 @@ class JobDetailScreen extends ConsumerWidget {
     final date = DateFormat.yMMMd(locale).format(proposal.createdAt);
     final statusLabel = _localizeProposalStatus(l10n, proposal.status);
 
+    // Use denormalized worker info from proposal if ProSummary not available
+    final workerName = pro?.displayName ?? proposal.workerDisplayName ?? l10n.proDeleted;
+    final workerInitials = pro?.avatarInitials 
+        ?? proposal.workerAvatarInitials 
+        ?? (workerName != l10n.proDeleted ? workerName.characters.take(2).toString().toUpperCase() : '?');
+    final hasProInfo = pro != null;
+
     return YuvaCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              CircleAvatar(
-                backgroundColor: YuvaColors.primaryTeal.withValues(alpha: 0.12),
-                child: Text(pro?.avatarInitials ?? pro?.displayName.characters.take(2).toString() ?? '?'),
+              // Use Consumer to fetch worker avatar if not in proposal
+              Consumer(
+                builder: (context, ref, _) {
+                  // First try proposal's denormalized avatarId
+                  String? avatarId = proposal.workerAvatarId;
+                  
+                  // If not available, fetch from worker's profile
+                  if (avatarId == null && proposal.proId.isNotEmpty) {
+                    final asyncAvatarId = ref.watch(workerAvatarIdProvider(proposal.proId));
+                    avatarId = asyncAvatarId.valueOrNull;
+                  }
+                  
+                  return AvatarDisplay(
+                    avatarId: avatarId,
+                    fallbackInitial: workerInitials,
+                    size: 40,
+                  );
+                },
               ),
               const SizedBox(width: 10),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(pro?.displayName ?? l10n.proDeleted, style: YuvaTypography.subtitle()),
+                    Text(workerName, style: YuvaTypography.subtitle()),
                     const SizedBox(height: 2),
                     Text(
-                      pro != null
+                      hasProInfo
                           ? '${pro.ratingAverage.toStringAsFixed(1)} (${pro.ratingCount}) · ${pro.areaLabel}'
                           : '',
                       style: YuvaTypography.caption(color: YuvaColors.textSecondary),
@@ -428,8 +467,8 @@ class JobDetailScreen extends ConsumerWidget {
               const SizedBox(width: 6),
               Text(
                 proposal.proposedHourlyRate != null
-                    ? l10n.perHour('\$${proposal.proposedHourlyRate!.toStringAsFixed(0)}')
-                    : l10n.fixedPriceLabel(proposal.proposedFixedPrice?.toStringAsFixed(0) ?? '0'),
+                    ? l10n.perHour('\$${formatAmount(proposal.proposedHourlyRate!, context)}')
+                    : l10n.fixedPriceLabel(formatAmount(proposal.proposedFixedPrice ?? 0, context)),
                 style: YuvaTypography.body(),
               ),
               const Spacer(),
@@ -437,7 +476,10 @@ class JobDetailScreen extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 12),
-          Row(
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            alignment: WrapAlignment.start,
             children: [
               TextButton(
                 onPressed: () {
@@ -451,28 +493,30 @@ class JobDetailScreen extends ConsumerWidget {
                 },
                 child: Text(l10n.viewDetails),
               ),
-              if (proposal.status == ProposalStatus.submitted ||
-                  proposal.status == ProposalStatus.shortlisted) ...[
-                const SizedBox(width: 8),
+              if (_canModifyProposal(proposal, job)) ...[
+                if (proposal.status == ProposalStatus.submitted)
+                  TextButton(
+                    onPressed: () => _updateProposalStatus(ref, job, proposal, ProposalStatus.shortlisted, context, l10n),
+                    child: Text(l10n.shortlistAction),
+                  ),
                 TextButton(
-                  onPressed: () => _updateProposalStatus(ref, proposal.id, ProposalStatus.shortlisted),
-                  child: Text(l10n.shortlistAction),
-                ),
-                const SizedBox(width: 8),
-                TextButton(
-                  onPressed: () => _updateProposalStatus(ref, proposal.id, ProposalStatus.rejected),
-                  child: Text(l10n.rejectAction),
+                  onPressed: () => _confirmReject(ref, job, proposal, context, l10n),
+                  child: Text(l10n.rejectAction, style: TextStyle(color: YuvaColors.error)),
                 ),
               ],
-              if (job.status == JobPostStatus.open || job.status == JobPostStatus.underReview)
-                const Spacer(),
-              if (job.status == JobPostStatus.open || job.status == JobPostStatus.underReview)
+              if (_canHire(proposal, job))
                 YuvaButton(
                   text: l10n.hireAction,
                   buttonStyle: YuvaButtonStyle.primary,
-                  onPressed: pro == null
-                      ? null
-                      : () => _hire(ref, job.id, proposal.id, pro.id, context, l10n),
+                  onPressed: () => _confirmHire(
+                    ref, 
+                    job, 
+                    proposal, 
+                    pro?.displayName ?? proposal.workerDisplayName ?? '', 
+                    proposal.workerAvatarId,
+                    context, 
+                    l10n,
+                  ),
                 ),
             ],
           ),
@@ -481,32 +525,202 @@ class JobDetailScreen extends ConsumerWidget {
     );
   }
 
-  Future<void> _updateProposalStatus(
-      WidgetRef ref, String proposalId, ProposalStatus status) async {
-    await ref.read(proposalRepositoryProvider).updateProposalStatus(proposalId, status);
-    ref.invalidate(proposalsForJobProvider(jobId));
+  /// Check if proposal can be modified (preselect/reject)
+  bool _canModifyProposal(Proposal proposal, JobPost job) {
+    // Can't modify if job is already hired or cancelled
+    if (job.status == JobPostStatus.hired || 
+        job.status == JobPostStatus.cancelled ||
+        job.status == JobPostStatus.completed) {
+      return false;
+    }
+    // Can only modify submitted or shortlisted proposals
+    return proposal.status == ProposalStatus.submitted || 
+           proposal.status == ProposalStatus.shortlisted;
   }
 
-  Future<void> _hire(
-    WidgetRef ref,
-    String jobId,
-    String proposalId,
-    String proId,
+  /// Check if proposal can be hired
+  bool _canHire(Proposal proposal, JobPost job) {
+    // Can't hire if job already has a hired worker
+    if (job.hiredProId != null) return false;
+    // Can only hire from open or under review jobs
+    if (job.status != JobPostStatus.open && job.status != JobPostStatus.underReview) {
+      return false;
+    }
+    // Can only hire submitted or shortlisted proposals
+    return proposal.status == ProposalStatus.submitted || 
+           proposal.status == ProposalStatus.shortlisted;
+  }
+
+  Future<void> _updateProposalStatus(
+    WidgetRef ref, 
+    JobPost job,
+    Proposal proposal,
+    ProposalStatus status,
     BuildContext context,
     AppLocalizations l10n,
   ) async {
-    await ref.read(jobPostRepositoryProvider).hireProposal(
-          jobPostId: jobId,
-          proposalId: proposalId,
-          proId: proId,
+    try {
+      await ref.read(proposalRepositoryProvider).updateProposalStatus(
+        jobPostId: widget.jobId,
+        proposalId: proposal.id,
+        status: status,
+      );
+      
+      // Send notification to worker
+      if (status == ProposalStatus.shortlisted) {
+        await ref.read(notificationServiceProvider).notifyWorkerShortlisted(
+          workerId: proposal.proId,
+          jobPostId: job.id,
+          jobTitle: job.customTitle ?? job.titleKey,
         );
-    ref.invalidate(jobPostsProvider);
-    ref.invalidate(jobPostProvider(jobId));
-    ref.invalidate(proposalsForJobProvider(jobId));
-    if (!context.mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(l10n.hireSuccessMessage)),
+      } else if (status == ProposalStatus.rejected) {
+        await ref.read(notificationServiceProvider).notifyWorkerRejected(
+          workerId: proposal.proId,
+          jobPostId: job.id,
+          jobTitle: job.customTitle ?? job.titleKey,
+        );
+      }
+      
+      ref.invalidate(proposalsForJobProvider(widget.jobId));
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(status == ProposalStatus.shortlisted 
+              ? l10n.proposalShortlistedSuccess 
+              : l10n.proposalRejectedSuccess),
+          backgroundColor: YuvaColors.success,
+        ),
+      );
+    } catch (e) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(l10n.proposalUpdateError),
+          backgroundColor: YuvaColors.error,
+        ),
+      );
+    }
+  }
+
+  Future<void> _confirmReject(
+    WidgetRef ref,
+    JobPost job,
+    Proposal proposal,
+    BuildContext context,
+    AppLocalizations l10n,
+  ) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.rejectProposalTitle),
+        content: Text(l10n.rejectProposalConfirmation),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(l10n.reject, style: TextStyle(color: YuvaColors.error)),
+          ),
+        ],
+      ),
     );
+    
+    if (confirmed == true) {
+      await _updateProposalStatus(ref, job, proposal, ProposalStatus.rejected, context, l10n);
+    }
+  }
+
+  Future<void> _confirmHire(
+    WidgetRef ref,
+    JobPost job,
+    Proposal proposal,
+    String proName,
+    String? workerAvatarId,
+    BuildContext context,
+    AppLocalizations l10n,
+  ) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.hireProposalTitle),
+        content: Text(l10n.hireProposalConfirmation(proName.isNotEmpty ? proName : 'este profesional')),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.cancel),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: YuvaColors.primaryTeal,
+              foregroundColor: Colors.white,
+            ),
+            child: Text(l10n.hireAction),
+          ),
+        ],
+      ),
+    );
+    
+    if (confirmed == true) {
+      try {
+        // 1. Hire the proposal
+        await ref.read(jobPostRepositoryProvider).hireProposal(
+              jobPostId: job.id,
+              proposalId: proposal.id,
+              proId: proposal.proId,
+            );
+        
+        // 2. Create conversation between client and worker
+        final currentUser = ref.read(currentUserProvider);
+        if (currentUser != null) {
+          await ref.read(clientConversationsRepositoryProvider).createConversation(
+            clientId: currentUser.id,
+            workerId: proposal.proId,
+            jobPostId: job.id,
+            workerDisplayName: proName.isNotEmpty ? proName : 'Profesional',
+            workerAvatarId: workerAvatarId,
+            clientDisplayName: currentUser.name,
+          );
+          
+          // 3. Send notification to the hired worker
+          debugPrint('📢 Sending hire notification to worker: ${proposal.proId}');
+          debugPrint('📢 Job: ${job.id}, Title: ${job.customTitle ?? job.titleKey}');
+          try {
+            await ref.read(notificationServiceProvider).notifyWorkerHired(
+              workerId: proposal.proId,
+              jobPostId: job.id,
+              jobTitle: job.customTitle ?? job.titleKey,
+              clientName: currentUser.name,
+            );
+            debugPrint('📢 Hire notification sent successfully');
+          } catch (e) {
+            debugPrint('❌ Error sending hire notification: $e');
+          }
+        }
+        
+        ref.invalidate(jobPostsProvider);
+        ref.invalidate(jobPostProvider(job.id));
+        ref.invalidate(proposalsForJobProvider(job.id));
+        
+        if (!context.mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.hireSuccessMessage),
+            backgroundColor: YuvaColors.success,
+          ),
+        );
+      } catch (e) {
+        if (!context.mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.hireError),
+            backgroundColor: YuvaColors.error,
+          ),
+        );
+      }
+    }
   }
 
   Widget _infoChip({required IconData icon, required String label, required bool isDark}) {
@@ -527,14 +741,14 @@ class JobDetailScreen extends ConsumerWidget {
     );
   }
 
-  String _budgetCopy(AppLocalizations l10n, JobPost job) {
+  String _budgetCopy(BuildContext context, AppLocalizations l10n, JobPost job) {
     if (job.budgetType == JobBudgetType.hourly) {
       return l10n.budgetRangeLabel(
-        (job.hourlyRateFrom ?? 0).toStringAsFixed(0),
-        (job.hourlyRateTo ?? job.hourlyRateFrom ?? 0).toStringAsFixed(0),
+        formatAmount(job.hourlyRateFrom ?? 0, context),
+        formatAmount(job.hourlyRateTo ?? job.hourlyRateFrom ?? 0, context),
       );
     }
-    return l10n.fixedPriceLabel((job.fixedBudget ?? 0).toStringAsFixed(0));
+    return l10n.fixedPriceLabel(formatAmount(job.fixedBudget ?? 0, context));
   }
 
   String _localizeStatus(AppLocalizations l10n, JobPostStatus status) {
@@ -601,6 +815,8 @@ class JobDetailScreen extends ConsumerWidget {
         return l10n.proposalRejected;
       case ProposalStatus.hired:
         return l10n.proposalHired;
+      case ProposalStatus.withdrawn:
+        return l10n.proposalWithdrawn;
     }
   }
 

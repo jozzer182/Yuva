@@ -15,6 +15,7 @@ import 'package:yuva/features/bookings/booking_providers.dart';
 import 'package:yuva/features/bookings/rate_booking_screen.dart';
 import 'package:yuva/features/ratings/ratings_providers.dart';
 import 'package:yuva/l10n/app_localizations.dart';
+import 'package:yuva/utils/money_formatter.dart';
 
 class BookingsScreen extends ConsumerWidget {
   const BookingsScreen({super.key});
@@ -211,9 +212,11 @@ class BookingsScreen extends ConsumerWidget {
             children: [
               Icon(Icons.attach_money_rounded, size: 18, color: YuvaColors.textSecondary),
               const SizedBox(width: 6),
-              Text(
-                '\$${booking.estimatedPrice.toStringAsFixed(2)}',
-                style: YuvaTypography.body(),
+              Builder(
+                builder: (context) => Text(
+                  '\$${formatAmount(booking.estimatedPrice, context)}',
+                  style: YuvaTypography.body(),
+                ),
               ),
               const Spacer(),
               Text(

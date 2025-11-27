@@ -674,6 +674,9 @@ class AppLocalizationsEs extends AppLocalizations {
   String get proposalHired => 'Contratada';
 
   @override
+  String get proposalWithdrawn => 'Retirada';
+
+  @override
   String get budgetHourly => 'Por hora';
 
   @override
@@ -968,4 +971,59 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get jobCannotBeModified => 'Este trabajo ya no se puede modificar';
+
+  @override
+  String get proposalShortlistedSuccess => 'Propuesta preseleccionada';
+
+  @override
+  String get proposalRejectedSuccess => 'Propuesta rechazada';
+
+  @override
+  String get proposalUpdateError => 'Error al actualizar la propuesta';
+
+  @override
+  String get rejectProposalTitle => '¿Rechazar propuesta?';
+
+  @override
+  String get rejectProposalConfirmation =>
+      'Esta acción rechazará la propuesta del profesional. ¿Deseas continuar?';
+
+  @override
+  String get reject => 'Rechazar';
+
+  @override
+  String get hireProposalTitle => '¿Contratar profesional?';
+
+  @override
+  String hireProposalConfirmation(String proName) {
+    return '¿Deseas contratar a $proName para este trabajo? Las demás propuestas serán rechazadas automáticamente.';
+  }
+
+  @override
+  String get hireError => 'Error al contratar. Por favor intenta de nuevo.';
+
+  @override
+  String get blockUser => 'Bloquear usuario';
+
+  @override
+  String blockUserTitle(String name) {
+    return '¿Bloquear a $name?';
+  }
+
+  @override
+  String get blockUserDescription =>
+      'Al bloquear a este usuario:\n• No verás más esta conversación\n• No podrás ver su perfil ni trabajos\n• El usuario no podrá contactarte\n\nEsta acción no se puede deshacer.';
+
+  @override
+  String get blockReasonHint =>
+      '¿Por qué deseas bloquear a este usuario? (opcional)';
+
+  @override
+  String get blockConfirm => 'Bloquear';
+
+  @override
+  String get blockSuccess => 'Usuario bloqueado exitosamente';
+
+  @override
+  String get blockError => 'Error al bloquear usuario. Intenta de nuevo.';
 }

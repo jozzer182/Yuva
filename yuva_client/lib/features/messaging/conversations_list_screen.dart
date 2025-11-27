@@ -28,11 +28,17 @@ class _ConversationsListScreenState extends ConsumerState<ConversationsListScree
   Future<void> _loadConversations() async {
     setState(() => _isLoading = true);
     final repo = ref.read(clientConversationsRepositoryProvider);
+    final blockService = ref.read(blockServiceProvider);
+    
     final conversations = await repo.getConversations();
+    final blockedIds = await blockService.getBlockedUserIds();
 
     if (mounted) {
       setState(() {
-        _conversations = conversations;
+        // Filter out conversations with blocked users
+        _conversations = conversations
+            .where((conv) => !blockedIds.contains(conv.workerId))
+            .toList();
         _isLoading = false;
       });
     }

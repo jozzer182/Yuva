@@ -15,6 +15,7 @@ import 'package:yuva/features/bookings/booking_providers.dart';
 import 'package:yuva/features/bookings/booking_success_screen.dart';
 import 'package:yuva/features/bookings/widgets/booking_summary.dart';
 import 'package:yuva/l10n/app_localizations.dart';
+import 'package:yuva/utils/money_formatter.dart';
 
 class BookingFlowScreen extends ConsumerStatefulWidget {
   const BookingFlowScreen({super.key});
@@ -430,7 +431,7 @@ class _BookingFlowScreenState extends ConsumerState<BookingFlowScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  price != null ? '\$${price.toStringAsFixed(2)}' : l10n.pricePending,
+                  price != null ? '\$${formatAmount(price, context)}' : l10n.pricePending,
                   style: YuvaTypography.title(color: Colors.white),
                 ),
                 const SizedBox(height: 8),

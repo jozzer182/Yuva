@@ -322,7 +322,7 @@ class _PostJobFlowScreenState extends ConsumerState<PostJobFlowScreen> {
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(labelText: l10n.budgetFrom),
                     onChanged: (value) =>
-                        ref.read(jobDraftProvider.notifier).updateHourlyRange(from: double.tryParse(value)),
+                        ref.read(jobDraftProvider.notifier).updateHourlyFrom(double.tryParse(value)),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -331,7 +331,7 @@ class _PostJobFlowScreenState extends ConsumerState<PostJobFlowScreen> {
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(labelText: l10n.budgetTo),
                     onChanged: (value) =>
-                        ref.read(jobDraftProvider.notifier).updateHourlyRange(to: double.tryParse(value)),
+                        ref.read(jobDraftProvider.notifier).updateHourlyTo(double.tryParse(value)),
                   ),
                 ),
               ],
@@ -341,7 +341,7 @@ class _PostJobFlowScreenState extends ConsumerState<PostJobFlowScreen> {
               keyboardType: TextInputType.number,
               decoration: InputDecoration(labelText: l10n.budgetFixedLabel),
               onChanged: (value) =>
-                  ref.read(jobDraftProvider.notifier).updateFixedBudget(double.tryParse(value) ?? 0),
+                  ref.read(jobDraftProvider.notifier).updateFixedBudgetValue(double.tryParse(value)),
             ),
           ],
           const SizedBox(height: 18),
@@ -492,7 +492,7 @@ class _PostJobFlowScreenState extends ConsumerState<PostJobFlowScreen> {
 
   Widget _buildBottomActions(AppLocalizations l10n, JobPostDraft draft) {
     final isLast = _currentStep == _totalSteps - 1;
-    final canContinue = _currentStep == 0 ? draft.serviceType != null : true;
+    final canContinue = _canProceedFromStep(_currentStep, draft);
 
     return Row(
       children: [
@@ -518,20 +518,27 @@ class _PostJobFlowScreenState extends ConsumerState<PostJobFlowScreen> {
 
   Widget _buildCounter(String label, int value, ValueChanged<int> onChanged, bool isDark) {
     return YuvaCard(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(label, style: YuvaTypography.body()),
+          const SizedBox(height: 8),
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               IconButton(
                 onPressed: () => onChanged(value - 1),
                 icon: const Icon(Icons.remove_circle_outline),
+                visualDensity: VisualDensity.compact,
               ),
-              Text('$value', style: YuvaTypography.subtitle()),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Text('$value', style: YuvaTypography.subtitle()),
+              ),
               IconButton(
                 onPressed: () => onChanged(value + 1),
                 icon: const Icon(Icons.add_circle_outline),
+                visualDensity: VisualDensity.compact,
               ),
             ],
           ),
@@ -558,6 +565,31 @@ class _PostJobFlowScreenState extends ConsumerState<PostJobFlowScreen> {
         ),
       ],
     );
+  }
+
+  /// Validates if the user can proceed from the given step
+  bool _canProceedFromStep(int step, JobPostDraft draft) {
+    switch (step) {
+      case 0: // Basics - must select service type
+        return draft.serviceType != null;
+      case 1: // Property - always valid (has defaults)
+        return true;
+      case 2: // Budget - must have valid price
+        if (draft.budgetType == JobBudgetType.hourly) {
+          return draft.hourlyFrom != null && 
+                 draft.hourlyTo != null && 
+                 draft.hourlyFrom! > 0 && 
+                 draft.hourlyTo! >= draft.hourlyFrom!;
+        } else {
+          return draft.fixedBudget != null && draft.fixedBudget! > 0;
+        }
+      case 3: // Location - must have zone/area
+        return draft.areaLabel.trim().isNotEmpty;
+      case 4: // Summary - always valid
+        return true;
+      default:
+        return true;
+    }
   }
 
   void _nextStep() {

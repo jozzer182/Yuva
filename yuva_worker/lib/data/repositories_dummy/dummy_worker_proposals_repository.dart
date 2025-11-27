@@ -140,4 +140,16 @@ class DummyWorkerProposalsRepository implements WorkerProposalsRepository {
     await _delay();
     _proposals.removeWhere((p) => p.id == proposalId && p.status == WorkerProposalStatus.draft);
   }
+
+  @override
+  Future<void> withdrawProposal(String proposalId, String jobPostId) async {
+    await _delay();
+    final index = _proposals.indexWhere((p) => p.id == proposalId);
+    if (index != -1) {
+      _proposals[index] = _proposals[index].copyWith(
+        status: WorkerProposalStatus.withdrawn,
+        lastUpdatedAt: DateTime.now(),
+      );
+    }
+  }
 }

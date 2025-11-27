@@ -4,5 +4,9 @@ import '../models/job_models.dart';
 abstract class ProposalRepository {
   Future<List<Proposal>> getProposalsForJob(String jobPostId);
   Future<Proposal> submitProposal(Proposal proposal);
-  Future<Proposal> updateProposalStatus(String proposalId, ProposalStatus status);
+  Future<Proposal> updateProposalStatus({
+    required String jobPostId,
+    required String proposalId,
+    required ProposalStatus status,
+  });
 }

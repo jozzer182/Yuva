@@ -1340,6 +1340,12 @@ abstract class AppLocalizations {
   /// **'Contratada'**
   String get proposalHired;
 
+  /// No description provided for @proposalWithdrawn.
+  ///
+  /// In es, this message translates to:
+  /// **'Retirada'**
+  String get proposalWithdrawn;
+
   /// No description provided for @budgetHourly.
   ///
   /// In es, this message translates to:
@@ -1867,6 +1873,102 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Este trabajo ya no se puede modificar'**
   String get jobCannotBeModified;
+
+  /// Proposal shortlisted success message
+  ///
+  /// In es, this message translates to:
+  /// **'Propuesta preseleccionada'**
+  String get proposalShortlistedSuccess;
+
+  /// Proposal rejected success message
+  ///
+  /// In es, this message translates to:
+  /// **'Propuesta rechazada'**
+  String get proposalRejectedSuccess;
+
+  /// Proposal update error message
+  ///
+  /// In es, this message translates to:
+  /// **'Error al actualizar la propuesta'**
+  String get proposalUpdateError;
+
+  /// Reject proposal dialog title
+  ///
+  /// In es, this message translates to:
+  /// **'¿Rechazar propuesta?'**
+  String get rejectProposalTitle;
+
+  /// Reject proposal confirmation message
+  ///
+  /// In es, this message translates to:
+  /// **'Esta acción rechazará la propuesta del profesional. ¿Deseas continuar?'**
+  String get rejectProposalConfirmation;
+
+  /// Reject button text
+  ///
+  /// In es, this message translates to:
+  /// **'Rechazar'**
+  String get reject;
+
+  /// Hire proposal dialog title
+  ///
+  /// In es, this message translates to:
+  /// **'¿Contratar profesional?'**
+  String get hireProposalTitle;
+
+  /// Hire proposal confirmation message
+  ///
+  /// In es, this message translates to:
+  /// **'¿Deseas contratar a {proName} para este trabajo? Las demás propuestas serán rechazadas automáticamente.'**
+  String hireProposalConfirmation(String proName);
+
+  /// Hire error message
+  ///
+  /// In es, this message translates to:
+  /// **'Error al contratar. Por favor intenta de nuevo.'**
+  String get hireError;
+
+  /// Block user action
+  ///
+  /// In es, this message translates to:
+  /// **'Bloquear usuario'**
+  String get blockUser;
+
+  /// Block user dialog title
+  ///
+  /// In es, this message translates to:
+  /// **'¿Bloquear a {name}?'**
+  String blockUserTitle(String name);
+
+  /// Block user dialog description
+  ///
+  /// In es, this message translates to:
+  /// **'Al bloquear a este usuario:\n• No verás más esta conversación\n• No podrás ver su perfil ni trabajos\n• El usuario no podrá contactarte\n\nEsta acción no se puede deshacer.'**
+  String get blockUserDescription;
+
+  /// Block reason input hint
+  ///
+  /// In es, this message translates to:
+  /// **'¿Por qué deseas bloquear a este usuario? (opcional)'**
+  String get blockReasonHint;
+
+  /// Block confirm button
+  ///
+  /// In es, this message translates to:
+  /// **'Bloquear'**
+  String get blockConfirm;
+
+  /// Block success message
+  ///
+  /// In es, this message translates to:
+  /// **'Usuario bloqueado exitosamente'**
+  String get blockSuccess;
+
+  /// Block error message
+  ///
+  /// In es, this message translates to:
+  /// **'Error al bloquear usuario. Intenta de nuevo.'**
+  String get blockError;
 }
 
 class _AppLocalizationsDelegate

@@ -14,7 +14,11 @@ class EmptyProposalRepository implements ProposalRepository {
   }
 
   @override
-  Future<Proposal> updateProposalStatus(String proposalId, ProposalStatus status) async {
+  Future<Proposal> updateProposalStatus({
+    required String jobPostId,
+    required String proposalId,
+    required ProposalStatus status,
+  }) async {
     throw UnimplementedError('Proposals not available in empty mode');
   }
 }

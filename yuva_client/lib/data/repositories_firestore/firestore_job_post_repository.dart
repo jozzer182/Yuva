@@ -163,25 +163,95 @@ class FirestoreJobPostRepository implements JobPostRepository {
     required String proposalId,
     required String proId,
   }) async {
-    final doc = await _jobsCollection.doc(jobPostId).get();
-    if (!doc.exists || doc.data() == null) {
-      throw StateError('Job $jobPostId not found');
-    }
+    // Use a transaction to atomically update job and all proposals
+    return _firestore.runTransaction<JobPost>((transaction) async {
+      final jobDoc = await transaction.get(_jobsCollection.doc(jobPostId));
+      if (!jobDoc.exists || jobDoc.data() == null) {
+        throw StateError('Job $jobPostId not found');
+      }
 
-    await _jobsCollection.doc(jobPostId).update({
-      'status': JobPostStatus.hired.name,
-      'hiredProposalId': proposalId,
-      'hiredProId': proId,
-      'updatedAt': FieldValue.serverTimestamp(),
+      final job = JobPost.fromMap(jobDoc.data()!, jobDoc.id);
+      
+      // Verify job is still hireable
+      if (job.hiredProId != null) {
+        throw StateError('This job already has a hired professional.');
+      }
+      if (job.status != JobPostStatus.open && job.status != JobPostStatus.underReview) {
+        throw StateError('This job is no longer accepting proposals.');
+      }
+
+      // Get all proposals for this job
+      final proposalsSnapshot = await _firestore
+          .collection('jobs')
+          .doc(jobPostId)
+          .collection('proposals')
+          .get();
+
+      // Find the hired proposal to calculate agreedPrice
+      DocumentSnapshot<Map<String, dynamic>>? hiredProposalDoc;
+      double? agreedPrice;
+      
+      for (final doc in proposalsSnapshot.docs) {
+        if (doc.id == proposalId) {
+          hiredProposalDoc = doc;
+          final data = doc.data();
+          final proposedFixed = (data['proposedFixedPrice'] as num?)?.toDouble();
+          final proposedHourly = (data['proposedHourlyRate'] as num?)?.toDouble();
+          
+          if (proposedFixed != null) {
+            agreedPrice = proposedFixed;
+          } else if (proposedHourly != null) {
+            // Estimate based on job type
+            final estimatedHours = job.serviceTypeId == 'deep' ? 6 : 4;
+            agreedPrice = proposedHourly * estimatedHours;
+          }
+          break;
+        }
+      }
+
+      if (hiredProposalDoc == null) {
+        throw StateError('Proposal $proposalId not found');
+      }
+
+      // Update job document
+      transaction.update(_jobsCollection.doc(jobPostId), {
+        'status': JobPostStatus.hired.name,
+        'hiredProposalId': proposalId,
+        'hiredProId': proId,
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+
+      // Update all proposals for this job
+      for (final doc in proposalsSnapshot.docs) {
+        final currentStatus = doc.data()['status'] as String?;
+        
+        if (doc.id == proposalId) {
+          // Mark hired proposal
+          transaction.update(doc.reference, {
+            'status': 'hired',
+            'agreedPrice': agreedPrice,
+            'updatedAt': FieldValue.serverTimestamp(),
+          });
+        } else if (currentStatus != 'rejected' && currentStatus != 'withdrawn') {
+          // Reject other active proposals
+          transaction.update(doc.reference, {
+            'status': 'rejected',
+            'updatedAt': FieldValue.serverTimestamp(),
+          });
+        }
+      }
+
+      // TODO: Trigger Cloud Function to send notifications to workers:
+      // - Hired worker: notification type 'proposal_hired'
+      // - Rejected workers: notification type 'proposal_rejected'
+      
+      return job.copyWith(
+        status: JobPostStatus.hired,
+        hiredProposalId: proposalId,
+        hiredProId: proId,
+        updatedAt: DateTime.now(),
+      );
     });
-
-    final job = JobPost.fromMap(doc.data()!, doc.id);
-    return job.copyWith(
-      status: JobPostStatus.hired,
-      hiredProposalId: proposalId,
-      hiredProId: proId,
-      updatedAt: DateTime.now(),
-    );
   }
 
   @override

@@ -381,4 +381,160 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get avatarSelected => 'Avatar seleccionado';
+
+  @override
+  String get proposalBudgetType => 'Tipo de presupuesto';
+
+  @override
+  String get budgetHourly => 'Por hora';
+
+  @override
+  String get budgetFixed => 'Precio fijo';
+
+  @override
+  String get proposalHourlyRate => 'Tarifa por hora (COP)';
+
+  @override
+  String get proposalFixedPrice => 'Precio fijo (COP)';
+
+  @override
+  String get proposalHourlyRateHint => 'Ej: 25000';
+
+  @override
+  String get proposalFixedPriceHint => 'Ej: 80000';
+
+  @override
+  String get proposalEstimatedHours => 'Horas estimadas';
+
+  @override
+  String get proposalEstimatedHoursHint => 'Ej: 4';
+
+  @override
+  String get proposalMessage => 'Mensaje para el cliente';
+
+  @override
+  String get proposalMessageHint =>
+      'Describe tu experiencia y por qué eres ideal para este trabajo...';
+
+  @override
+  String get proposalTotalEstimate => 'Total estimado';
+
+  @override
+  String get submitProposal => 'Enviar propuesta';
+
+  @override
+  String clientBudgetFixed(String amount) {
+    return 'Presupuesto del cliente: $amount';
+  }
+
+  @override
+  String clientBudgetHourly(String min, String max) {
+    return 'Presupuesto del cliente: $min - $max/hora';
+  }
+
+  @override
+  String get proposalAmountRequired => 'Ingresa un monto válido';
+
+  @override
+  String get proposalSubmittedSuccess => '¡Propuesta enviada exitosamente!';
+
+  @override
+  String get proposalSubmitError =>
+      'Error al enviar la propuesta. Intenta de nuevo.';
+
+  @override
+  String get sentProposals => 'Enviadas';
+
+  @override
+  String get noProposalsSent => 'Aún no has enviado propuestas';
+
+  @override
+  String get noProposalsSentDescription =>
+      'Cuando envíes propuestas para trabajos, aparecerán aquí.';
+
+  @override
+  String get proposalStatusDraft => 'Borrador';
+
+  @override
+  String get proposalStatusSent => 'Enviada';
+
+  @override
+  String get proposalStatusShortlisted => 'Preseleccionada';
+
+  @override
+  String get proposalStatusHired => 'Contratada';
+
+  @override
+  String get proposalStatusRejected => 'Rechazada';
+
+  @override
+  String get proposalStatusWithdrawn => 'Retirada';
+
+  @override
+  String proposalForJob(String jobId) {
+    return 'Propuesta #$jobId';
+  }
+
+  @override
+  String get withdrawProposal => 'Retirar';
+
+  @override
+  String get withdrawProposalTitle => '¿Retirar propuesta?';
+
+  @override
+  String get withdrawProposalConfirmation =>
+      'Si retiras esta propuesta, el cliente ya no podrá verla. Esta acción no se puede deshacer.';
+
+  @override
+  String get withdraw => 'Retirar';
+
+  @override
+  String get proposalWithdrawnSuccess => 'Propuesta retirada exitosamente';
+
+  @override
+  String get proposalWithdrawError =>
+      'Error al retirar la propuesta. Intenta de nuevo.';
+
+  @override
+  String get proposalSent => 'Propuesta enviada';
+
+  @override
+  String get proposalDetails => 'Detalle de propuesta';
+
+  @override
+  String get yourProposal => 'Tu propuesta';
+
+  @override
+  String get editProposal => 'Editar propuesta';
+
+  @override
+  String get updateProposal => 'Actualizar propuesta';
+
+  @override
+  String get proposalUpdatedSuccess => 'Propuesta actualizada exitosamente';
+
+  @override
+  String get blockUser => 'Bloquear usuario';
+
+  @override
+  String blockUserTitle(String name) {
+    return '¿Bloquear a $name?';
+  }
+
+  @override
+  String get blockUserDescription =>
+      'Al bloquear a este usuario:\n• No verás más esta conversación\n• No podrás ver sus trabajos\n• El usuario no podrá contactarte\n\nEsta acción no se puede deshacer.';
+
+  @override
+  String get blockReasonHint =>
+      '¿Por qué deseas bloquear a este usuario? (opcional)';
+
+  @override
+  String get blockConfirm => 'Bloquear';
+
+  @override
+  String get blockSuccess => 'Usuario bloqueado exitosamente';
+
+  @override
+  String get blockError => 'Error al bloquear usuario. Intenta de nuevo.';
 }

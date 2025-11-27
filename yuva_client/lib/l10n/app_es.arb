@@ -405,6 +405,7 @@
   "proposalShortlisted": "Preseleccionada",
   "proposalRejected": "Rechazada",
   "proposalHired": "Contratada",
+  "proposalWithdrawn": "Retirada",
   "budgetHourly": "Por hora",
   "budgetFixed": "Precio fijo",
   "budgetRangeLabel": "Entre ${from} y ${to} por hora",
@@ -704,5 +705,81 @@
   "jobCannotBeModified": "Este trabajo ya no se puede modificar",
   "@jobCannotBeModified": {
     "description": "Job cannot be modified error message"
+  },
+  "proposalShortlistedSuccess": "Propuesta preseleccionada",
+  "@proposalShortlistedSuccess": {
+    "description": "Proposal shortlisted success message"
+  },
+  "proposalRejectedSuccess": "Propuesta rechazada",
+  "@proposalRejectedSuccess": {
+    "description": "Proposal rejected success message"
+  },
+  "proposalUpdateError": "Error al actualizar la propuesta",
+  "@proposalUpdateError": {
+    "description": "Proposal update error message"
+  },
+  "rejectProposalTitle": "¿Rechazar propuesta?",
+  "@rejectProposalTitle": {
+    "description": "Reject proposal dialog title"
+  },
+  "rejectProposalConfirmation": "Esta acción rechazará la propuesta del profesional. ¿Deseas continuar?",
+  "@rejectProposalConfirmation": {
+    "description": "Reject proposal confirmation message"
+  },
+  "reject": "Rechazar",
+  "@reject": {
+    "description": "Reject button text"
+  },
+  "hireProposalTitle": "¿Contratar profesional?",
+  "@hireProposalTitle": {
+    "description": "Hire proposal dialog title"
+  },
+  "hireProposalConfirmation": "¿Deseas contratar a {proName} para este trabajo? Las demás propuestas serán rechazadas automáticamente.",
+  "@hireProposalConfirmation": {
+    "description": "Hire proposal confirmation message",
+    "placeholders": {
+      "proName": {
+        "type": "String",
+        "example": "Juan"
+      }
+    }
+  },
+  "hireError": "Error al contratar. Por favor intenta de nuevo.",
+  "@hireError": {
+    "description": "Hire error message"
+  },
+  "blockUser": "Bloquear usuario",
+  "@blockUser": {
+    "description": "Block user action"
+  },
+  "blockUserTitle": "¿Bloquear a {name}?",
+  "@blockUserTitle": {
+    "description": "Block user dialog title",
+    "placeholders": {
+      "name": {
+        "type": "String",
+        "example": "Juan"
+      }
+    }
+  },
+  "blockUserDescription": "Al bloquear a este usuario:\n• No verás más esta conversación\n• No podrás ver su perfil ni trabajos\n• El usuario no podrá contactarte\n\nEsta acción no se puede deshacer.",
+  "@blockUserDescription": {
+    "description": "Block user dialog description"
+  },
+  "blockReasonHint": "¿Por qué deseas bloquear a este usuario? (opcional)",
+  "@blockReasonHint": {
+    "description": "Block reason input hint"
+  },
+  "blockConfirm": "Bloquear",
+  "@blockConfirm": {
+    "description": "Block confirm button"
+  },
+  "blockSuccess": "Usuario bloqueado exitosamente",
+  "@blockSuccess": {
+    "description": "Block success message"
+  },
+  "blockError": "Error al bloquear usuario. Intenta de nuevo.",
+  "@blockError": {
+    "description": "Block error message"
   }
 }

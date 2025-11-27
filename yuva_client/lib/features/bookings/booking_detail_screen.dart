@@ -7,6 +7,7 @@ import 'package:yuva/design_system/components/yuva_card.dart';
 import 'package:yuva/design_system/components/yuva_scaffold.dart';
 import 'package:yuva/design_system/typography.dart';
 import 'package:yuva/l10n/app_localizations.dart';
+import 'package:yuva/utils/money_formatter.dart';
 
 class BookingDetailScreen extends StatelessWidget {
   final BookingRequest booking;
@@ -122,7 +123,7 @@ class BookingDetailScreen extends StatelessWidget {
                     _infoRow(
                       icon: Icons.attach_money_rounded,
                       label: l10n.estimatedPriceLabel,
-                      value: '\$${booking.estimatedPrice.toStringAsFixed(2)}',
+                      value: '\$${formatAmount(booking.estimatedPrice, context)}',
                     ),
                   ],
                 ),

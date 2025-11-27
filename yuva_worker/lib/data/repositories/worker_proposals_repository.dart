@@ -32,4 +32,7 @@ abstract class WorkerProposalsRepository {
 
   /// Eliminar un borrador de propuesta
   Future<void> deleteDraft(String proposalId);
+
+  /// Retirar una propuesta enviada (soft delete - cambiar estado a withdrawn)
+  Future<void> withdrawProposal(String proposalId, String jobPostId);
 }

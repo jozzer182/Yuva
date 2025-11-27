@@ -54,9 +54,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Future<void> _loadUnreadCounts() async {
     final conversationsRepo = ref.read(clientConversationsRepositoryProvider);
     final notificationsRepo = ref.read(clientNotificationsRepositoryProvider);
+    final currentUser = ref.read(currentUserProvider);
+    
+    debugPrint('📬 Loading notifications for user: ${currentUser?.id}');
 
     final conversations = await conversationsRepo.getConversations();
     final notifications = await notificationsRepo.getNotifications();
+    
+    debugPrint('📬 Found ${notifications.length} notifications, ${notifications.where((n) => !n.isRead).length} unread');
 
     if (mounted) {
       setState(() {
@@ -67,6 +72,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         _unreadNotificationsCount = notifications.where((n) => !n.isRead).length;
       });
     }
+  }
+
+  Future<void> _onRefresh() async {
+    // Invalidate providers to force re-fetch from repositories
+    ref.invalidate(jobPostsProvider);
+    ref.invalidate(categoriesProvider);
+    ref.invalidate(featuredCleanersProvider);
+    // Also invalidate proposal counts for all jobs to refresh them
+    ref.invalidate(proposalsForJobProvider);
+    _featuredStable = null;
+    await _loadUnreadCounts();
   }
 
   Widget _buildEmptyState(
@@ -398,7 +414,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               const SizedBox(width: 12),
               Icon(Icons.mail_outline, size: 16, color: YuvaColors.primaryTeal),
               const SizedBox(width: 6),
-              Text(l10n.proposalsCount(job.proposalIds.length), style: YuvaTypography.caption()),
+              // Use Consumer to watch active proposal count
+              Consumer(
+                builder: (context, ref, _) {
+                  final countAsync = ref.watch(activeProposalCountProvider(job.id));
+                  return countAsync.when(
+                    data: (count) => Text(l10n.proposalsCount(count), style: YuvaTypography.caption()),
+                    loading: () => Text(l10n.proposalsCount(job.proposalIds.length), style: YuvaTypography.caption()),
+                    error: (_, __) => Text(l10n.proposalsCount(job.proposalIds.length), style: YuvaTypography.caption()),
+                  );
+                },
+              ),
             ],
           ),
         ],
@@ -467,8 +493,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     AsyncValue<List<Cleaner>> cleanersAsync,
     AsyncValue<List<JobPost>> jobsAsync,
   ) {
-    return CustomScrollView(
-      slivers: [
+    return RefreshIndicator(
+      onRefresh: _onRefresh,
+      child: CustomScrollView(
+        slivers: [
         SliverPadding(
           padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
           sliver: SliverToBoxAdapter(
@@ -703,7 +731,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           ),
         ),
         const SliverPadding(padding: EdgeInsets.only(bottom: 100)),
-      ],
+        ],
+      ),
     );
   }
 
@@ -721,8 +750,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return Center(
       child: ConstrainedBox(
         constraints: BoxConstraints(maxWidth: maxWidth),
-        child: CustomScrollView(
-          slivers: [
+        child: RefreshIndicator(
+          onRefresh: _onRefresh,
+          child: CustomScrollView(
+            slivers: [
             SliverPadding(
               padding: EdgeInsets.fromLTRB(padding.left, 24, padding.right, 16),
               sliver: SliverToBoxAdapter(
@@ -1071,7 +1102,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               ),
             ],
             SliverPadding(padding: EdgeInsets.only(bottom: 100)),
-          ],
+            ],
+          ),
         ),
       ),
     );

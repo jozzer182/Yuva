@@ -52,5 +52,33 @@ class WorkerMessage extends Equatable {
         createdAt,
         isRead,
       ];
+
+  /// Creates a WorkerMessage from a Firestore document map.
+  factory WorkerMessage.fromMap(Map<String, dynamic> map, String docId) {
+    return WorkerMessage(
+      id: docId,
+      conversationId: map['conversationId'] as String? ?? '',
+      senderType: MessageSenderType.values.firstWhere(
+        (e) => e.name == (map['senderType'] as String? ?? 'worker'),
+        orElse: () => MessageSenderType.worker,
+      ),
+      text: map['text'] as String? ?? '',
+      createdAt: map['createdAt'] != null
+          ? (map['createdAt'] as dynamic).toDate()
+          : DateTime.now(),
+      isRead: map['isRead'] as bool? ?? false,
+    );
+  }
+
+  /// Converts this WorkerMessage to a Firestore document map.
+  Map<String, dynamic> toMap() {
+    return {
+      'conversationId': conversationId,
+      'senderType': senderType.name,
+      'text': text,
+      'createdAt': createdAt,
+      'isRead': isRead,
+    };
+  }
 }
 

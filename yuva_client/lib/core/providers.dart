@@ -26,15 +26,20 @@ import 'package:yuva/data/repositories_dummy/dummy_client_notifications_reposito
 import 'package:yuva/data/repositories_dummy/dummy_client_active_job_repository.dart';
 import 'package:yuva/data/repositories_empty/empty_cleaner_repository.dart';
 import 'package:yuva/data/repositories_empty/empty_booking_repository.dart';
-import 'package:yuva/data/repositories_empty/empty_proposal_repository.dart';
 import 'package:yuva/data/repositories_empty/empty_client_conversations_repository.dart';
 import 'package:yuva/data/repositories_empty/empty_client_notifications_repository.dart';
 import 'package:yuva/data/repositories_empty/empty_ratings_repository.dart';
 import 'package:yuva/data/repositories_empty/empty_pro_summary_repository.dart';
 import 'package:yuva/data/repositories_empty/empty_client_active_job_repository.dart';
 import 'package:yuva/data/repositories_firestore/firestore_job_post_repository.dart';
+import 'package:yuva/data/repositories_firestore/firestore_proposal_repository.dart';
+import 'package:yuva/data/repositories_firestore/firestore_client_conversations_repository.dart';
+import 'package:yuva/data/repositories_firestore/firestore_client_notifications_repository.dart';
+import 'package:yuva/data/repositories_firestore/firestore_pro_summary_repository.dart';
 import 'package:yuva/data/services/booking_price_calculator.dart';
 import 'package:yuva/data/services/user_profile_service.dart';
+import 'package:yuva/data/services/notification_service.dart';
+import 'package:yuva/data/services/block_service.dart';
 
 import 'settings_controller.dart';
 
@@ -96,22 +101,44 @@ final jobPostRepositoryProvider = Provider<JobPostRepository>((ref) {
 
 final proposalRepositoryProvider = Provider<ProposalRepository>((ref) {
   final isDummyMode = ref.watch(appSettingsProvider.select((s) => s.isDummyMode));
-  return isDummyMode ? DummyProposalRepository() : EmptyProposalRepository();
+  if (isDummyMode) {
+    return DummyProposalRepository();
+  }
+  // Use Firestore repository when dummy mode is OFF
+  final currentUser = ref.watch(currentUserProvider);
+  final userId = currentUser?.id ?? '';
+  return FirestoreProposalRepository(currentUserId: userId);
 });
 
 final proSummaryRepositoryProvider = Provider<ProSummaryRepository>((ref) {
   final isDummyMode = ref.watch(appSettingsProvider.select((s) => s.isDummyMode));
-  return isDummyMode ? DummyProSummaryRepository() : EmptyProSummaryRepository();
+  if (isDummyMode) {
+    return DummyProSummaryRepository();
+  }
+  // Use Firestore repository when dummy mode is OFF
+  return FirestoreProSummaryRepository();
 });
 
 final clientConversationsRepositoryProvider = Provider<ClientConversationsRepository>((ref) {
   final isDummyMode = ref.watch(appSettingsProvider.select((s) => s.isDummyMode));
-  return isDummyMode ? DummyClientConversationsRepository() : EmptyClientConversationsRepository();
+  if (isDummyMode) {
+    return DummyClientConversationsRepository();
+  }
+  // Use Firestore repository when dummy mode is OFF
+  final currentUser = ref.watch(currentUserProvider);
+  final userId = currentUser?.id ?? '';
+  return FirestoreClientConversationsRepository(currentUserId: userId);
 });
 
 final clientNotificationsRepositoryProvider = Provider<ClientNotificationsRepository>((ref) {
   final isDummyMode = ref.watch(appSettingsProvider.select((s) => s.isDummyMode));
-  return isDummyMode ? DummyClientNotificationsRepository() : EmptyClientNotificationsRepository();
+  if (isDummyMode) {
+    return DummyClientNotificationsRepository();
+  }
+  // Use Firestore repository when dummy mode is OFF
+  final currentUser = ref.watch(currentUserProvider);
+  final userId = currentUser?.id ?? '';
+  return FirestoreClientNotificationsRepository(currentUserId: userId);
 });
 
 final clientActiveJobRepositoryProvider = Provider<ClientActiveJobRepository>((ref) {
@@ -126,4 +153,24 @@ final appSettingsProvider =
 // User Profile Service Provider (Firestore)
 final userProfileServiceProvider = Provider<UserProfileService>((ref) {
   return UserProfileService();
+});
+
+// Notification Service Provider
+final notificationServiceProvider = Provider<NotificationService>((ref) {
+  return NotificationService();
+});
+
+// Block Service Provider
+final blockServiceProvider = Provider<BlockService>((ref) {
+  final currentUser = ref.watch(currentUserProvider);
+  return BlockService(
+    currentUserId: currentUser?.id ?? '',
+    currentUserType: 'client',
+  );
+});
+
+// Provider for blocked user IDs (for filtering)
+final blockedUserIdsProvider = FutureProvider<List<String>>((ref) async {
+  final blockService = ref.watch(blockServiceProvider);
+  return blockService.getBlockedUserIds();
 });

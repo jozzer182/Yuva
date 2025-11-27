@@ -43,13 +43,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Future<void> _loadJobs() async {
     final repo = ref.read(workerJobFeedRepositoryProvider);
+    final blockService = ref.read(blockServiceProvider);
+    
     final recommended = await repo.getRecommendedJobs();
     final invited = await repo.getInvitedJobs();
+    final blockedIds = await blockService.getBlockedUserIds();
 
     if (mounted) {
       setState(() {
-        _recommendedJobs = recommended.take(3).toList();
-        _invitedJobs = invited;
+        // Filter out jobs from blocked clients
+        _recommendedJobs = recommended
+            .where((job) => !blockedIds.contains(job.clientId))
+            .take(3)
+            .toList();
+        _invitedJobs = invited
+            .where((job) => !blockedIds.contains(job.clientId))
+            .toList();
       });
     }
   }
@@ -57,9 +66,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Future<void> _loadUnreadCounts() async {
     final conversationsRepo = ref.read(workerConversationsRepositoryProvider);
     final notificationsRepo = ref.read(workerNotificationsRepositoryProvider);
+    final workerUser = ref.read(workerUserProvider);
+    
+    debugPrint('📬 Worker loading notifications for uid: ${workerUser?.uid}');
 
     final conversations = await conversationsRepo.getConversations();
     final notifications = await notificationsRepo.getNotifications();
+    
+    debugPrint('📬 Worker found ${notifications.length} notifications, ${notifications.where((n) => !n.isRead).length} unread');
 
     if (mounted) {
       setState(() {
@@ -255,7 +269,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   Widget _buildPhoneLayout(BuildContext context, AppLocalizations l10n) {
     return RefreshIndicator(
-      onRefresh: _loadJobs,
+      onRefresh: _loadData,
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.all(16),

@@ -107,6 +107,8 @@ String getProposalStatusLabelKey(ProposalStatus status) {
       return 'proposalRejected';
     case ProposalStatus.hired:
       return 'proposalHired';
+    case ProposalStatus.withdrawn:
+      return 'proposalWithdrawn';
   }
 }
 

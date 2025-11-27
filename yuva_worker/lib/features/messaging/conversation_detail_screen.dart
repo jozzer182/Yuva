@@ -5,6 +5,7 @@ import '../../core/providers.dart';
 import '../../data/models/worker_conversation.dart';
 import '../../data/models/worker_message.dart';
 import '../../design_system/colors.dart';
+import '../../design_system/typography.dart';
 
 /// Pantalla de detalle de conversación (chat)
 class ConversationDetailScreen extends ConsumerStatefulWidget {
@@ -67,6 +68,91 @@ class _ConversationDetailScreenState extends ConsumerState<ConversationDetailScr
     await repo.markConversationRead(widget.conversation.id);
   }
 
+  Future<void> _showBlockDialog(BuildContext context, AppLocalizations l10n) async {
+    final reasonController = TextEditingController();
+    
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.blockUserTitle(widget.conversation.clientDisplayName)),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l10n.blockUserDescription,
+                style: YuvaTypography.body(color: YuvaColors.textSecondary),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: reasonController,
+                decoration: InputDecoration(
+                  hintText: l10n.blockReasonHint,
+                  border: const OutlineInputBorder(),
+                ),
+                maxLines: 3,
+                maxLength: 500,
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.cancel),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: YuvaColors.error,
+              foregroundColor: Colors.white,
+            ),
+            child: Text(l10n.blockConfirm),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true && mounted) {
+      await _blockUser(reasonController.text.trim(), l10n);
+    }
+    
+    reasonController.dispose();
+  }
+
+  Future<void> _blockUser(String reason, AppLocalizations l10n) async {
+    try {
+      final blockService = ref.read(blockServiceProvider);
+      await blockService.blockUser(
+        blockedUserId: widget.conversation.clientId,
+        blockedUserType: 'client',
+        conversationId: widget.conversation.id,
+        reason: reason.isNotEmpty ? reason : null,
+      );
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.blockSuccess),
+            backgroundColor: YuvaColors.success,
+          ),
+        );
+        // Volver a la lista de conversaciones
+        Navigator.of(context).pop();
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.blockError),
+            backgroundColor: YuvaColors.error,
+          ),
+        );
+      }
+    }
+  }
+
   Future<void> _sendMessage() async {
     final text = _messageController.text.trim();
     if (text.isEmpty || _isSending) return;
@@ -117,6 +203,13 @@ class _ConversationDetailScreenState extends ConsumerState<ConversationDetailScr
         ),
         backgroundColor: isDark ? YuvaColors.darkSurface : YuvaColors.primaryTeal,
         foregroundColor: Colors.white,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.shield_outlined),
+            tooltip: l10n.blockUser,
+            onPressed: () => _showBlockDialog(context, l10n),
+          ),
+        ],
       ),
       body: Column(
         children: [

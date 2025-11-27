@@ -98,7 +98,7 @@ bool canMarkJobCompleted(JobPostStatus status) {
 
 /// Maps WorkerProposalStatus to client-side ProposalStatus
 /// 
-/// Note: draft maps to null (not visible on client side)
+/// Note: draft and withdrawn map to null (not visible on client side)
 ProposalStatus? mapWorkerProposalStatusToClient(WorkerProposalStatus status) {
   switch (status) {
     case WorkerProposalStatus.draft:
@@ -111,6 +111,8 @@ ProposalStatus? mapWorkerProposalStatusToClient(WorkerProposalStatus status) {
       return ProposalStatus.rejected;
     case WorkerProposalStatus.hired:
       return ProposalStatus.hired;
+    case WorkerProposalStatus.withdrawn:
+      return null; // Withdrawn not visible to client
   }
 }
 

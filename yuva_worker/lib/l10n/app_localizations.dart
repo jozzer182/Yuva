@@ -781,6 +781,288 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Avatar seleccionado'**
   String get avatarSelected;
+
+  /// Budget type label for proposal
+  ///
+  /// In es, this message translates to:
+  /// **'Tipo de presupuesto'**
+  String get proposalBudgetType;
+
+  /// Hourly budget type
+  ///
+  /// In es, this message translates to:
+  /// **'Por hora'**
+  String get budgetHourly;
+
+  /// Fixed budget type
+  ///
+  /// In es, this message translates to:
+  /// **'Precio fijo'**
+  String get budgetFixed;
+
+  /// Hourly rate label
+  ///
+  /// In es, this message translates to:
+  /// **'Tarifa por hora (COP)'**
+  String get proposalHourlyRate;
+
+  /// Fixed price label
+  ///
+  /// In es, this message translates to:
+  /// **'Precio fijo (COP)'**
+  String get proposalFixedPrice;
+
+  /// Hourly rate hint
+  ///
+  /// In es, this message translates to:
+  /// **'Ej: 25000'**
+  String get proposalHourlyRateHint;
+
+  /// Fixed price hint
+  ///
+  /// In es, this message translates to:
+  /// **'Ej: 80000'**
+  String get proposalFixedPriceHint;
+
+  /// Estimated hours label
+  ///
+  /// In es, this message translates to:
+  /// **'Horas estimadas'**
+  String get proposalEstimatedHours;
+
+  /// Estimated hours hint
+  ///
+  /// In es, this message translates to:
+  /// **'Ej: 4'**
+  String get proposalEstimatedHoursHint;
+
+  /// Message label
+  ///
+  /// In es, this message translates to:
+  /// **'Mensaje para el cliente'**
+  String get proposalMessage;
+
+  /// Message hint
+  ///
+  /// In es, this message translates to:
+  /// **'Describe tu experiencia y por qué eres ideal para este trabajo...'**
+  String get proposalMessageHint;
+
+  /// Total estimate label
+  ///
+  /// In es, this message translates to:
+  /// **'Total estimado'**
+  String get proposalTotalEstimate;
+
+  /// Submit proposal button
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar propuesta'**
+  String get submitProposal;
+
+  /// Client fixed budget
+  ///
+  /// In es, this message translates to:
+  /// **'Presupuesto del cliente: {amount}'**
+  String clientBudgetFixed(String amount);
+
+  /// Client hourly budget range
+  ///
+  /// In es, this message translates to:
+  /// **'Presupuesto del cliente: {min} - {max}/hora'**
+  String clientBudgetHourly(String min, String max);
+
+  /// Amount required error
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresa un monto válido'**
+  String get proposalAmountRequired;
+
+  /// Proposal submitted success message
+  ///
+  /// In es, this message translates to:
+  /// **'¡Propuesta enviada exitosamente!'**
+  String get proposalSubmittedSuccess;
+
+  /// Proposal submit error message
+  ///
+  /// In es, this message translates to:
+  /// **'Error al enviar la propuesta. Intenta de nuevo.'**
+  String get proposalSubmitError;
+
+  /// Sent proposals tab label
+  ///
+  /// In es, this message translates to:
+  /// **'Enviadas'**
+  String get sentProposals;
+
+  /// No proposals sent title
+  ///
+  /// In es, this message translates to:
+  /// **'Aún no has enviado propuestas'**
+  String get noProposalsSent;
+
+  /// No proposals sent description
+  ///
+  /// In es, this message translates to:
+  /// **'Cuando envíes propuestas para trabajos, aparecerán aquí.'**
+  String get noProposalsSentDescription;
+
+  /// Draft proposal status
+  ///
+  /// In es, this message translates to:
+  /// **'Borrador'**
+  String get proposalStatusDraft;
+
+  /// Sent proposal status
+  ///
+  /// In es, this message translates to:
+  /// **'Enviada'**
+  String get proposalStatusSent;
+
+  /// Shortlisted proposal status
+  ///
+  /// In es, this message translates to:
+  /// **'Preseleccionada'**
+  String get proposalStatusShortlisted;
+
+  /// Hired proposal status
+  ///
+  /// In es, this message translates to:
+  /// **'Contratada'**
+  String get proposalStatusHired;
+
+  /// Rejected proposal status
+  ///
+  /// In es, this message translates to:
+  /// **'Rechazada'**
+  String get proposalStatusRejected;
+
+  /// Withdrawn proposal status
+  ///
+  /// In es, this message translates to:
+  /// **'Retirada'**
+  String get proposalStatusWithdrawn;
+
+  /// Proposal for job label
+  ///
+  /// In es, this message translates to:
+  /// **'Propuesta #{jobId}'**
+  String proposalForJob(String jobId);
+
+  /// Withdraw proposal button
+  ///
+  /// In es, this message translates to:
+  /// **'Retirar'**
+  String get withdrawProposal;
+
+  /// Withdraw proposal dialog title
+  ///
+  /// In es, this message translates to:
+  /// **'¿Retirar propuesta?'**
+  String get withdrawProposalTitle;
+
+  /// Withdraw proposal confirmation message
+  ///
+  /// In es, this message translates to:
+  /// **'Si retiras esta propuesta, el cliente ya no podrá verla. Esta acción no se puede deshacer.'**
+  String get withdrawProposalConfirmation;
+
+  /// Withdraw action button
+  ///
+  /// In es, this message translates to:
+  /// **'Retirar'**
+  String get withdraw;
+
+  /// Proposal withdrawn success message
+  ///
+  /// In es, this message translates to:
+  /// **'Propuesta retirada exitosamente'**
+  String get proposalWithdrawnSuccess;
+
+  /// Proposal withdraw error message
+  ///
+  /// In es, this message translates to:
+  /// **'Error al retirar la propuesta. Intenta de nuevo.'**
+  String get proposalWithdrawError;
+
+  /// Label indicating worker already sent a proposal for this job
+  ///
+  /// In es, this message translates to:
+  /// **'Propuesta enviada'**
+  String get proposalSent;
+
+  /// Proposal details screen title
+  ///
+  /// In es, this message translates to:
+  /// **'Detalle de propuesta'**
+  String get proposalDetails;
+
+  /// Your proposal section title
+  ///
+  /// In es, this message translates to:
+  /// **'Tu propuesta'**
+  String get yourProposal;
+
+  /// Edit proposal screen title
+  ///
+  /// In es, this message translates to:
+  /// **'Editar propuesta'**
+  String get editProposal;
+
+  /// Update proposal button text
+  ///
+  /// In es, this message translates to:
+  /// **'Actualizar propuesta'**
+  String get updateProposal;
+
+  /// Proposal updated success message
+  ///
+  /// In es, this message translates to:
+  /// **'Propuesta actualizada exitosamente'**
+  String get proposalUpdatedSuccess;
+
+  /// Block user action
+  ///
+  /// In es, this message translates to:
+  /// **'Bloquear usuario'**
+  String get blockUser;
+
+  /// Block user dialog title
+  ///
+  /// In es, this message translates to:
+  /// **'¿Bloquear a {name}?'**
+  String blockUserTitle(String name);
+
+  /// Block user dialog description
+  ///
+  /// In es, this message translates to:
+  /// **'Al bloquear a este usuario:\n• No verás más esta conversación\n• No podrás ver sus trabajos\n• El usuario no podrá contactarte\n\nEsta acción no se puede deshacer.'**
+  String get blockUserDescription;
+
+  /// Block reason input hint
+  ///
+  /// In es, this message translates to:
+  /// **'¿Por qué deseas bloquear a este usuario? (opcional)'**
+  String get blockReasonHint;
+
+  /// Block confirm button
+  ///
+  /// In es, this message translates to:
+  /// **'Bloquear'**
+  String get blockConfirm;
+
+  /// Block success message
+  ///
+  /// In es, this message translates to:
+  /// **'Usuario bloqueado exitosamente'**
+  String get blockSuccess;
+
+  /// Block error message
+  ///
+  /// In es, this message translates to:
+  /// **'Error al bloquear usuario. Intenta de nuevo.'**
+  String get blockError;
 }
 
 class _AppLocalizationsDelegate

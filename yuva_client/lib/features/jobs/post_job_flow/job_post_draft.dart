@@ -50,8 +50,8 @@ class JobPostDraft extends Equatable {
       bedrooms: 2,
       bathrooms: 1,
       budgetType: JobBudgetType.hourly,
-      hourlyFrom: 28,
-      hourlyTo: 35,
+      hourlyFrom: null,  // User must enter values
+      hourlyTo: null,    // User must enter values
       fixedBudget: null,
       areaLabel: '',
       frequency: BookingFrequency.once,
@@ -162,8 +162,62 @@ class JobPostDraftController extends StateNotifier<JobPostDraft> {
 
   void selectBudgetType(JobBudgetType type) => state = state.copyWith(budgetType: type);
 
-  void updateHourlyRange({double? from, double? to}) =>
-      state = state.copyWith(hourlyFrom: from ?? state.hourlyFrom, hourlyTo: to ?? state.hourlyTo);
+  void updateHourlyFrom(double? value) {
+    state = JobPostDraft(
+      title: state.title,
+      description: state.description,
+      serviceType: state.serviceType,
+      propertyType: state.propertyType,
+      sizeCategory: state.sizeCategory,
+      bedrooms: state.bedrooms,
+      bathrooms: state.bathrooms,
+      budgetType: state.budgetType,
+      hourlyFrom: value,
+      hourlyTo: state.hourlyTo,
+      fixedBudget: state.fixedBudget,
+      areaLabel: state.areaLabel,
+      frequency: state.frequency,
+      preferredDate: state.preferredDate,
+    );
+  }
+  
+  void updateHourlyTo(double? value) {
+    state = JobPostDraft(
+      title: state.title,
+      description: state.description,
+      serviceType: state.serviceType,
+      propertyType: state.propertyType,
+      sizeCategory: state.sizeCategory,
+      bedrooms: state.bedrooms,
+      bathrooms: state.bathrooms,
+      budgetType: state.budgetType,
+      hourlyFrom: state.hourlyFrom,
+      hourlyTo: value,
+      fixedBudget: state.fixedBudget,
+      areaLabel: state.areaLabel,
+      frequency: state.frequency,
+      preferredDate: state.preferredDate,
+    );
+  }
+  
+  void updateFixedBudgetValue(double? value) {
+    state = JobPostDraft(
+      title: state.title,
+      description: state.description,
+      serviceType: state.serviceType,
+      propertyType: state.propertyType,
+      sizeCategory: state.sizeCategory,
+      bedrooms: state.bedrooms,
+      bathrooms: state.bathrooms,
+      budgetType: state.budgetType,
+      hourlyFrom: state.hourlyFrom,
+      hourlyTo: state.hourlyTo,
+      fixedBudget: value,
+      areaLabel: state.areaLabel,
+      frequency: state.frequency,
+      preferredDate: state.preferredDate,
+    );
+  }
 
   void updateFixedBudget(double value) => state = state.copyWith(fixedBudget: value);
 
