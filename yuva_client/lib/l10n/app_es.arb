@@ -805,5 +805,62 @@
   "linkCopied": "Enlace copiado al portapapeles",
   "@linkCopied": {
     "description": "Link copied to clipboard message"
+  },
+  "privacyPolicy": "Política de Privacidad",
+  "@privacyPolicy": {
+    "description": "Privacy policy link"
+  },
+  "termsAndConditions": "Términos y Condiciones",
+  "@termsAndConditions": {
+    "description": "Terms and conditions link"
+  },
+  "legalSection": "Legal",
+  "@legalSection": {
+    "description": "Legal section title"
+  },
+  "forgotPassword": "Recuperar contraseña",
+  "@forgotPassword": {
+    "description": "Forgot password title"
+  },
+  "forgotPasswordDescription": "Ingresa tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.",
+  "@forgotPasswordDescription": {
+    "description": "Forgot password description"
+  },
+  "forgotPasswordLink": "¿Olvidaste tu contraseña?",
+  "@forgotPasswordLink": {
+    "description": "Forgot password link text"
+  },
+  "emailRequired": "Por favor ingresa tu correo",
+  "@emailRequired": {
+    "description": "Email required error"
+  },
+  "emailInvalid": "Por favor ingresa un correo válido",
+  "@emailInvalid": {
+    "description": "Email invalid error"
+  },
+  "sendResetLink": "Enviar enlace",
+  "@sendResetLink": {
+    "description": "Send reset link button"
+  },
+  "backToLogin": "Volver al inicio de sesión",
+  "@backToLogin": {
+    "description": "Back to login link"
+  },
+  "resetEmailSent": "¡Correo enviado!",
+  "@resetEmailSent": {
+    "description": "Reset email sent title"
+  },
+  "resetEmailSentDescription": "Hemos enviado un enlace de recuperación a {email}. Revisa tu bandeja de entrada.",
+  "@resetEmailSentDescription": {
+    "description": "Reset email sent description",
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "sendAgain": "Enviar de nuevo",
+  "@sendAgain": {
+    "description": "Send again link"
   }
 }

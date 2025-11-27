@@ -330,8 +330,11 @@ class ProfileScreen extends ConsumerWidget {
   }
 
   Future<void> _openFeedbackForm(BuildContext context, AppLocalizations l10n) async {
-    const feedbackUrl = 'https://forms.gle/52gzoNH6dmX6zRp49';
-    final uri = Uri.parse(feedbackUrl);
+    await _openUrl(context, l10n, 'https://forms.gle/52gzoNH6dmX6zRp49');
+  }
+
+  Future<void> _openUrl(BuildContext context, AppLocalizations l10n, String url) async {
+    final uri = Uri.parse(url);
     
     try {
       // Try to open in external browser
@@ -342,7 +345,7 @@ class ProfileScreen extends ConsumerWidget {
       
       if (!launched) {
         // If couldn't launch, copy to clipboard
-        await Clipboard.setData(const ClipboardData(text: feedbackUrl));
+        await Clipboard.setData(ClipboardData(text: url));
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(l10n.linkCopied)),
@@ -351,7 +354,7 @@ class ProfileScreen extends ConsumerWidget {
       }
     } catch (e) {
       // On error, copy to clipboard
-      await Clipboard.setData(const ClipboardData(text: feedbackUrl));
+      await Clipboard.setData(ClipboardData(text: url));
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(l10n.linkCopied)),

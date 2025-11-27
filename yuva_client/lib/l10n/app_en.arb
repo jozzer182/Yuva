@@ -449,5 +449,62 @@
   "linkCopied": "Link copied to clipboard",
   "@linkCopied": {
     "description": "Link copied to clipboard message"
+  },
+  "privacyPolicy": "Privacy Policy",
+  "@privacyPolicy": {
+    "description": "Privacy policy link"
+  },
+  "termsAndConditions": "Terms and Conditions",
+  "@termsAndConditions": {
+    "description": "Terms and conditions link"
+  },
+  "legalSection": "Legal",
+  "@legalSection": {
+    "description": "Legal section title"
+  },
+  "forgotPassword": "Reset password",
+  "@forgotPassword": {
+    "description": "Forgot password title"
+  },
+  "forgotPasswordDescription": "Enter your email address and we'll send you a link to reset your password.",
+  "@forgotPasswordDescription": {
+    "description": "Forgot password description"
+  },
+  "forgotPasswordLink": "Forgot your password?",
+  "@forgotPasswordLink": {
+    "description": "Forgot password link text"
+  },
+  "emailRequired": "Please enter your email",
+  "@emailRequired": {
+    "description": "Email required error"
+  },
+  "emailInvalid": "Please enter a valid email",
+  "@emailInvalid": {
+    "description": "Email invalid error"
+  },
+  "sendResetLink": "Send link",
+  "@sendResetLink": {
+    "description": "Send reset link button"
+  },
+  "backToLogin": "Back to login",
+  "@backToLogin": {
+    "description": "Back to login link"
+  },
+  "resetEmailSent": "Email sent!",
+  "@resetEmailSent": {
+    "description": "Reset email sent title"
+  },
+  "resetEmailSentDescription": "We've sent a recovery link to {email}. Check your inbox.",
+  "@resetEmailSentDescription": {
+    "description": "Reset email sent description",
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "sendAgain": "Send again",
+  "@sendAgain": {
+    "description": "Send again link"
   }
 }

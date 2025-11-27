@@ -10,6 +10,7 @@ import '../../data/models/worker_user.dart';
 import 'package:yuva_worker/l10n/app_localizations.dart';
 import 'email_verification_screen.dart';
 import 'complete_profile_screen.dart';
+import 'forgot_password_screen.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -309,6 +310,24 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   ).copyWith(fontWeight: FontWeight.w600),
                                 ),
                               ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Center(
+                        child: TextButton(
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const ForgotPasswordScreen(),
+                              ),
+                            );
+                          },
+                          child: Text(
+                            l10n.forgotPasswordLink,
+                            style: YuvaTypography.body(
+                              color: YuvaColors.textSecondary,
                             ),
                           ),
                         ),

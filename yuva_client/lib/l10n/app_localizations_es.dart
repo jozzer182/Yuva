@@ -1045,4 +1045,46 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get linkCopied => 'Enlace copiado al portapapeles';
+
+  @override
+  String get privacyPolicy => 'Política de Privacidad';
+
+  @override
+  String get termsAndConditions => 'Términos y Condiciones';
+
+  @override
+  String get legalSection => 'Legal';
+
+  @override
+  String get forgotPassword => 'Recuperar contraseña';
+
+  @override
+  String get forgotPasswordDescription =>
+      'Ingresa tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.';
+
+  @override
+  String get forgotPasswordLink => '¿Olvidaste tu contraseña?';
+
+  @override
+  String get emailRequired => 'Por favor ingresa tu correo';
+
+  @override
+  String get emailInvalid => 'Por favor ingresa un correo válido';
+
+  @override
+  String get sendResetLink => 'Enviar enlace';
+
+  @override
+  String get backToLogin => 'Volver al inicio de sesión';
+
+  @override
+  String get resetEmailSent => '¡Correo enviado!';
+
+  @override
+  String resetEmailSentDescription(String email) {
+    return 'Hemos enviado un enlace de recuperación a $email. Revisa tu bandeja de entrada.';
+  }
+
+  @override
+  String get sendAgain => 'Enviar de nuevo';
 }

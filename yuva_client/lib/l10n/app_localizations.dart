@@ -2005,6 +2005,84 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Enlace copiado al portapapeles'**
   String get linkCopied;
+
+  /// Privacy policy link
+  ///
+  /// In es, this message translates to:
+  /// **'Política de Privacidad'**
+  String get privacyPolicy;
+
+  /// Terms and conditions link
+  ///
+  /// In es, this message translates to:
+  /// **'Términos y Condiciones'**
+  String get termsAndConditions;
+
+  /// Legal section title
+  ///
+  /// In es, this message translates to:
+  /// **'Legal'**
+  String get legalSection;
+
+  /// Forgot password title
+  ///
+  /// In es, this message translates to:
+  /// **'Recuperar contraseña'**
+  String get forgotPassword;
+
+  /// Forgot password description
+  ///
+  /// In es, this message translates to:
+  /// **'Ingresa tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.'**
+  String get forgotPasswordDescription;
+
+  /// Forgot password link text
+  ///
+  /// In es, this message translates to:
+  /// **'¿Olvidaste tu contraseña?'**
+  String get forgotPasswordLink;
+
+  /// Email required error
+  ///
+  /// In es, this message translates to:
+  /// **'Por favor ingresa tu correo'**
+  String get emailRequired;
+
+  /// Email invalid error
+  ///
+  /// In es, this message translates to:
+  /// **'Por favor ingresa un correo válido'**
+  String get emailInvalid;
+
+  /// Send reset link button
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar enlace'**
+  String get sendResetLink;
+
+  /// Back to login link
+  ///
+  /// In es, this message translates to:
+  /// **'Volver al inicio de sesión'**
+  String get backToLogin;
+
+  /// Reset email sent title
+  ///
+  /// In es, this message translates to:
+  /// **'¡Correo enviado!'**
+  String get resetEmailSent;
+
+  /// Reset email sent description
+  ///
+  /// In es, this message translates to:
+  /// **'Hemos enviado un enlace de recuperación a {email}. Revisa tu bandeja de entrada.'**
+  String resetEmailSentDescription(String email);
+
+  /// Send again link
+  ///
+  /// In es, this message translates to:
+  /// **'Enviar de nuevo'**
+  String get sendAgain;
 }
 
 class _AppLocalizationsDelegate
