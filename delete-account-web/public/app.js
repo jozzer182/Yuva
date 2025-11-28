@@ -18,16 +18,8 @@ import {
   writeBatch,
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyDqkENbAdDFHwSrrDL0TpwIMHv_Pxlbzo8",
-  authDomain: "yuve-es.firebaseapp.com",
-  projectId: "yuve-es",
-  storageBucket: "yuve-es.firebasestorage.app",
-  messagingSenderId: "83359937854",
-  appId: "1:83359937854:web:f9b8657f012553adeae86f",
-  measurementId: "G-H6J9SS46KT",
-};
+// Firebase configuration - imported from separate file (not in git)
+import { firebaseConfig } from "./firebase-config.js";
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
