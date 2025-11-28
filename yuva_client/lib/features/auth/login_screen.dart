@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -99,15 +100,88 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
-        );
+        _showErrorSnackBar(e);
       }
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);
       }
     }
+  }
+
+  /// Muestra un mensaje de error amigable según el tipo de excepción
+  void _showErrorSnackBar(dynamic error) {
+    final l10n = AppLocalizations.of(context)!;
+    String title;
+    String? description;
+    IconData icon = Icons.error_outline;
+    Color backgroundColor = Colors.red;
+
+    // Detectar errores de conexión
+    if (_isNetworkError(error)) {
+      title = l10n.errorNoInternet;
+      description = l10n.errorNoInternetDescription;
+      icon = Icons.wifi_off_rounded;
+      backgroundColor = Colors.orange;
+    } else if (error.toString().contains('cancelado') || 
+               error.toString().contains('cancelled')) {
+      title = l10n.errorGoogleSignInCancelled;
+      icon = Icons.close_rounded;
+      backgroundColor = Colors.grey;
+    } else if (error.toString().contains('Google')) {
+      title = l10n.errorGoogleSignInFailed;
+      description = l10n.errorNoInternetDescription;
+      icon = Icons.warning_amber_rounded;
+    } else {
+      title = error.toString().replaceAll('Exception: ', '');
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            Icon(icon, color: Colors.white),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  if (description != null)
+                    Text(
+                      description,
+                      style: const TextStyle(fontSize: 12),
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        backgroundColor: backgroundColor,
+        duration: const Duration(seconds: 5),
+        behavior: SnackBarBehavior.floating,
+        margin: const EdgeInsets.all(16),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+    );
+  }
+
+  /// Verifica si el error es relacionado con la conexión a internet
+  bool _isNetworkError(dynamic error) {
+    final errorString = error.toString().toLowerCase();
+    return error is SocketException ||
+           errorString.contains('socketexception') ||
+           errorString.contains('failed host lookup') ||
+           errorString.contains('network') ||
+           errorString.contains('no address associated') ||
+           errorString.contains('connection refused') ||
+           errorString.contains('connection failed') ||
+           errorString.contains('no internet') ||
+           errorString.contains('unreachable');
   }
 
   // guest mode removed
@@ -154,9 +228,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
-        );
+        _showErrorSnackBar(e);
       }
     } finally {
       if (mounted) {

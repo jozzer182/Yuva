@@ -2083,6 +2083,42 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Enviar de nuevo'**
   String get sendAgain;
+
+  /// No internet connection error
+  ///
+  /// In es, this message translates to:
+  /// **'Sin conexión a internet'**
+  String get errorNoInternet;
+
+  /// No internet connection error description
+  ///
+  /// In es, this message translates to:
+  /// **'Revisa tu conexión WiFi o datos móviles e intenta de nuevo.'**
+  String get errorNoInternetDescription;
+
+  /// Google sign in cancelled
+  ///
+  /// In es, this message translates to:
+  /// **'Inicio de sesión cancelado'**
+  String get errorGoogleSignInCancelled;
+
+  /// Google sign in failed
+  ///
+  /// In es, this message translates to:
+  /// **'No se pudo iniciar sesión con Google'**
+  String get errorGoogleSignInFailed;
+
+  /// Unexpected error
+  ///
+  /// In es, this message translates to:
+  /// **'Ocurrió un error inesperado. Intenta de nuevo.'**
+  String get errorUnexpected;
+
+  /// Retry button
+  ///
+  /// In es, this message translates to:
+  /// **'Reintentar'**
+  String get retry;
 }
 
 class _AppLocalizationsDelegate

@@ -1072,4 +1072,24 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get sendAgain => 'Send again';
+
+  @override
+  String get errorNoInternet => 'Sin conexión a internet';
+
+  @override
+  String get errorNoInternetDescription =>
+      'Revisa tu conexión WiFi o datos móviles e intenta de nuevo.';
+
+  @override
+  String get errorGoogleSignInCancelled => 'Inicio de sesión cancelado';
+
+  @override
+  String get errorGoogleSignInFailed => 'No se pudo iniciar sesión con Google';
+
+  @override
+  String get errorUnexpected =>
+      'Ocurrió un error inesperado. Intenta de nuevo.';
+
+  @override
+  String get retry => 'Reintentar';
 }

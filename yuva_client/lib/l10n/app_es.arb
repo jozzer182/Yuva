@@ -862,5 +862,29 @@
   "sendAgain": "Enviar de nuevo",
   "@sendAgain": {
     "description": "Send again link"
+  },
+  "errorNoInternet": "Sin conexión a internet",
+  "@errorNoInternet": {
+    "description": "No internet connection error"
+  },
+  "errorNoInternetDescription": "Revisa tu conexión WiFi o datos móviles e intenta de nuevo.",
+  "@errorNoInternetDescription": {
+    "description": "No internet connection error description"
+  },
+  "errorGoogleSignInCancelled": "Inicio de sesión cancelado",
+  "@errorGoogleSignInCancelled": {
+    "description": "Google sign in cancelled"
+  },
+  "errorGoogleSignInFailed": "No se pudo iniciar sesión con Google",
+  "@errorGoogleSignInFailed": {
+    "description": "Google sign in failed"
+  },
+  "errorUnexpected": "Ocurrió un error inesperado. Intenta de nuevo.",
+  "@errorUnexpected": {
+    "description": "Unexpected error"
+  },
+  "retry": "Reintentar",
+  "@retry": {
+    "description": "Retry button"
   }
 }
