@@ -2119,6 +2119,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Reintentar'**
   String get retry;
+
+  /// Feature coming soon message
+  ///
+  /// In es, this message translates to:
+  /// **'Próximamente'**
+  String get featureComingSoon;
 }
 
 class _AppLocalizationsDelegate

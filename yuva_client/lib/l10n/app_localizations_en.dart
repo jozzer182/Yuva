@@ -1092,4 +1092,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get retry => 'Reintentar';
+
+  @override
+  String get featureComingSoon => 'Coming soon';
 }

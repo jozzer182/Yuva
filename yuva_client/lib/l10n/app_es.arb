@@ -886,5 +886,9 @@
   "retry": "Reintentar",
   "@retry": {
     "description": "Retry button"
+  },
+  "featureComingSoon": "Próximamente",
+  "@featureComingSoon": {
+    "description": "Feature coming soon message"
   }
 }

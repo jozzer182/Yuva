@@ -11,7 +11,6 @@ import '../../design_system/colors.dart';
 import '../../core/providers.dart';
 import 'package:yuva/l10n/app_localizations.dart';
 import 'edit_profile_screen.dart';
-import '../ratings/my_reviews_screen.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -133,9 +132,10 @@ class ProfileScreen extends ConsumerWidget {
               // My Reviews Section
               YuvaCard(
                 onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => const MyReviewsScreen(),
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(l10n.featureComingSoon),
+                      behavior: SnackBarBehavior.floating,
                     ),
                   );
                 },
