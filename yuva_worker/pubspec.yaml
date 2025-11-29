@@ -1,7 +1,7 @@
 name: yuva_worker
 description: "yuva - Worker app for cleaning professionals marketplace"
 publish_to: "none"
-version: 0.1.0
+version: 1.0.0+1
 
 environment:
   sdk: ^3.10.0
