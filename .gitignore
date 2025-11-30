@@ -54,6 +54,7 @@ local.properties
 **/ios/Flutter/Flutter.framework
 **/ios/Flutter/Flutter.podspec
 **/macos/Flutter/ephemeral
+**/ExportOptions.plist
 
 # 🔐 FIREBASE - SENSITIVE FILES (DO NOT COMMIT)
 # These files contain API keys and should be regenerated for each developer
