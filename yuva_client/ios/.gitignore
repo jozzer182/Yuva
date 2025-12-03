@@ -32,3 +32,7 @@ Runner/GeneratedPluginRegistrant.*
 !default.mode2v3
 !default.pbxuser
 !default.perspectivev3
+
+# Apple Auth Keys - NEVER commit these
+AuthKey_*.p8
+*.p8

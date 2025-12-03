@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../design_system/colors.dart';
@@ -180,6 +182,77 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
   }
 
+  Future<void> _handleAppleSignIn() async {
+    print('=== APPLE SIGN-IN WORKER: Button pressed ===');
+    setState(() => _isLoading = true);
+
+    try {
+      print('=== APPLE SIGN-IN WORKER: Calling authRepo.signInWithApple() ===');
+      final authRepo = ref.read(authRepositoryProvider);
+      final user = await authRepo.signInWithApple();
+      print('=== APPLE SIGN-IN WORKER: Success! User ID: ${user.id} ===');
+      ref.read(currentUserProvider.notifier).state = user;
+
+      // Try to load WorkerUser from Firestore first
+      final userProfileService = ref.read(userProfileServiceProvider);
+      final firestoreProfile = await userProfileService.getWorkerProfile(user.id);
+      
+      if (firestoreProfile != null && firestoreProfile.isComplete) {
+        // Use Firestore data - profile exists and is complete
+        final workerUser = firestoreProfile.toWorkerUser();
+        await ref.read(workerUserProvider.notifier).setWorkerUser(workerUser);
+        
+        // Profile is complete, go to main
+        if (mounted) {
+          Navigator.of(context).pushReplacementNamed('/main');
+        }
+        return;
+      }
+      
+      // No complete Firestore profile - check local or create new
+      final existingWorkerUser = ref.read(workerUserProvider);
+      final workerUser = WorkerUser.fromAuthUser(
+        user,
+        cityOrZone: firestoreProfile?.cityOrZone ?? existingWorkerUser?.cityOrZone ?? 'No especificado',
+        baseHourlyRate: firestoreProfile?.baseHourlyRate ?? existingWorkerUser?.baseHourlyRate ?? 0.0,
+        avatarId: firestoreProfile?.avatarId ?? existingWorkerUser?.avatarId,
+      );
+      await ref.read(workerUserProvider.notifier).setWorkerUser(workerUser);
+
+      // Check if profile is complete
+      if (!workerUser.isProfileComplete) {
+        // Navigate to complete profile screen
+        if (mounted) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => CompleteProfileScreen(authUser: user),
+            ),
+          );
+        }
+        return;
+      }
+
+      // Apple Sign-In ya verifica el email automáticamente
+      // Profile is complete, go to main
+      if (mounted) {
+        Navigator.of(context).pushReplacementNamed('/main');
+      }
+    } catch (e, stackTrace) {
+      print('=== APPLE SIGN-IN WORKER ERROR: $e ===');
+      print('=== APPLE SIGN-IN WORKER STACK TRACE: $stackTrace ===');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e')),
+        );
+      }
+    } finally {
+      print('=== APPLE SIGN-IN WORKER: Flow completed ===');
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -292,6 +365,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           ),
                         ),
                       ),
+                      // Apple Sign-In Button (iOS only)
+                      if (Platform.isIOS) ...[
+                        const SizedBox(height: 12),
+                        SizedBox(
+                          width: double.infinity,
+                          child: SignInWithAppleButton(
+                            onPressed: _isLoading ? () {} : _handleAppleSignIn,
+                            style: isDark 
+                                ? SignInWithAppleButtonStyle.white 
+                                : SignInWithAppleButtonStyle.black,
+                            text: 'Continuar con Apple',
+                          ),
+                        ),
+                      ],
                       const SizedBox(height: 24),
                       Center(
                         child: TextButton(

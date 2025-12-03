@@ -1,5 +1,10 @@
+import 'dart:convert';
+import 'dart:math';
+
+import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import '../models/user.dart';
 import 'auth_repository.dart';
 
@@ -103,6 +108,85 @@ class FirebaseAuthRepository implements AuthRepository {
     } catch (e) {
       throw 'Error al iniciar sesión con Google: ${e.toString()}';
     }
+  }
+
+  @override
+  Future<User> signInWithApple() async {
+    try {
+      print('=== APPLE AUTH WORKER: Requesting Apple credentials ===');
+      // Request Apple Sign-In credentials
+      final appleCredential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+      );
+
+      print('=== APPLE AUTH WORKER: Credential received from Apple ===');
+      print('=== APPLE AUTH WORKER: identityToken length: ${appleCredential.identityToken?.length} ===');
+      print('=== APPLE AUTH WORKER: authorizationCode length: ${appleCredential.authorizationCode.length} ===');
+      print('=== APPLE AUTH WORKER: email: ${appleCredential.email} ===');
+      print('=== APPLE AUTH WORKER: userIdentifier: ${appleCredential.userIdentifier} ===');
+
+      // Check if identityToken is null
+      if (appleCredential.identityToken == null) {
+        print('=== APPLE AUTH WORKER ERROR: identityToken is null ===');
+        throw Exception('Apple no devolvió un token de identidad. Por favor intenta de nuevo.');
+      }
+
+      // Create an OAuth credential from the Apple credential
+      print('=== APPLE AUTH WORKER: Creating Firebase OAuthCredential ===');
+      final oauthCredential = firebase_auth.OAuthProvider('apple.com').credential(
+        idToken: appleCredential.identityToken,
+        accessToken: appleCredential.authorizationCode,
+      );
+
+      // Sign in to Firebase with the Apple credential
+      print('=== APPLE AUTH WORKER: Calling Firebase signInWithCredential ===');
+      final userCredential = await _firebaseAuth.signInWithCredential(oauthCredential);
+
+      if (userCredential.user == null) {
+        print('=== APPLE AUTH WORKER ERROR: userCredential.user is null ===');
+        throw Exception('Error al iniciar sesión con Apple');
+      }
+      print('=== APPLE AUTH WORKER: Firebase user created - UID: ${userCredential.user!.uid} ===');
+
+      // Apple only provides name on first sign-in, so update display name if available
+      final displayName = appleCredential.givenName != null && appleCredential.familyName != null
+          ? '${appleCredential.givenName} ${appleCredential.familyName}'
+          : null;
+
+      if (displayName != null && userCredential.user!.displayName == null) {
+        await userCredential.user!.updateDisplayName(displayName);
+        await userCredential.user!.reload();
+      }
+
+      final updatedUser = _firebaseAuth.currentUser;
+      return _mapFirebaseUserToUser(updatedUser ?? userCredential.user!);
+    } on SignInWithAppleAuthorizationException catch (e) {
+      if (e.code == AuthorizationErrorCode.canceled) {
+        throw Exception('Inicio de sesión con Apple cancelado');
+      }
+      throw 'Error al iniciar sesión con Apple: ${e.message}';
+    } on firebase_auth.FirebaseAuthException catch (e) {
+      throw _mapFirebaseException(e);
+    } catch (e) {
+      throw 'Error al iniciar sesión con Apple: ${e.toString()}';
+    }
+  }
+
+  /// Generates a cryptographically secure random nonce
+  String _generateNonce([int length = 32]) {
+    const charset = '0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._';
+    final random = Random.secure();
+    return List.generate(length, (_) => charset[random.nextInt(charset.length)]).join();
+  }
+
+  /// Returns the sha256 hash of [input] in hex notation
+  String _sha256ofString(String input) {
+    final bytes = utf8.encode(input);
+    final digest = sha256.convert(bytes);
+    return digest.toString();
   }
 
   @override

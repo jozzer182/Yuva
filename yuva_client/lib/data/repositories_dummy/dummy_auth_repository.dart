@@ -49,6 +49,18 @@ class DummyAuthRepository implements AuthRepository {
   }
 
   @override
+  Future<User> signInWithApple() async {
+    await Future.delayed(const Duration(milliseconds: 1000));
+    _currentUser = User(
+      id: 'user_${DateTime.now().millisecondsSinceEpoch}',
+      name: 'Usuario de Apple',
+      email: 'apple@example.com',
+      createdAt: DateTime.now(),
+    );
+    return _currentUser!;
+  }
+
+  @override
   Future<void> signOut() async {
     await Future.delayed(const Duration(milliseconds: 300));
     _currentUser = null;

@@ -7,6 +7,7 @@ abstract class AuthRepository {
   Future<User> signInWithEmail(String email, String password);
   Future<User> signUpWithEmail(String email, String password, String name);
   Future<User> signInWithGoogle();
+  Future<User> signInWithApple();
   Future<void> signOut();
   
   // Multi-Factor Authentication

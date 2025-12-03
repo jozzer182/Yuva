@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -237,6 +238,63 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
   }
 
+  Future<void> _handleAppleSignIn() async {
+    print('=== APPLE SIGN-IN: Button pressed ===' );
+    setState(() => _isLoading = true);
+
+    try {
+      print('=== APPLE SIGN-IN: Calling authRepo.signInWithApple() ===');
+      final authRepo = ref.read(authRepositoryProvider);
+      final user = await authRepo.signInWithApple();
+      print('=== APPLE SIGN-IN: Success! User ID: ${user.id} ===');
+      
+      // Try to load profile from Firestore first
+      final userProfileService = ref.read(userProfileServiceProvider);
+      final firestoreProfile = await userProfileService.getUserProfile(user.id);
+      
+      // Merge Firestore data with auth user
+      final enrichedUser = firestoreProfile != null
+          ? user.copyWith(
+              name: firestoreProfile.displayName.isNotEmpty ? firestoreProfile.displayName : user.name,
+              phone: firestoreProfile.phone ?? user.phone,
+              avatarId: firestoreProfile.avatarId,
+            )
+          : user;
+      
+      ref.read(currentUserProvider.notifier).state = enrichedUser;
+
+      // Check if profile is complete (client needs phone)
+      if (!enrichedUser.isProfileComplete) {
+        // Navigate to complete profile screen
+        if (mounted) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => CompleteProfileScreen(authUser: enrichedUser),
+            ),
+          );
+        }
+        return;
+      }
+
+      // Apple Sign-In ya verifica el email automáticamente
+      // Profile is complete, go to main
+      if (mounted) {
+        Navigator.of(context).pushReplacementNamed('/main');
+      }
+    } catch (e, stackTrace) {
+      print('=== APPLE SIGN-IN ERROR: $e ===');
+      print('=== APPLE SIGN-IN STACK TRACE: $stackTrace ===');
+      if (mounted) {
+        _showErrorSnackBar(e);
+      }
+    } finally {
+      print('=== APPLE SIGN-IN: Flow completed ===');
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -351,6 +409,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ),
                     ),
                   ),
+                  // Apple Sign-In Button (iOS only)
+                  if (Platform.isIOS) ...[
+                    const SizedBox(height: 12),
+                    SizedBox(
+                      width: double.infinity,
+                      child: SignInWithAppleButton(
+                        onPressed: _isLoading ? () {} : _handleAppleSignIn,
+                        style: isDark 
+                            ? SignInWithAppleButtonStyle.white 
+                            : SignInWithAppleButtonStyle.black,
+                        text: 'Continuar con Apple',
+                      ),
+                    ),
+                  ],
                   const SizedBox(height: 24),
                   Center(
                     child: TextButton(
