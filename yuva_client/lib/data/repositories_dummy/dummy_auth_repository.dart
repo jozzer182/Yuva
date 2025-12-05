@@ -67,6 +67,12 @@ class DummyAuthRepository implements AuthRepository {
   }
 
   @override
+  Future<void> deleteAccount() async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    _currentUser = null;
+  }
+
+  @override
   Future<User> continueAsGuest() async {
     await Future.delayed(const Duration(milliseconds: 500));
     _currentUser = User(

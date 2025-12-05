@@ -96,6 +96,34 @@ class AppLocalizationsEn extends AppLocalizations {
   String get logout => 'Log out';
 
   @override
+  String get deleteAccount => 'Delete account';
+
+  @override
+  String get deleteAccountConfirmTitle => 'Delete your account?';
+
+  @override
+  String get deleteAccountConfirmMessage =>
+      'This action will permanently delete your account and all your data. This cannot be undone.';
+
+  @override
+  String get deleteAccountFinalConfirmTitle => 'Are you completely sure?';
+
+  @override
+  String deleteAccountFinalConfirmMessage(int seconds) {
+    return 'Your account will be permanently deleted in $seconds seconds. Press cancel if you changed your mind.';
+  }
+
+  @override
+  String get deleteAccountSuccess =>
+      'Your account has been successfully deleted';
+
+  @override
+  String get deleteAccountError => 'Error deleting account';
+
+  @override
+  String get deleteAccountButton => 'Delete my account';
+
+  @override
   String get recommendedJobs => 'Recommended jobs for you';
 
   @override

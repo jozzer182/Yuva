@@ -294,6 +294,10 @@ class ProfileScreen extends ConsumerWidget {
                 buttonStyle: YuvaButtonStyle.ghost,
               ),
               const SizedBox(height: 16),
+
+              // Delete Account Button
+              _DeleteAccountButton(),
+              const SizedBox(height: 32),
             ],
           ),
         ),
@@ -415,3 +419,224 @@ class _LanguageOption extends StatelessWidget {
   }
 }
 
+/// Delete Account Button with confirmation dialogs
+class _DeleteAccountButton extends ConsumerStatefulWidget {
+  @override
+  ConsumerState<_DeleteAccountButton> createState() => _DeleteAccountButtonState();
+}
+
+class _DeleteAccountButtonState extends ConsumerState<_DeleteAccountButton> {
+  bool _isDeleting = false;
+
+  Future<void> _handleDeleteAccount() async {
+    final l10n = AppLocalizations.of(context)!;
+    
+    // First confirmation dialog
+    final firstConfirm = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: Row(
+          children: [
+            Icon(Icons.warning_amber_rounded, color: Colors.red),
+            const SizedBox(width: 8),
+            Expanded(child: Text(l10n.deleteAccountConfirmTitle)),
+          ],
+        ),
+        content: Text(l10n.deleteAccountConfirmMessage),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text(l10n.cancel),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
+            child: Text(l10n.deleteAccountButton),
+          ),
+        ],
+      ),
+    );
+
+    if (firstConfirm != true || !mounted) return;
+
+    // Second confirmation dialog with countdown
+    final secondConfirm = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => _CountdownConfirmDialog(
+        title: l10n.deleteAccountFinalConfirmTitle,
+        getMessage: (seconds) => l10n.deleteAccountFinalConfirmMessage(seconds),
+        cancelText: l10n.cancel,
+        confirmText: l10n.deleteAccountButton,
+        countdownSeconds: 8,
+      ),
+    );
+
+    if (secondConfirm != true || !mounted) return;
+
+    // Proceed with account deletion
+    setState(() => _isDeleting = true);
+
+    try {
+      await ref.read(authRepositoryProvider).deleteAccount();
+      ref.read(currentUserProvider.notifier).state = null;
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.deleteAccountSuccess),
+            backgroundColor: Colors.green,
+          ),
+        );
+        Navigator.of(context).pushNamedAndRemoveUntil('/auth', (route) => false);
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${l10n.deleteAccountError}: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isDeleting = false);
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
+    return TextButton.icon(
+      onPressed: _isDeleting ? null : _handleDeleteAccount,
+      icon: _isDeleting 
+          ? SizedBox(
+              width: 16,
+              height: 16,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: Colors.red,
+              ),
+            )
+          : Icon(Icons.delete_forever_rounded, color: Colors.red),
+      label: Text(
+        l10n.deleteAccount,
+        style: TextStyle(color: Colors.red),
+      ),
+    );
+  }
+}
+
+/// Countdown confirmation dialog
+class _CountdownConfirmDialog extends StatefulWidget {
+  final String title;
+  final String Function(int seconds) getMessage;
+  final String cancelText;
+  final String confirmText;
+  final int countdownSeconds;
+
+  const _CountdownConfirmDialog({
+    required this.title,
+    required this.getMessage,
+    required this.cancelText,
+    required this.confirmText,
+    required this.countdownSeconds,
+  });
+
+  @override
+  State<_CountdownConfirmDialog> createState() => _CountdownConfirmDialogState();
+}
+
+class _CountdownConfirmDialogState extends State<_CountdownConfirmDialog> {
+  late int _remainingSeconds;
+  bool _canConfirm = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _remainingSeconds = widget.countdownSeconds;
+    _startCountdown();
+  }
+
+  void _startCountdown() {
+    Future.delayed(const Duration(seconds: 1), () {
+      if (!mounted) return;
+      
+      setState(() {
+        _remainingSeconds--;
+        if (_remainingSeconds <= 0) {
+          _canConfirm = true;
+        }
+      });
+
+      if (_remainingSeconds > 0) {
+        _startCountdown();
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Row(
+        children: [
+          Icon(Icons.timer, color: Colors.red),
+          const SizedBox(width: 8),
+          Expanded(child: Text(widget.title)),
+        ],
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(widget.getMessage(_remainingSeconds)),
+          const SizedBox(height: 16),
+          if (!_canConfirm)
+            SizedBox(
+              width: 60,
+              height: 60,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  CircularProgressIndicator(
+                    value: _remainingSeconds / widget.countdownSeconds,
+                    strokeWidth: 4,
+                    color: Colors.red,
+                    backgroundColor: Colors.red.withValues(alpha: 0.2),
+                  ),
+                  Text(
+                    '$_remainingSeconds',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.red,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(false),
+          child: Text(widget.cancelText),
+        ),
+        ElevatedButton(
+          onPressed: _canConfirm ? () => Navigator.of(context).pop(true) : null,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.red,
+            foregroundColor: Colors.white,
+          ),
+          child: Text(widget.confirmText),
+        ),
+      ],
+    );
+  }
+}

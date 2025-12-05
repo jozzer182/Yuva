@@ -326,6 +326,54 @@ abstract class AppLocalizations {
   /// **'Cerrar sesión'**
   String get logout;
 
+  /// Delete account button
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar cuenta'**
+  String get deleteAccount;
+
+  /// Delete account confirmation dialog title
+  ///
+  /// In es, this message translates to:
+  /// **'¿Eliminar tu cuenta?'**
+  String get deleteAccountConfirmTitle;
+
+  /// Delete account confirmation dialog message
+  ///
+  /// In es, this message translates to:
+  /// **'Esta acción eliminará permanentemente tu cuenta y todos tus datos. Esta acción no se puede deshacer.'**
+  String get deleteAccountConfirmMessage;
+
+  /// Delete account final confirmation dialog title
+  ///
+  /// In es, this message translates to:
+  /// **'¿Estás completamente seguro?'**
+  String get deleteAccountFinalConfirmTitle;
+
+  /// Delete account final confirmation dialog message with countdown
+  ///
+  /// In es, this message translates to:
+  /// **'Tu cuenta será eliminada permanentemente en {seconds} segundos. Presiona cancelar si cambiaste de opinión.'**
+  String deleteAccountFinalConfirmMessage(int seconds);
+
+  /// Delete account success message
+  ///
+  /// In es, this message translates to:
+  /// **'Tu cuenta ha sido eliminada exitosamente'**
+  String get deleteAccountSuccess;
+
+  /// Delete account error message
+  ///
+  /// In es, this message translates to:
+  /// **'Error al eliminar la cuenta'**
+  String get deleteAccountError;
+
+  /// Delete account button in dialog
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar mi cuenta'**
+  String get deleteAccountButton;
+
   /// One-time cleaning category
   ///
   /// In es, this message translates to:

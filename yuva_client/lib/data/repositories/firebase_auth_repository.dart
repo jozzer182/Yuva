@@ -201,6 +201,33 @@ class FirebaseAuthRepository implements AuthRepository {
   }
 
   @override
+  Future<void> deleteAccount() async {
+    try {
+      final user = _firebaseAuth.currentUser;
+      if (user == null) {
+        throw Exception('No hay usuario autenticado');
+      }
+
+      // Delete user data from Firestore first
+      // The user document will be deleted by a Cloud Function or we do it here
+      // For now, we just delete the Firebase Auth account
+      
+      // Delete the Firebase Auth user
+      await user.delete();
+      
+      // Sign out from Google if applicable
+      await _googleSignIn.signOut();
+    } on firebase_auth.FirebaseAuthException catch (e) {
+      if (e.code == 'requires-recent-login') {
+        throw Exception('Por seguridad, necesitas volver a iniciar sesión antes de eliminar tu cuenta');
+      }
+      throw _mapFirebaseException(e);
+    } catch (e) {
+      throw 'Error al eliminar la cuenta: ${e.toString()}';
+    }
+  }
+
+  @override
   Future<User> continueAsGuest() async {
     try {
       final credential = await _firebaseAuth.signInAnonymously();

@@ -168,6 +168,44 @@
   "@logout": {
     "description": "Logout button"
   },
+  "deleteAccount": "Eliminar cuenta",
+  "@deleteAccount": {
+    "description": "Delete account button"
+  },
+  "deleteAccountConfirmTitle": "¿Eliminar tu cuenta?",
+  "@deleteAccountConfirmTitle": {
+    "description": "Delete account confirmation dialog title"
+  },
+  "deleteAccountConfirmMessage": "Esta acción eliminará permanentemente tu cuenta y todos tus datos. Esta acción no se puede deshacer.",
+  "@deleteAccountConfirmMessage": {
+    "description": "Delete account confirmation dialog message"
+  },
+  "deleteAccountFinalConfirmTitle": "¿Estás completamente seguro?",
+  "@deleteAccountFinalConfirmTitle": {
+    "description": "Delete account final confirmation dialog title"
+  },
+  "deleteAccountFinalConfirmMessage": "Tu cuenta será eliminada permanentemente en {seconds} segundos. Presiona cancelar si cambiaste de opinión.",
+  "@deleteAccountFinalConfirmMessage": {
+    "description": "Delete account final confirmation dialog message with countdown",
+    "placeholders": {
+      "seconds": {
+        "type": "int",
+        "example": "8"
+      }
+    }
+  },
+  "deleteAccountSuccess": "Tu cuenta ha sido eliminada exitosamente",
+  "@deleteAccountSuccess": {
+    "description": "Delete account success message"
+  },
+  "deleteAccountError": "Error al eliminar la cuenta",
+  "@deleteAccountError": {
+    "description": "Delete account error message"
+  },
+  "deleteAccountButton": "Eliminar mi cuenta",
+  "@deleteAccountButton": {
+    "description": "Delete account button in dialog"
+  },
   "categoryOnetime": "Aseo puntual",
   "@categoryOnetime": {
     "description": "One-time cleaning category"

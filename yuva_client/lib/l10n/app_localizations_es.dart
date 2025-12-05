@@ -132,6 +132,33 @@ class AppLocalizationsEs extends AppLocalizations {
   String get logout => 'Cerrar sesión';
 
   @override
+  String get deleteAccount => 'Eliminar cuenta';
+
+  @override
+  String get deleteAccountConfirmTitle => '¿Eliminar tu cuenta?';
+
+  @override
+  String get deleteAccountConfirmMessage =>
+      'Esta acción eliminará permanentemente tu cuenta y todos tus datos. Esta acción no se puede deshacer.';
+
+  @override
+  String get deleteAccountFinalConfirmTitle => '¿Estás completamente seguro?';
+
+  @override
+  String deleteAccountFinalConfirmMessage(int seconds) {
+    return 'Tu cuenta será eliminada permanentemente en $seconds segundos. Presiona cancelar si cambiaste de opinión.';
+  }
+
+  @override
+  String get deleteAccountSuccess => 'Tu cuenta ha sido eliminada exitosamente';
+
+  @override
+  String get deleteAccountError => 'Error al eliminar la cuenta';
+
+  @override
+  String get deleteAccountButton => 'Eliminar mi cuenta';
+
+  @override
   String get categoryOnetime => 'Aseo puntual';
 
   @override

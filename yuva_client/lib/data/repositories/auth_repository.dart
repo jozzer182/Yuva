@@ -11,6 +11,9 @@ abstract class AuthRepository {
   Future<void> signOut();
   Future<User> continueAsGuest();
   
+  // Account Management
+  Future<void> deleteAccount();
+  
   // Multi-Factor Authentication
   Future<void> enrollMFA(String phoneNumber);
   Future<String> verifyMFAEnrollment(String verificationId, String smsCode);
